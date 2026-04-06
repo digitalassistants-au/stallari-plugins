@@ -1,4 +1,4 @@
-pack: "1.1"
+pack: "1.6"
 name: vault-gardener
 version: "1.1.0"
 description: Finds orphaned notes, broken links, and stale content in your vault.
@@ -39,6 +39,7 @@ skills:
     description: Find notes with no inbound or outbound links
     tier: reasoning
     category: review
+    graph: react
     services_used:
       - service: vault
         operations: [search, backlinks, append]
@@ -61,6 +62,7 @@ skills:
     description: Find broken wikilinks that point to non-existent notes
     tier: reasoning
     category: review
+    graph: react
     services_used:
       - service: vault
         operations: [links, read, append]
@@ -81,6 +83,7 @@ skills:
     description: Find notes not modified in over 6 months
     tier: reasoning
     category: report
+    graph: react
     services_used:
       - service: vault
         operations: [search, backlinks, read]

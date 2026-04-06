@@ -1,4 +1,4 @@
-pack: "1.4"
+pack: "1.6"
 name: cloudflare-edge-platform
 version: "1.1.0"
 description: >-
@@ -61,6 +61,7 @@ skills:
     description: Expose a local service via Cloudflare Tunnel — the turnkey alternative to Tailscale Serve
     tier: reasoning
     category: transform
+    graph: react-extract
     services_used:
       - service: edge-platform
         operations: [tunnel_list, tunnel_get, tunnel_list_configs, tunnel_update_config, dns_list_zones, dns_list_records, dns_create_record]
@@ -125,6 +126,7 @@ skills:
     description: Create a public-facing Cloudflare Tunnel endpoint with DNS — the turnkey alternative to Tailscale Funnel
     tier: reasoning
     category: transform
+    graph: react-extract
     services_used:
       - service: edge-platform
         operations: [tunnel_list, tunnel_get, tunnel_create, tunnel_list_configs, tunnel_update_config, dns_list_zones, dns_list_records, dns_create_record]
@@ -201,6 +203,7 @@ skills:
     description: Monitor Cloudflare Tunnel connectivity and ingress configuration health
     tier: reasoning
     category: review
+    graph: react
     services_used:
       - service: edge-platform
         operations: [tunnel_list, tunnel_get, tunnel_list_configs, tunnel_list_connections, dns_list_records]
@@ -241,6 +244,7 @@ skills:
     description: Audit DNS records across all zones — find orphans, misconfigurations, and missing records
     tier: reasoning
     category: review
+    graph: react
     services_used:
       - service: edge-platform
         operations: [dns_list_zones, dns_list_records, dns_get_record, dns_export_records]
@@ -280,6 +284,7 @@ skills:
     description: Inventory Workers KV namespaces with key counts and usage patterns
     tier: reasoning
     category: report
+    graph: react
     services_used:
       - service: edge-platform
         operations: [kv_list_namespaces, kv_list_keys]
@@ -311,6 +316,7 @@ skills:
     description: Inventory D1 databases with schema snapshots and size tracking
     tier: reasoning
     category: report
+    graph: react
     services_used:
       - service: edge-platform
         operations: [d1_list_databases, d1_get_database, d1_list_tables, d1_describe_table]
@@ -345,6 +351,7 @@ skills:
     description: Provision a complete edge stack — tunnel + DNS + KV namespace + D1 database for a new service
     tier: reasoning
     category: transform
+    graph: react-extract
     services_used:
       - service: edge-platform
         operations: [tunnel_list, tunnel_create, tunnel_update_config, dns_list_zones, dns_create_record, kv_list_namespaces, kv_put, d1_list_databases, d1_execute]
@@ -415,6 +422,7 @@ skills:
     description: Decommission an edge service — remove tunnel ingress, DNS records, and archive documentation
     tier: reasoning
     category: transform
+    graph: react-extract
     services_used:
       - service: edge-platform
         operations: [tunnel_list, tunnel_list_configs, tunnel_update_config, tunnel_delete, dns_list_zones, dns_list_records, dns_delete_record]

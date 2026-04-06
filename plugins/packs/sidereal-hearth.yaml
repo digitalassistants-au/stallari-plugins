@@ -1,4 +1,4 @@
-pack: "1.2"
+pack: "1.6"
 name: sidereal-hearth
 version: "1.1.0"
 description: >-
@@ -51,6 +51,7 @@ skills:
     description: Query sensor state across all HA sites and compile a health summary
     tier: reasoning
     category: review
+    graph: react
     services_used:
       - service: home
         operations: [entity_state, area_list]
@@ -84,6 +85,7 @@ skills:
     description: Enumerate and categorise all HA entities across sites
     tier: reasoning
     category: review
+    graph: react
     services_used:
       - service: home
         operations: [entity_list, area_list]
@@ -118,6 +120,7 @@ skills:
     description: List available scenes and activate on request with vault logging
     tier: reasoning
     category: transform
+    graph: react-extract
     services_used:
       - service: home
         operations: [entity_list, scene_activate]

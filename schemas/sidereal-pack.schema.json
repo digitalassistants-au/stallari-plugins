@@ -2,14 +2,14 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://sidereal.dev/schemas/sidereal-pack.schema.json",
   "title": "Sidereal Pack Manifest",
-  "description": "Schema for pack manifests (sidereal-plugin.yaml with pack: field). Public Pack Spec v1.0/v1.1/v1.2/v1.3/v1.4/v1.5 (DD92, DD99, DD104, DD113, DD119).",
+  "description": "Schema for pack manifests (sidereal-plugin.yaml with pack: field). Public Pack Spec v1.0/v1.1/v1.2/v1.3/v1.4/v1.5/v1.6 (DD92, DD99, DD104, DD113, DD119, DD126).",
   "type": "object",
   "required": ["pack", "name", "description", "data", "skills"],
   "additionalProperties": true,
   "properties": {
     "pack": {
       "type": "string",
-      "enum": ["1.0", "1.1", "1.2", "1.3", "1.4", "1.5"],
+      "enum": ["1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.6"],
       "description": "Pack spec version."
     },
     "name": {
@@ -325,9 +325,31 @@
         },
         "graph": {
           "type": "string",
-          "enum": ["react-extract", "react"],
+          "enum": ["react-extract", "react", "react-verify", "cascade"],
           "default": "react-extract",
-          "description": "Execution graph topology (v1.5, DD119). react-extract = ReAct loop + structured JSON extraction (default). react = ReAct loop only, no structured output — lower latency for monitors and audits."
+          "description": "Execution graph topology (v1.6, DD119/DD123/DD126). react-extract = ReAct + JSON extraction (default). react = lightweight, no extraction. react-verify = ReAct + deterministic verification + refinement. cascade = classify → react → escalate (tiered cost)."
+        },
+        "graph_config": {
+          "type": "object",
+          "description": "Graph-specific configuration (v1.6, DD126). Used with cascade graphs for multi-tier model routing.",
+          "additionalProperties": false,
+          "properties": {
+            "confidence_threshold": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "default": 0.85,
+              "description": "ClassifyNode confidence cutoff. Items at or above threshold short-circuit to extraction."
+            },
+            "classify_model": {
+              "type": "string",
+              "description": "Model identifier for the classify tier (e.g. claude-haiku-4-5-20251001)."
+            },
+            "escalation_model": {
+              "type": "string",
+              "description": "Model identifier for escalation when the react tier exhausts its budget."
+            }
+          }
         },
         "webhook_name": {
           "type": "string",

@@ -1,4 +1,4 @@
-pack: "1.2"
+pack: "1.6"
 name: daily-productivity
 version: "2.1.0"
 description: >-
@@ -75,6 +75,7 @@ skills:
     description: Generate a morning digest combining calendar, tasks, efforts, and inbox status
     tier: reasoning
     category: digest
+    graph: react-verify
     services_used:
       - service: calendar
         operations: [events]
@@ -95,6 +96,11 @@ skills:
     description: Scan recent inbox for messages relevant to active domains of influence
     tier: reasoning
     category: triage
+    graph: cascade
+    graph_config:
+      confidence_threshold: 0.85
+      classify_model: claude-haiku-4-5-20251001
+      escalation_model: claude-sonnet-4-6
     services_used:
       - service: email
         operations: [changes, state, search, snippets, read]
@@ -115,6 +121,11 @@ skills:
     description: Classify and file items from the vault inbox
     tier: reasoning
     category: ingest
+    graph: cascade
+    graph_config:
+      confidence_threshold: 0.85
+      classify_model: claude-haiku-4-5-20251001
+      escalation_model: claude-sonnet-4-6
     services_used:
       - service: vault
         operations: [read, lens_recall, lens_connections, move]
@@ -132,6 +143,11 @@ skills:
     description: Interactive morning triage across all sources
     tier: reasoning
     category: triage
+    graph: cascade
+    graph_config:
+      confidence_threshold: 0.80
+      classify_model: claude-haiku-4-5-20251001
+      escalation_model: claude-sonnet-4-6
     services_used:
       - service: vault
         operations: [read, search, files, query_properties]
@@ -179,6 +195,7 @@ skills:
     description: Generate weekly digest with effort status and dispatch metrics
     tier: reasoning
     category: digest
+    graph: react-verify
     services_used:
       - service: vault
         operations: [read, search, query_properties, lens_fts, files, create]
@@ -199,6 +216,7 @@ skills:
     description: Generate per-effort status snapshots
     tier: reasoning
     category: digest
+    graph: react-verify
     services_used:
       - service: vault
         operations: [read, search, query_properties, lens_fts, create]

@@ -1,10 +1,10 @@
-pack: "1.2"
+pack: "1.6"
 name: sidereal-core
-version: "3.1.0"
+version: "3.2.0"
 description: >-
-  Core platform operators and infrastructure health — security auditing,
-  fleet monitoring, notification delivery, and the six operator agents that
-  power every Sidereal installation. Bundled with every install.
+  Core platform operators and infrastructure health — PKM, comms, scheduling,
+  security auditing, fleet monitoring, notification delivery, and the six
+  operator agents that power every Sidereal installation. Bundled with every install.
 icon: /icons/sidereal-core.svg
 author:
   name: Sidereal
@@ -15,7 +15,7 @@ tier: certified
 pricing: null
 bundled: true
 
-min_sidereal: "0.38"
+min_sidereal: "0.54"
 
 requires:
   services:
@@ -23,11 +23,17 @@ requires:
       operations: [read, search, create, append]
 
 recommends:
-  services: []
+  services:
+    - service: calendar
+      operations: [read, search, freebusy]
+    - service: email
+      operations: [read, search]
+    - service: tasks
+      operations: [read, create]
 
 data:
-  reads: [vault]
-  writes: [vault]
+  reads: [vault, calendar, email, tasks]
+  writes: [vault, tasks]
   stores: nothing
   phones_home: false
 
@@ -38,18 +44,23 @@ agents:
       You are a PKM operator for an Obsidian vault. You execute vault operations:
       filing notes, generating digests, processing inbox items. Follow every step
       precisely. Use the available MCP tools. Log every action.
+    model_preference: [claude-sonnet-4-6, grok-4-1-fast-reasoning]
 
   comms-operator:
     role: operator
     prompt: |
       You are a communications operator. You triage email across configured
-      providers and create handoff notes for relevant items. Read-only by default.
+      providers and create handoff notes for relevant items. Read-only by default
+      — do not send, archive, or delete email unless explicitly instructed.
+    model_preference: [claude-sonnet-4-6, grok-4-1-fast-reasoning]
 
   scheduling-operator:
     role: operator
     prompt: |
       You are a scheduling operator. You manage calendar events, detect conflicts,
       create events from structured handoffs, and provide scheduling intelligence.
+      Check free/busy before creating events. Log all calendar modifications.
+    model_preference: [claude-sonnet-4-6, grok-4-1-fast-reasoning]
 
   secops-operator:
     role: operator
@@ -57,6 +68,7 @@ agents:
       You are a security operations operator. You audit macOS security posture,
       monitor TCC grants, track launchd agent drift, and verify system integrity.
       Read-only probes — never modify system state without explicit human approval.
+    model_preference: [claude-sonnet-4-6, grok-4-1-fast-reasoning]
 
   fleet-operator:
     role: operator
@@ -64,6 +76,7 @@ agents:
       You are a fleet operations operator. You monitor Sidereal daemon health,
       MCP server connectivity, version drift across fleet peers, and platform
       infrastructure status. Report findings — never auto-remediate.
+    model_preference: [claude-sonnet-4-6, grok-4-1-fast-reasoning]
 
   notifications-operator:
     role: operator
@@ -72,18 +85,380 @@ agents:
       other operators via structured result JSON fields and route them to
       appropriate delivery channels. You do not generate notifications from
       raw data — only route what other operators produce.
+    model_preference: [claude-sonnet-4-6, grok-4-1-fast-reasoning]
 
 skills:
-  - name: platform-health
-    agent: fleet-operator
-    description: Probe daemon, MCP servers, Lens, and identity provider health
-    tier: reasoning
+  # --- PKM operations (pkm-operator) ---
+
+  - name: process-inbox
+    agent: pkm-operator
+    description: Process unclassified items in the vault inbox
+    category: triage
+    services_used:
+      - service: vault
+        operations: [read, search, create, append]
+      - service: tasks
+        operations: [create]
+    trigger:
+      watch: ["+/ingest", "+/triage"]
+      on_demand: true
+    graph: cascade
+    graph_config:
+      confidence_threshold: 0.85
+      classify_model: claude-haiku-4-5-20251001
+      escalation_model: claude-sonnet-4-6
+    prompt: |
+      Process unclassified items in the Obsidian vault inbox.
+
+      Scan +/ingest/ and +/triage/ for unprocessed items. Classify each using
+      the inbox classifier system prompt. File items above confidence threshold,
+      flag the rest. Log every action to the decision ledger.
+
+      Steps:
+      1. List files in +/ingest/ and +/triage/
+      2. For each item, read its content
+      3. Classify: determine destination path, confidence, domain
+      4. If confidence >= 0.85: move to destination, update frontmatter
+      5. If 0.60-0.84: move but add ai_flagged: true
+      6. If < 0.60: leave in place, log reasoning
+      7. Create/append to daily decision ledger entry
+      8. Report: items processed, filed, flagged, skipped
+
+  - name: daily-digest
+    agent: pkm-operator
+    description: Generate daily morning digest note
+    category: digest
+    services_used:
+      - service: vault
+        operations: [read, search, create]
+      - service: calendar
+        operations: [read]
+      - service: tasks
+        operations: [read]
+    trigger:
+      schedule: "0 7 * * *"
+    graph: react-verify
+    prompt: |
+      Generate a daily morning digest for the Obsidian PKM vault.
+
+      Produce a concise daily digest note at calendar/logs/digests/YYYY-MM-DD-digest.md
+      that is transcluded into the daily log via ![[YYYY-MM-DD-digest]]. The digest
+      should be scannable in under 2 minutes on a phone screen.
+
+      Steps:
+      1. Get today's date and calendar events
+      2. Check active efforts (status: on) for recent activity
+      3. Check Things tasks due today
+      4. Search vault for recent changes (last 24h)
+      5. Compose digest with sections: Calendar, Efforts, Tasks, Recent Activity
+      6. Write digest note with correct frontmatter (llm_generated: true)
+      7. Ensure daily log note exists and includes transclusion
+
+  - name: weekly-digest
+    agent: pkm-operator
+    description: Generate weekly digest note
+    category: digest
+    services_used:
+      - service: vault
+        operations: [read, search, create]
+      - service: calendar
+        operations: [read]
+      - service: tasks
+        operations: [read]
+    trigger:
+      schedule: "0 7 * * 1"
+    graph: react-verify
+    prompt: |
+      Generate a weekly digest for the Obsidian PKM vault.
+
+      Produce a concise weekly digest note at calendar/logs/digests/YYYY-WNN-digest.md
+      (ISO week number). The digest gives a week-at-a-glance view: what happened
+      in the family, what the active efforts are, and what needs attention.
+      Scannable in under 3 minutes.
+
+      Steps:
+      1. Get the ISO week number and date range
+      2. Fetch calendar events for the full week
+      3. Check all active efforts for week's activity
+      4. Check Things tasks completed this week and upcoming
+      5. Search vault for significant changes
+      6. Compose digest with sections: Week Overview, Calendar, Efforts, Tasks
+      7. Write weekly digest note with correct frontmatter
+
+  - name: decompose-inbox
+    agent: pkm-operator
+    description: Decompose text blobs into discrete vault artefacts
+    category: transform
+    services_used:
+      - service: vault
+        operations: [read, create, append]
+      - service: tasks
+        operations: [create]
+    trigger:
+      on_demand: true
+    graph: react-verify
+    prompt: |
+      Take text blobs — unstructured captures containing multiple embedded
+      action items, decisions, or updates — and break them into discrete,
+      actionable vault artefacts (jobs, Things tasks, effort-note appends).
+
+      This skill runs after the inbox classifier. The classifier determines
+      where a blob belongs. The decomposer determines what discrete items
+      are inside it and creates the appropriate artefacts.
+
+      Steps:
+      1. Read the target blob/note
+      2. Identify distinct action items, decisions, tasks, and updates
+      3. For each item: determine type (job, task, note-append, correspondence)
+      4. Create appropriate artefacts with correct frontmatter
+      5. Link artefacts to parent effort/objective where applicable
+      6. Report: items extracted, artefacts created
+
+  - name: morning-sweep
+    agent: pkm-operator
+    description: Interactive morning triage across all sources
+    category: triage
+    services_used:
+      - service: vault
+        operations: [read, search]
+      - service: calendar
+        operations: [read]
+      - service: tasks
+        operations: [read]
+    trigger:
+      on_demand: true
+    graph: cascade
+    graph_config:
+      confidence_threshold: 0.80
+      classify_model: claude-haiku-4-5-20251001
+      escalation_model: claude-sonnet-4-6
+    prompt: |
+      Run a structured morning sweep: aggregate pending work from all sources,
+      classify each item, present for human approval, then dispatch approved work.
+
+      This is the interactive triage layer that sits between automated dispatch
+      and ad-hoc work. It gives a single view of everything pending, classified
+      by who should handle it.
+
+      Steps:
+      1. Check today's calendar for time-sensitive items
+      2. Check Things inbox and today list
+      3. Check vault +/ingest/ and +/handoff/ for pending items
+      4. Search active efforts for stale or blocked items
+      5. Classify each item: AI operator, AI-assisted, human-only, or skip
+      6. Present classified list for review
+      7. Report summary of pending work by category
+
+  # --- Comms operations (comms-operator) ---
+
+  - name: email-triage
+    agent: comms-operator
+    description: Triage inbox email for relevant items
+    category: triage
+    services_used:
+      - service: vault
+        operations: [read, create]
+      - service: email
+        operations: [read, search]
+      - service: tasks
+        operations: [create]
+    trigger:
+      schedule: "0 8,12,17 * * *"
+    graph: cascade
+    graph_config:
+      confidence_threshold: 0.85
+      classify_model: claude-haiku-4-5-20251001
+      escalation_model: claude-sonnet-4-6
+    prompt: |
+      Scan configured email providers for emails relevant to active areas of
+      influence. Create handoff notes for relevant items. Ignore everything else.
+
+      This is a relevance filter, not a full email assistant. Read recent inbox
+      messages, match them against active domains, and surface only what matters.
+      Do not archive, delete, or send email — this is read-only triage.
+
+      Steps:
+      1. For each available email provider:
+         a. Check state for changes since last run
+         b. Fetch recent inbox messages (last 48h or since watermark)
+      2. For each message: classify relevance against active domains
+      3. For relevant messages: create handoff note in +/handoff/
+      4. For urgent items: create Things task
+      5. Report: total scanned per provider, relevant found, handoffs created
+
+  # --- Scheduling operations (scheduling-operator) ---
+
+  - name: calendar-sync
+    agent: scheduling-operator
+    description: Detect calendar conflicts, match events to efforts
+    category: sync
+    services_used:
+      - service: calendar
+        operations: [read, search, freebusy]
+      - service: vault
+        operations: [read]
+    trigger:
+      on_demand: true
+    graph: react-extract
+    prompt: |
+      Detect calendar conflicts, match events to active efforts, and surface
+      scheduling issues. Read-only calendar access — no event creation or
+      modification.
+
+      Steps:
+      1. Get current date and week context
+      2. Fetch upcoming events (next 7 days) from all calendars
+      3. Check free/busy for conflict detection
+      4. Detect overlaps, scheduling pressure, and double-bookings
+      5. Match events to active vault efforts
+      6. Present structured conflict and scheduling report
+
+  - name: schedule-event
+    agent: scheduling-operator
+    description: Interactive calendar event creation
+    category: transform
+    services_used:
+      - service: calendar
+        operations: [read, freebusy]
+      - service: tasks
+        operations: [create]
+    trigger:
+      on_demand: true
+    graph: react-extract
+    prompt: |
+      Create a calendar event interactively. Check free/busy, present a proposal,
+      confirm with the human, and create the event.
+
+      Steps:
+      1. Gather event details (title, date, time, duration, location)
+      2. Check free/busy for the proposed time
+      3. Present proposal with schedule context
+      4. On confirmation, create the event
+      5. Optionally create a preparation task
+
+  - name: process-calendar-handoffs
+    agent: scheduling-operator
+    description: Process calendar handoffs from other operators
+    category: sync
+    services_used:
+      - service: calendar
+        operations: [read, freebusy]
+      - service: vault
+        operations: [read, append]
+    trigger:
+      on_demand: true
+    graph: react-extract
+    prompt: |
+      Process structured calendar handoff notes from +/handoff/ targeting
+      scheduling-operator. Validate event data, check for conflicts, create
+      calendar events, and mark handoffs as processed.
+
+      Steps:
+      1. Scan +/handoff/ for notes with target: scheduling-operator
+      2. For each: validate fields, check free/busy, create event
+      3. Mark handoffs as processed
+      4. Log all actions to decision ledger
+
+  # --- Security operations (secops-operator) ---
+
+  - name: darwin-state-audit
+    agent: secops-operator
+    description: Audit macOS imperative state residue and security posture
     category: review
     services_used:
       - service: vault
         operations: [read, create]
     trigger:
       on_demand: true
+    graph: react
+    prompt: |
+      Audit macOS security posture: SIP, Gatekeeper, FileVault, TCC grants,
+      sharing services, network exposure, pf firewall, sudoers. Write findings
+      to a structured registry note at
+      atlas/registers/system/darwin-state-audit-{hostname}.md.
+
+  - name: tcc-drift-monitor
+    agent: secops-operator
+    description: Monitor TCC privacy grant changes
+    category: review
+    services_used:
+      - service: vault
+        operations: [read, create]
+    trigger:
+      schedule: "0 6 * * *"
+    graph: react
+    prompt: |
+      Check TCC privacy grants for unexpected changes since last run. Alert on
+      new grants to unsigned or ad-hoc binaries. Compare against known-good baseline.
+
+  - name: credential-expiry-watch
+    agent: secops-operator
+    description: Check credential freshness and expiry
+    category: review
+    services_used:
+      - service: vault
+        operations: [read, create]
+    trigger:
+      schedule: "0 6 * * *"
+    graph: react
+    prompt: |
+      Scan stored credentials for approaching expiry. Check API tokens, TLS certs,
+      and OAuth refresh tokens. Alert on credentials expiring within 7 days.
+
+  - name: network-exposure-scan
+    agent: secops-operator
+    description: Scan for unexpected network listeners
+    category: review
+    services_used:
+      - service: vault
+        operations: [read, create]
+    trigger:
+      schedule: "0 6 * * *"
+    graph: react
+    prompt: |
+      Scan for unexpected network listeners and open ports. Compare against
+      known services. Alert on unrecognised listeners.
+
+  - name: security-correlation
+    agent: secops-operator
+    description: Correlate security events across audit sources
+    category: review
+    services_used:
+      - service: vault
+        operations: [read, create]
+    trigger:
+      on_demand: true
+    graph: react
+    prompt: |
+      Correlate findings from TCC, launchd, network, and credential audits.
+      Identify patterns that indicate drift or compromise. Produce summary report.
+
+  - name: fleet-trust-audit
+    agent: secops-operator
+    description: Audit fleet peer trust and enrollment integrity
+    category: review
+    services_used:
+      - service: vault
+        operations: [read, create]
+    trigger:
+      on_demand: true
+    graph: react
+    prompt: |
+      Audit fleet enrollment state: verify peer tokens, check stale enrollments,
+      validate trust chain. Flag peers that haven't been seen recently.
+
+  # --- Fleet operations (fleet-operator) ---
+
+  - name: platform-health
+    agent: fleet-operator
+    description: Probe daemon, MCP servers, Lens, and identity provider health
+    category: review
+    services_used:
+      - service: vault
+        operations: [read, create]
+    trigger:
+      on_demand: true
+    graph: react
     prompt: |
       Probe Sidereal platform health on the current host. Check daemon status,
       MCP server connectivity, Lens index health, and tsidp reachability.
@@ -93,75 +468,101 @@ skills:
   - name: version-drift-check
     agent: fleet-operator
     description: Compare component versions across fleet peers
-    tier: reasoning
     category: review
     services_used:
       - service: vault
         operations: [read, create]
     trigger:
       on_demand: true
+    graph: react
     prompt: |
       Compare Sidereal daemon and MCP plugin versions between the current host
       and configured fleet peers. Flag version drift. Write a drift report to
       atlas/registers/system/version-drift-{date}.md.
 
-  - name: darwin-state-audit
-    agent: secops-operator
-    description: Audit macOS imperative state residue and security posture
-    tier: reasoning
-    category: review
-    services_used:
-      - service: vault
-        operations: [read, create, append]
-    trigger:
-      on_demand: true
-    prompt: |
-      Audit the current macOS host for imperative state residue and security
-      posture. Check SIP, Gatekeeper, FileVault, TCC grants, sharing services,
-      network exposure, firewall rules, and filesystem residue. Write a structured
-      registry note at atlas/registers/system/darwin-state-audit-{hostname}.md.
-
-  - name: launchd-audit
-    agent: secops-operator
-    description: Audit macOS launchctl user-domain agents
-    tier: reasoning
-    category: review
+  - name: dispatch-analytics
+    agent: fleet-operator
+    description: Analyse dispatch success rates and performance
+    category: report
     services_used:
       - service: vault
         operations: [read, create]
     trigger:
       on_demand: true
+    graph: react
     prompt: |
-      Audit launchctl user-domain agents on the current host. Classify agents
-      by group, detect exit-code anomalies, track drift from previous snapshot,
-      check expected-set compliance. Write a structured registry note at
-      atlas/registers/system/launchd-user-agents-{hostname}.md.
+      Analyse dispatch trace history: success rates, failure patterns, duration
+      trends, provider utilisation. Produce summary with actionable insights.
+
+  - name: mcp-lifecycle
+    agent: fleet-operator
+    description: Monitor MCP server lifecycle and resource usage
+    category: review
+    services_used:
+      - service: vault
+        operations: [read, create]
+    trigger:
+      schedule: "0 */4 * * *"
+    graph: react
+    prompt: |
+      Check MCP server processes for orphans, resource leaks, and restart loops.
+      Report servers exceeding resource budgets.
+
+  - name: capacity-forecast
+    agent: fleet-operator
+    description: Forecast infrastructure capacity needs
+    category: report
+    services_used:
+      - service: vault
+        operations: [read, create]
+    trigger:
+      on_demand: true
+    graph: react
+    prompt: |
+      Analyse resource trends (disk, memory, dispatch load) and forecast
+      capacity needs. Flag resources approaching limits.
+
+  - name: upgrade-coordinator
+    agent: fleet-operator
+    description: Coordinate fleet-wide upgrades
+    category: sync
+    services_used:
+      - service: vault
+        operations: [read, create]
+    trigger:
+      on_demand: true
+    graph: react
+    prompt: |
+      Plan and coordinate fleet-wide upgrades: check compatibility, stage
+      rollout order, verify post-upgrade health.
+
+  # --- Notification operations (notifications-operator) ---
 
   - name: notification-channel-status
     agent: notifications-operator
     description: Probe notification delivery channel health
-    tier: reasoning
     category: review
     services_used:
       - service: vault
         operations: [read, create]
     trigger:
       on_demand: true
+    graph: react
     prompt: |
-      Probe all configured notification delivery channels (ntfy, APNS,
+      Probe all configured notification delivery channels (APNS, iCloud KV,
       assistant-bot, email handoff). Write channel health report to
       atlas/registers/notifications/channel-health.md.
 
   - name: notification-delivery-audit
     agent: notifications-operator
     description: Aggregate delivery stats and flag unreliable channels
-    tier: reasoning
-    category: review
+    category: report
     services_used:
       - service: vault
         operations: [read, create]
     trigger:
       on_demand: true
+    graph: react
     prompt: |
       Read delivery reports from the last 7 days. Aggregate per-channel
       and per-category statistics. Flag unreliable channels. Write audit
@@ -170,14 +571,26 @@ skills:
   - name: delivery-report
     agent: notifications-operator
     description: Daily aggregate of all notification deliveries
-    tier: reasoning
-    category: review
+    category: report
     services_used:
       - service: vault
         operations: [read, create]
     trigger:
       schedule: "0 23 * * *"
+    graph: react
     prompt: |
       Generate daily notification delivery report. Aggregate by channel
       and category. Archive to calendar/notes/{date} — notification
       delivery report.md.
+
+workflows:
+  - name: morning-automation
+    description: Full morning automation pass
+    schedule: "0 7 * * *"
+    steps:
+      - skill: email-triage
+        condition: always
+      - skill: process-inbox
+        after: [email-triage]
+      - skill: daily-digest
+        after: [email-triage, process-inbox]

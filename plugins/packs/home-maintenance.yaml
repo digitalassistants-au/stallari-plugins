@@ -1,4 +1,4 @@
-pack: "1.1"
+pack: "1.6"
 name: home-maintenance
 version: "1.1.0"
 description: >-
@@ -133,6 +133,7 @@ skills:
     description: Audit open maintenance items across all properties and flag overdue jobs
     tier: reasoning
     category: report
+    graph: react
     services_used:
       - service: vault
         operations: [query_properties, search, create, append]
@@ -169,6 +170,7 @@ skills:
     description: Mark a maintenance item as resolved and record the cost
     tier: reasoning
     category: transform
+    graph: react-extract
     services_used:
       - service: vault
         operations: [search, read, append]

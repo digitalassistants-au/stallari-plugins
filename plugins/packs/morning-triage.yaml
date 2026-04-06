@@ -1,4 +1,4 @@
-pack: "1.1"
+pack: "1.6"
 name: morning-triage
 version: "1.1.0"
 description: Triages unread email and generates a morning briefing with today's calendar.
@@ -78,6 +78,7 @@ skills:
     description: Generate morning briefing combining email triage and calendar
     tier: reasoning
     category: digest
+    graph: react
     services_used:
       - service: calendar
         operations: [events, today]
