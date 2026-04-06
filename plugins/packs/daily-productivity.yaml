@@ -152,6 +152,11 @@ skills:
     description: Process colour-coded flagged emails from Apple Mail
     tier: reasoning
     category: triage
+    graph: cascade
+    graph_config:
+      confidence_threshold: 0.85
+      classify_model: apple-fm
+      escalation_model: claude-sonnet-4-6
     services_used:
       - service: email
         operations: [search, read]

@@ -52,6 +52,11 @@ skills:
     description: Scan and classify unread email by urgency
     tier: reasoning
     category: triage
+    graph: cascade
+    graph_config:
+      confidence_threshold: 0.85
+      classify_model: claude-haiku-4-5-20251001
+      escalation_model: claude-sonnet-4-6
     services_used:
       - service: email
         operations: [search, read, flag, move]
