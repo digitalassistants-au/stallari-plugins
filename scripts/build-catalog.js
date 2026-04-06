@@ -12,7 +12,7 @@
 import { readdir, readFile, mkdir, writeFile, copyFile } from "node:fs/promises";
 import { join, resolve, basename, extname } from "node:path";
 import { parse as parseYaml } from "yaml";
-import { sealPack, encryptPayload } from "./seal-pack.js";
+import { sealPack, encryptPayload, addSealMetadata, createInspectionBundle } from "./seal-pack.js";
 
 const ROOT = resolve(import.meta.dirname, "..");
 const TOOLS_DIR = join(ROOT, "plugins", "tools");
@@ -433,12 +433,23 @@ async function main() {
       // Sealed packs: strip prompts, encrypt payload, write key separately
       const { publicManifest, payload } = sealPack(manifest);
       const { encrypted, key } = encryptPayload(payload);
+      // DD-120 Phase 1: add seal_metadata to manifest
+      addSealMetadata(publicManifest, encrypted);
       await writeFile(
         join(packDir, "manifest.json"),
         JSON.stringify(publicManifest, null, 2) + "\n",
       );
       await writeFile(join(packDir, "payload.enc"), encrypted);
       await writeFile(join(packDir, "seal-key.hex"), key);
+      // DD-120 Phase 3: write inspection bundle for secops submission
+      const secopsDir = join(DIST_DIR, "secops");
+      await mkdir(secopsDir, { recursive: true });
+      const bundle = createInspectionBundle(manifest, publicManifest, encrypted, key);
+      const bundleName = `${slug}-${manifest.version}-inspection.json`;
+      await writeFile(
+        join(secopsDir, bundleName),
+        JSON.stringify(bundle, null, 2) + "\n",
+      );
       sealedCount++;
     } else {
       // Open packs: write full manifest
