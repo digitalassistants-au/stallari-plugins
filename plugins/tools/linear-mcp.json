@@ -1,0 +1,65 @@
+{
+  "name": "linear-mcp",
+  "description": "Linear project management — issues, projects, cycles, labels, teams. Official vendor-hosted remote MCP.",
+  "version": "1.0.0",
+  "author": "linear",
+  "licence": "proprietary",
+  "icon": "/icons/linear-mcp.svg",
+  "tier": "community",
+  "contract": "tasks-v1",
+  "homepage": "https://linear.app/docs/mcp",
+  "install": {
+    "runtime": "remote",
+    "url": "https://mcp.linear.app/mcp",
+    "auth": {
+      "type": "oauth2"
+    }
+  },
+  "env": [],
+  "setup": {
+    "auth_model": "oauth2",
+    "complexity": "moderate",
+    "icon": "target",
+    "product": "Linear",
+    "blurb": "Connect to Linear for issue tracking, project management, sprint cycles, and team coordination.",
+    "help_text": "Linear's hosted MCP uses OAuth2. On first connection, you'll authorise Sidereal to access your Linear workspace via the browser. No API keys or app creation required.",
+    "help_url": "https://linear.app/docs/mcp",
+    "oauth2": {
+      "grant_type": "authorization_code",
+      "scopes": ["read", "write", "issues:create"],
+      "setup_url": "https://linear.app/docs/mcp"
+    },
+    "help": [
+      {
+        "label": "Linear MCP Documentation",
+        "url": "https://linear.app/docs/mcp"
+      },
+      {
+        "label": "Linear API Reference",
+        "url": "https://developers.linear.app/docs"
+      }
+    ]
+  },
+  "services": {
+    "tasks": {
+      "list": "linear_list_issues",
+      "search": "linear_search_issues",
+      "projects": "linear_list_projects",
+      "today": "linear_my_issues",
+      "inbox": "linear_inbox",
+      "tags": "linear_list_labels",
+      "summary": "linear_team_overview",
+      "create": "linear_create_issue",
+      "update": "linear_update_issue",
+      "complete": "linear_complete_issue"
+    }
+  },
+  "conformance": {
+    "required": "untested",
+    "recommended": "untested",
+    "optional": "untested",
+    "gated": "untested",
+    "last_tested": null
+  },
+  "notes": "Vendor-hosted remote MCP at mcp.linear.app — no local process. OAuth2 handled by Linear's hosted auth flow. Service mapping is provisional until tools/list is enumerated against the live endpoint. tasks-v1 is a strong fit: issues map to tasks, projects/labels/inbox/create/update/complete all have direct counterparts. Linear's richer concepts (cycles, views, teams, roadmaps) exceed the contract surface."
+}

@@ -5,12 +5,14 @@
   "author": "groupthink-dev",
   "licence": "MIT",
   "icon": "/icons/psn-blade-mcp.svg",
-  "tier": "community",
+  "tier": "certified",
   "contract": "gaming-v1",
+  "homepage": "https://github.com/groupthink-dev/psn-blade-mcp",
   "repository": "https://github.com/groupthink-dev/psn-blade-mcp",
   "install": {
     "runtime": "uv",
-    "package": "psn-blade-mcp"
+    "package": "psn-blade-mcp",
+    "command": "psn-blade-mcp"
   },
   "env": [
     {
@@ -29,6 +31,7 @@
     "complexity": "moderate",
     "icon": "gamecontroller.fill",
     "product": "PlayStation Network",
+    "blurb": "Connect to PlayStation Network for trophy tracking, game library, friends, and messaging. Uses unofficial PSN API.",
     "help_text": "Log in at store.playstation.com, then visit ca.account.sony.com/api/v1/ssocookie to obtain your NPSSO token. Use a dedicated PSN account — excessive API use may trigger account restrictions.",
     "help_links": [
       {
@@ -38,6 +41,10 @@
       {
         "label": "PSN API Documentation",
         "url": "https://andshrew.github.io/PlayStation-Trophies/"
+      },
+      {
+        "label": "PSNAWP Library",
+        "url": "https://psnawp.readthedocs.io/"
       }
     ],
     "fields": [
@@ -45,20 +52,56 @@
         "key": "PSN_NPSSO",
         "label": "NPSSO Token",
         "secret": true,
-        "placeholder": "npsso=xxxxxxxx..."
+        "required": true,
+        "placeholder": "npsso=xxxxxxxx...",
+        "help": "Session cookie from ca.account.sony.com — see prerequisites for extraction steps"
       },
       {
         "key": "PSN_WRITE_ENABLED",
         "label": "Enable Write Operations",
         "secret": false,
-        "placeholder": "false"
+        "required": false,
+        "placeholder": "false",
+        "help": "Send messages, accept/remove friends. Disabled by default."
       }
     ],
     "test": {
       "endpoint": "https://ca.account.sony.com/api/v1/ssocookie",
       "auth_style": "none",
       "expected_status": [200, 401]
+    },
+    "prerequisites": [
+      "A PlayStation Network account (dedicated API account recommended)",
+      "Log in at store.playstation.com in a browser",
+      "Visit ca.account.sony.com/api/v1/ssocookie to obtain your NPSSO token"
+    ]
+  },
+  "services": {
+    "gaming": {
+      "profile": "psn_profile",
+      "achievements": "psn_trophies",
+      "achievement_summary": "psn_trophy_summary",
+      "games_played": "psn_games",
+      "games_recent": "psn_games_recent",
+      "friends": "psn_friends",
+      "presence": "psn_presence",
+      "search_users": "psn_search_users",
+      "achievement_compare": "psn_trophy_compare",
+      "achievement_groups": "psn_trophy_groups",
+      "games_purchased": "psn_entitlements",
+      "devices": "psn_devices",
+      "game_details": "psn_game_details",
+      "search_games": "psn_search_games",
+      "send_message": "psn_send_message",
+      "friend_add": "psn_friend_accept",
+      "friend_remove": "psn_friend_remove"
     }
+  },
+  "certification": {
+    "status": "certified",
+    "validated_version": "0.1.0",
+    "platform_tested": ["darwin-arm64"],
+    "security_notes": "Uses unofficial PSN API (psnawp). NPSSO token auth. Write gates on messaging and friend management."
   },
   "conformance": {
     "required": "untested",

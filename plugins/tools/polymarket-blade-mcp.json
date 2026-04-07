@@ -1,0 +1,76 @@
+{
+  "name": "polymarket-blade-mcp",
+  "version": "0.1.0",
+  "description": "Polymarket prediction market data — events, markets, orderbooks, prices, analytics. Token-efficient, rate-limited.",
+  "author": "groupthink-dev",
+  "licence": "MIT",
+  "tier": "certified",
+  "contract": "prediction-market-v1",
+  "homepage": "https://github.com/Groupthink-dev/polymarket-blade-mcp",
+  "install": {
+    "runtime": "uv",
+    "package": "polymarket-blade-mcp",
+    "command": "polymarket-blade-mcp"
+  },
+  "env": [
+    {
+      "name": "POLYMARKET_GAMMA_HOST",
+      "description": "Override Gamma API host",
+      "default": "https://gamma-api.polymarket.com"
+    },
+    {
+      "name": "POLYMARKET_CLOB_HOST",
+      "description": "Override CLOB API host",
+      "default": "https://clob.polymarket.com"
+    },
+    {
+      "name": "POLYMARKET_DATA_HOST",
+      "description": "Override Data API host",
+      "default": "https://data-api.polymarket.com"
+    },
+    {
+      "name": "POLYMARKET_MCP_API_TOKEN",
+      "description": "Bearer token for HTTP transport auth (optional)",
+      "secret": true
+    },
+    {
+      "name": "POLYMARKET_WRITE_ENABLED",
+      "description": "Enable write operations (v2)",
+      "default": "false"
+    }
+  ],
+  "setup": {
+    "icon": "chart.line.uptrend.xyaxis",
+    "blurb": "Connect to Polymarket for prediction market data — real-time prices, market search, analytics. No credentials required.",
+    "auth_model": "none",
+    "complexity": "trivial",
+    "fields": [],
+    "test": {
+      "endpoint": "https://clob.polymarket.com/ok",
+      "expected_status": [200]
+    },
+    "help": [
+      {
+        "label": "Polymarket API docs",
+        "url": "https://docs.polymarket.com"
+      },
+      {
+        "label": "GitHub repo",
+        "url": "https://github.com/Groupthink-dev/polymarket-blade-mcp"
+      }
+    ]
+  },
+  "certification": {
+    "status": "certified",
+    "validated_version": "0.1.0",
+    "platform_tested": ["darwin-arm64", "linux-x86_64"],
+    "security_notes": "Read-only v1. No credentials. No SSRF. Per-endpoint rate limiting. Write gates present for v2."
+  },
+  "conformance": {
+    "required": "7/8",
+    "recommended": "6/6",
+    "optional": "2/2",
+    "gated": "0/4",
+    "last_tested": "2026-04-07"
+  }
+}

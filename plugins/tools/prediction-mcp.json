@@ -1,0 +1,74 @@
+{
+  "name": "prediction-mcp",
+  "version": "0.1.16",
+  "description": "Unified prediction market data from Polymarket and Kalshi — search, prices, orderbooks, relevance-scored results",
+  "author": "shaanmajid",
+  "licence": "MIT",
+  "tier": "community",
+  "contract": null,
+  "homepage": "https://github.com/shaanmajid/prediction-mcp",
+  "install": {
+    "runtime": "npx",
+    "package": "prediction-mcp"
+  },
+  "env": [
+    {
+      "name": "KALSHI_API_KEY",
+      "description": "Kalshi API key ID (optional — enables Kalshi auth tools)",
+      "secret": true
+    },
+    {
+      "name": "KALSHI_PRIVATE_KEY_PATH",
+      "description": "Path to Kalshi RSA private key PEM (optional)",
+      "secret": false
+    },
+    {
+      "name": "KALSHI_PRIVATE_KEY_PEM",
+      "description": "Kalshi RSA key as inline PEM string (alternative to path)",
+      "secret": true
+    }
+  ],
+  "setup": {
+    "icon": "chart.bar.xaxis",
+    "blurb": "Prediction market data from Polymarket and Kalshi. Read-only for Polymarket, trading with Kalshi API key.",
+    "auth_model": "api_key",
+    "complexity": "trivial",
+    "fields": [
+      {
+        "key": "KALSHI_API_KEY",
+        "label": "Kalshi API Key",
+        "secret": true,
+        "required": false,
+        "placeholder": "your-kalshi-api-key-id",
+        "help": "From kalshi.com Settings > API Keys. Only needed for Kalshi balance/positions/trading."
+      },
+      {
+        "key": "KALSHI_PRIVATE_KEY_PATH",
+        "label": "Kalshi Private Key Path",
+        "secret": false,
+        "required": false,
+        "placeholder": "/path/to/kalshi-key.pem",
+        "help": "RSA private key matching your Kalshi API key"
+      }
+    ],
+    "test": {
+      "endpoint": "https://gamma-api.polymarket.com/events?limit=1",
+      "expected_status": [200]
+    },
+    "help": [
+      {
+        "label": "GitHub repo",
+        "url": "https://github.com/shaanmajid/prediction-mcp"
+      },
+      {
+        "label": "npm package",
+        "url": "https://www.npmjs.com/package/prediction-mcp"
+      }
+    ]
+  },
+  "certification": {
+    "status": "pending",
+    "stability": "stable",
+    "security_notes": "Polymarket tools are read-only (no auth). Kalshi kalshi_create_order tool lacks confirm gate — real-money risk. Auth tools conditionally registered based on credential presence."
+  }
+}

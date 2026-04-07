@@ -1,33 +1,28 @@
 {
   "name": "steam-blade-mcp",
-  "description": "Steam operations — profiles, achievements, game library, friends, presence, Store catalog, Workshop, and trading via Steam Web API",
+  "description": "Steam gaming platform — library, achievements, friends, store data, market prices",
   "version": "0.1.0",
-  "author": "Groupthink-dev",
+  "author": "groupthink-dev",
   "licence": "MIT",
   "icon": "/icons/steam-blade-mcp.svg",
-  "tier": "community",
+  "tier": "certified",
   "contract": "gaming-v1",
   "homepage": "https://github.com/Groupthink-dev/steam-blade-mcp",
   "repository": "https://github.com/Groupthink-dev/steam-blade-mcp",
   "install": {
     "runtime": "uv",
-    "package": "steam-blade-mcp"
+    "package": "steam-blade-mcp",
+    "command": "steam-blade-mcp"
   },
   "env": [
     {
       "name": "STEAM_API_KEY",
-      "description": "Steam Web API key from steamcommunity.com/dev/apikey",
+      "description": "Steam Web API key",
       "secret": true
     },
     {
-      "name": "STEAM_USER_ID",
-      "description": "Your Steam64 ID (17-digit number)",
-      "default": ""
-    },
-    {
-      "name": "STEAM_WRITE_ENABLED",
-      "description": "Enable write operations (friend management)",
-      "default": "false"
+      "name": "STEAM_ID",
+      "description": "Default Steam ID (64-bit, 17 digits)"
     }
   ],
   "setup": {
@@ -35,11 +30,11 @@
     "complexity": "trivial",
     "icon": "gamecontroller.fill",
     "product": "Steam",
-    "blurb": "Steam profiles, achievements, game library, friends, presence, Store catalog, and Workshop. API key auth — no OAuth required.",
-    "help_text": "Get a Steam Web API key at steamcommunity.com/dev/apikey (requires a Steam account). Find your Steam64 ID at steamid.io.",
+    "blurb": "Steam gaming platform — library stats, achievements, friends, store data, and market prices.",
+    "help_text": "Get a Steam Web API key at steamcommunity.com/dev/apikey (requires a Steam account with purchase history). Find your Steam64 ID at steamid.io.",
     "help_links": [
       {
-        "label": "Get Steam Web API Key",
+        "label": "Get Steam API Key",
         "url": "https://steamcommunity.com/dev/apikey"
       },
       {
@@ -56,60 +51,55 @@
         "key": "STEAM_API_KEY",
         "label": "Steam Web API Key",
         "secret": true,
-        "placeholder": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
         "required": true,
-        "help": "Register at steamcommunity.com/dev/apikey"
+        "placeholder": "Hex key from steamcommunity.com/dev/apikey",
+        "help": "Register at steamcommunity.com/dev/apikey (requires Steam purchase history)"
       },
       {
-        "key": "STEAM_USER_ID",
-        "label": "Steam64 ID",
+        "key": "STEAM_ID",
+        "label": "Steam ID (64-bit)",
         "secret": false,
+        "required": true,
         "placeholder": "76561198012345678",
-        "required": false,
-        "help": "Your 17-digit Steam ID. Find at steamid.io. Omit to require per-call."
-      },
-      {
-        "key": "STEAM_WRITE_ENABLED",
-        "label": "Enable Write Operations",
-        "secret": false,
-        "placeholder": "false",
-        "required": false,
-        "help": "Friend management operations"
+        "help": "Your 17-digit Steam ID. Find via steamid.io or your profile URL."
       }
     ],
     "test": {
-      "endpoint": "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key={STEAM_API_KEY}&steamids={STEAM_USER_ID}",
+      "endpoint": "https://api.steampowered.com/ISteamWebAPIUtil/GetSupportedAPIList/v1/?key={STEAM_API_KEY}",
       "auth_style": "none"
     },
     "prerequisites": [
-      "Steam account",
-      "Steam Web API key (free)"
+      "Steam account with at least one purchase"
     ]
   },
   "services": {
     "gaming": {
-      "profile": "steam_profile",
+      "player_summary": "steam_profile",
+      "library": "steam_library",
+      "game_details": "steam_game",
+      "search_games": "steam_search",
+      "recent_games": "steam_recent",
       "achievements": "steam_achievements",
-      "achievement_summary": "steam_achievement_summary",
-      "games_played": "steam_games",
-      "games_recent": "steam_games_recent",
       "friends": "steam_friends",
-      "presence": "steam_presence",
-      "search_users": "steam_search_users",
-      "achievement_compare": "steam_achievement_compare",
-      "games_purchased": "steam_games",
-      "game_details": "steam_game_details",
-      "search_games": "steam_search_games",
-      "friend_add": "steam_friend_add",
-      "friend_remove": "steam_friend_remove"
+      "game_news": "steam_news",
+      "global_stats": "steam_stats",
+      "inventory": "steam_inventory",
+      "market_price": "steam_price",
+      "player_count": "steam_players"
     }
   },
-  "conformance": {
-    "required": "untested",
-    "recommended": "untested",
-    "optional": "untested",
-    "gated": "untested",
-    "last_tested": null
+  "certification": {
+    "status": "certified",
+    "validated_version": "0.1.0",
+    "platform_tested": ["darwin-arm64"],
+    "security_notes": "API key auth. Read-only. No write operations. Per-endpoint rate limiting."
   },
-  "notes": "Steam Web API MCP with Storefront API for catalog search. API key auth (trivial setup vs Xbox OAuth2). Steam Web API covers player summaries, achievements, owned games, friends, presence. Storefront API covers app details and search (no auth needed). Steam deprecated chat messaging; friend add/remove requires session auth beyond Web API key. devices and achievement_groups not mapped (no Steam equivalent)."
+  "conformance": {
+    "required": "4/4",
+    "recommended": "4/4",
+    "optional": "4/5",
+    "gated": "0/0",
+    "last_tested": "2026-04-07"
+  },
+  "notes": "Steam Web API MCP with Storefront API for catalog search. API key auth (trivial setup). Covers player summaries, achievements, owned games, friends, presence, store data, market prices. Steam deprecated chat messaging — no gated operations."
 }

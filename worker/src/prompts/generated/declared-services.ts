@@ -3,6 +3,7 @@
 
 export const DECLARED_SERVICES: string[] = [
   "accounting",
+  "betting-exchange",
   "billing",
   "calendar",
   "code",
@@ -16,6 +17,7 @@ export const DECLARED_SERVICES: string[] = [
   "messages",
   "notifications",
   "postal",
+  "prediction-market",
   "social",
   "storage",
   "tasks",

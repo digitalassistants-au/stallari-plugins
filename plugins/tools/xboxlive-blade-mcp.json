@@ -2,10 +2,10 @@
   "name": "xboxlive-blade-mcp",
   "description": "Xbox Live operations — profiles, achievements, friends, presence, game library, SmartGlass console control, Store catalog, messaging",
   "version": "0.1.0",
-  "author": "Groupthink-dev",
+  "author": "groupthink-dev",
   "licence": "MIT",
   "icon": "/icons/xboxlive-blade-mcp.svg",
-  "tier": "community",
+  "tier": "certified",
   "contract": "gaming-v1",
   "homepage": "https://github.com/Groupthink-dev/xboxlive-blade-mcp",
   "repository": "https://github.com/Groupthink-dev/xboxlive-blade-mcp",
@@ -117,12 +117,18 @@
       "friend_remove": "xbox_friend_remove"
     }
   },
+  "certification": {
+    "status": "certified",
+    "validated_version": "0.1.0",
+    "platform_tested": ["darwin-arm64"],
+    "security_notes": "OAuth2 via Azure AD. Write gates on messaging, friend management, and SmartGlass power commands. Confirm gates on destructive console operations."
+  },
   "conformance": {
     "required": "4/4",
     "recommended": "4/4",
     "optional": "6/6",
     "gated": "3/3",
-    "last_tested": null
+    "last_tested": "2026-04-07"
   },
   "notes": "Full-featured Xbox Live MCP built on xbox-webapi-python (200+ stars). 22 tools across 8 domains. The only MCP with SmartGlass console control, Xbox messaging, game clips, and Store catalog. Write gates on mutations, confirm gates on SmartGlass power commands and friend removal. Token-efficient pipe-delimited output."
 }

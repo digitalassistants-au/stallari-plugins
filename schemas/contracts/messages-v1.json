@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://sidereal.dev/schemas/contracts/messages-v1.json",
   "title": "messages-v1",
-  "description": "Messaging platform contract v1 — 10 operations across conversations, messages, contacts, and delivery.",
+  "description": "Messaging platform contract v1 — 18 operations across conversations, messages, contacts, threads, reactions, and delivery.",
   "type": "object",
   "properties": {
     "name": { "const": "messages-v1" },
@@ -51,6 +51,36 @@
       "classification": "optional"
     },
     {
+      "name": "threads",
+      "description": "Get thread replies for a message",
+      "classification": "optional"
+    },
+    {
+      "name": "reactions",
+      "description": "List reactions on a message",
+      "classification": "optional"
+    },
+    {
+      "name": "members",
+      "description": "List participants or members of a conversation",
+      "classification": "optional"
+    },
+    {
+      "name": "pins",
+      "description": "List pinned or starred messages in a conversation",
+      "classification": "optional"
+    },
+    {
+      "name": "channels",
+      "description": "Discover available channels or rooms to join",
+      "classification": "optional"
+    },
+    {
+      "name": "presence",
+      "description": "User online, offline, or away status",
+      "classification": "optional"
+    },
+    {
       "name": "send",
       "description": "Send a text message to a contact or conversation",
       "classification": "gated"
@@ -58,6 +88,16 @@
     {
       "name": "send_file",
       "description": "Send a file attachment to a contact or conversation",
+      "classification": "gated"
+    },
+    {
+      "name": "reply_thread",
+      "description": "Reply within a specific thread",
+      "classification": "gated"
+    },
+    {
+      "name": "react",
+      "description": "Add or remove a reaction to a message",
       "classification": "gated"
     }
   ]

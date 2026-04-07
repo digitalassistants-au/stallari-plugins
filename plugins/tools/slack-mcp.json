@@ -1,0 +1,70 @@
+{
+  "name": "slack-mcp",
+  "description": "Slack team messaging — channels, threads, search, users, reactions. Official vendor-hosted remote MCP.",
+  "version": "1.0.0",
+  "author": "slack",
+  "licence": "proprietary",
+  "icon": "/icons/slack-mcp.svg",
+  "tier": "community",
+  "contract": "messages-v1",
+  "homepage": "https://api.slack.com/docs/mcp",
+  "install": {
+    "runtime": "remote",
+    "url": "https://mcp.slack.com/mcp",
+    "auth": {
+      "type": "oauth2"
+    }
+  },
+  "env": [],
+  "setup": {
+    "auth_model": "oauth2",
+    "complexity": "moderate",
+    "icon": "number",
+    "product": "Slack",
+    "blurb": "Connect to Slack for channel browsing, message search, thread context, and team communication.",
+    "help_text": "Slack's hosted MCP uses OAuth2. On first connection, you'll authorise Sidereal to access your Slack workspace via the browser. No API keys or app creation required.",
+    "help_url": "https://api.slack.com/docs/mcp",
+    "oauth2": {
+      "grant_type": "authorization_code",
+      "scopes": ["channels:read", "channels:history", "search:read", "users:read", "chat:write"],
+      "setup_url": "https://api.slack.com/docs/mcp"
+    },
+    "help": [
+      {
+        "label": "Slack MCP Documentation",
+        "url": "https://api.slack.com/docs/mcp"
+      },
+      {
+        "label": "Slack OAuth Scopes Reference",
+        "url": "https://api.slack.com/scopes"
+      }
+    ]
+  },
+  "services": {
+    "messages": {
+      "chats": "slack_list_channels",
+      "messages": "slack_get_channel_history",
+      "search": "slack_search_messages",
+      "chat": "slack_get_channel_info",
+      "contacts": "slack_list_users",
+      "unread": "slack_unread_counts",
+      "threads": "slack_get_thread",
+      "reactions": "slack_get_reactions",
+      "members": "slack_channel_members",
+      "pins": "slack_list_pins",
+      "channels": "slack_list_all_channels",
+      "presence": "slack_user_presence",
+      "send": "slack_post_message",
+      "reply_thread": "slack_reply_to_thread",
+      "react": "slack_add_reaction"
+    }
+  },
+  "conformance": {
+    "required": "untested",
+    "recommended": "untested",
+    "optional": "untested",
+    "gated": "untested",
+    "last_tested": null
+  },
+  "notes": "First remote MCP in catalog. Vendor-hosted at mcp.slack.com — no local process, no API key. OAuth2 handled by Slack's hosted auth flow. Service mapping is provisional until tools/list is enumerated against the live endpoint. messages-v1 is a partial fit: Slack's channel/thread model is richer than 1:1 messaging."
+}

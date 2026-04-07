@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sidereal.dev/schemas/contracts/prediction-market-v1.json",
+  "title": "prediction-market-v1",
+  "description": "Prediction market service contract v1 — 20 operations across discovery, pricing, portfolio, trading, and system management. Designed for binary-outcome and multi-outcome prediction markets (Polymarket, Kalshi, Metaculus, Manifold).",
+  "type": "object",
+  "properties": {
+    "name": { "const": "prediction-market-v1" },
+    "service": { "const": "prediction-market" },
+    "version": { "const": 1 }
+  },
+  "operations": [
+    {
+      "name": "events",
+      "description": "List prediction events with filters (active, featured, tags, date range)",
+      "classification": "required"
+    },
+    {
+      "name": "markets",
+      "description": "List markets within events, with outcome prices and metadata",
+      "classification": "required"
+    },
+    {
+      "name": "orderbook",
+      "description": "Order book depth for a market token (bids, asks, sizes)",
+      "classification": "required"
+    },
+    {
+      "name": "prices",
+      "description": "Current prices (best bid, ask, midpoint, last trade)",
+      "classification": "required"
+    },
+    {
+      "name": "positions",
+      "description": "User's open positions with entry price and current value",
+      "classification": "required"
+    },
+    {
+      "name": "search",
+      "description": "Search events and markets by keyword",
+      "classification": "required"
+    },
+    {
+      "name": "login_status",
+      "description": "Auth state, wallet info, write gate, geoblocking status, rate limits",
+      "classification": "required"
+    },
+    {
+      "name": "keepalive",
+      "description": "Session heartbeat to prevent expiry",
+      "classification": "required"
+    },
+    {
+      "name": "price_history",
+      "description": "Historical prices with configurable fidelity/granularity",
+      "classification": "recommended"
+    },
+    {
+      "name": "spread",
+      "description": "Bid-ask spread for a market token",
+      "classification": "recommended"
+    },
+    {
+      "name": "trade_history",
+      "description": "User's trade history with timestamps and settlement",
+      "classification": "recommended"
+    },
+    {
+      "name": "portfolio_value",
+      "description": "Total portfolio valuation across all positions",
+      "classification": "recommended"
+    },
+    {
+      "name": "trending",
+      "description": "Featured or trending markets by volume/activity",
+      "classification": "recommended"
+    },
+    {
+      "name": "categories",
+      "description": "Tags or categories for filtering events",
+      "classification": "recommended"
+    },
+    {
+      "name": "closing_soon",
+      "description": "Markets approaching resolution deadline",
+      "classification": "optional"
+    },
+    {
+      "name": "leaderboard",
+      "description": "Trader rankings by profit or volume",
+      "classification": "optional"
+    },
+    {
+      "name": "place_order",
+      "description": "Place an order (real funds). Requires write gate + confirm gate",
+      "classification": "gated"
+    },
+    {
+      "name": "cancel_order",
+      "description": "Cancel an open order",
+      "classification": "gated"
+    },
+    {
+      "name": "cancel_all",
+      "description": "Cancel all open orders",
+      "classification": "gated"
+    },
+    {
+      "name": "approve_allowance",
+      "description": "Approve token spending allowance (on-chain)",
+      "classification": "gated"
+    }
+  ]
+}
