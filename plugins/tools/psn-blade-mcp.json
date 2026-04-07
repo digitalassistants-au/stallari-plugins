@@ -1,0 +1,70 @@
+{
+  "name": "psn-blade-mcp",
+  "description": "PlayStation Network operations — trophies, game library, friends, presence, and messaging via unofficial PSN API",
+  "version": "0.1.0",
+  "author": "groupthink-dev",
+  "licence": "MIT",
+  "icon": "/icons/psn-blade-mcp.svg",
+  "tier": "community",
+  "contract": "gaming-v1",
+  "repository": "https://github.com/groupthink-dev/psn-blade-mcp",
+  "install": {
+    "runtime": "uv",
+    "package": "psn-blade-mcp"
+  },
+  "env": [
+    {
+      "name": "PSN_NPSSO",
+      "description": "NPSSO session token from PlayStation Network",
+      "secret": true
+    },
+    {
+      "name": "PSN_WRITE_ENABLED",
+      "description": "Enable write operations (messaging, friend management)",
+      "default": "false"
+    }
+  ],
+  "setup": {
+    "auth_model": "api_key",
+    "complexity": "moderate",
+    "icon": "gamecontroller.fill",
+    "product": "PlayStation Network",
+    "help_text": "Log in at store.playstation.com, then visit ca.account.sony.com/api/v1/ssocookie to obtain your NPSSO token. Use a dedicated PSN account — excessive API use may trigger account restrictions.",
+    "help_links": [
+      {
+        "label": "NPSSO Token Guide",
+        "url": "https://github.com/isFakeAccount/psnawp?tab=readme-ov-file#authentication"
+      },
+      {
+        "label": "PSN API Documentation",
+        "url": "https://andshrew.github.io/PlayStation-Trophies/"
+      }
+    ],
+    "fields": [
+      {
+        "key": "PSN_NPSSO",
+        "label": "NPSSO Token",
+        "secret": true,
+        "placeholder": "npsso=xxxxxxxx..."
+      },
+      {
+        "key": "PSN_WRITE_ENABLED",
+        "label": "Enable Write Operations",
+        "secret": false,
+        "placeholder": "false"
+      }
+    ],
+    "test": {
+      "endpoint": "https://ca.account.sony.com/api/v1/ssocookie",
+      "auth_style": "none",
+      "expected_status": [200, 401]
+    }
+  },
+  "conformance": {
+    "required": "untested",
+    "recommended": "untested",
+    "optional": "untested",
+    "gated": "untested",
+    "last_tested": null
+  }
+}
