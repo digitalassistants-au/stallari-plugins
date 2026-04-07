@@ -60,7 +60,10 @@ skills:
     description: Compose and send a release announcement email to your product audience
     tier: reasoning
     category: notify
-    graph: react-extract
+    graph: critique-refine
+    graph_config:
+      critique_criteria: [accuracy, tone, completeness]
+      max_critique_rounds: 2
     services_used:
       - service: transactional-email
         operations: [send, list_templates, list_contacts, list_segments]

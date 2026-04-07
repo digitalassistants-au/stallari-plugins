@@ -351,7 +351,9 @@ skills:
     description: Provision a complete edge stack — tunnel + DNS + KV namespace + D1 database for a new service
     tier: reasoning
     category: transform
-    graph: react-extract
+    graph: plan-execute
+    graph_config:
+      max_replan_attempts: 2
     services_used:
       - service: edge-platform
         operations: [tunnel_list, tunnel_create, tunnel_update_config, dns_list_zones, dns_create_record, kv_list_namespaces, kv_put, d1_list_databases, d1_execute]
@@ -422,7 +424,9 @@ skills:
     description: Decommission an edge service — remove tunnel ingress, DNS records, and archive documentation
     tier: reasoning
     category: transform
-    graph: react-extract
+    graph: plan-execute
+    graph_config:
+      max_replan_attempts: 2
     services_used:
       - service: edge-platform
         operations: [tunnel_list, tunnel_list_configs, tunnel_update_config, tunnel_delete, dns_list_zones, dns_list_records, dns_delete_record]

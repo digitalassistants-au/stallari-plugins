@@ -120,7 +120,7 @@ skills:
     description: List available scenes and activate on request with vault logging
     tier: reasoning
     category: transform
-    graph: react-extract
+    graph: react-verify
     services_used:
       - service: home
         operations: [entity_list, scene_activate]

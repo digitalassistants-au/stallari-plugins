@@ -102,11 +102,15 @@ skills:
     trigger:
       watch: ["+/ingest", "+/triage"]
       on_demand: true
-    graph: cascade
+    graph: gate
     graph_config:
-      confidence_threshold: 0.85
       classify_model: claude-haiku-4-5-20251001
-      escalation_model: claude-sonnet-4-6
+      routes:
+        email_handoff: react_email
+        web_clip: react_webclip
+        pdf_import: react_pdf
+        text_note: react_text
+        operator_handoff: react_handoff
     prompt: |
       Process unclassified items in the Obsidian vault inbox.
 
@@ -137,7 +141,10 @@ skills:
         operations: [read]
     trigger:
       schedule: "0 7 * * *"
-    graph: react-verify
+    graph: critique-refine
+    graph_config:
+      critique_criteria: [completeness, accuracy, tone, actionability]
+      max_critique_rounds: 2
     prompt: |
       Generate a daily morning digest for the Obsidian PKM vault.
 
@@ -167,7 +174,10 @@ skills:
         operations: [read]
     trigger:
       schedule: "0 7 * * 1"
-    graph: react-verify
+    graph: critique-refine
+    graph_config:
+      critique_criteria: [completeness, accuracy, tone, actionability]
+      max_critique_rounds: 2
     prompt: |
       Generate a weekly digest for the Obsidian PKM vault.
 
@@ -227,11 +237,10 @@ skills:
         operations: [read]
     trigger:
       on_demand: true
-    graph: cascade
+    graph: consensus
     graph_config:
-      confidence_threshold: 0.80
-      classify_model: claude-haiku-4-5-20251001
-      escalation_model: claude-sonnet-4-6
+      consensus_workers: 3
+      voting_strategy: majority_vote
     prompt: |
       Run a structured morning sweep: aggregate pending work from all sources,
       classify each item, present for human approval, then dispatch approved work.
@@ -531,7 +540,9 @@ skills:
         operations: [read, create]
     trigger:
       on_demand: true
-    graph: react
+    graph: plan-execute
+    graph_config:
+      max_replan_attempts: 2
     prompt: |
       Plan and coordinate fleet-wide upgrades: check compatibility, stage
       rollout order, verify post-upgrade health.

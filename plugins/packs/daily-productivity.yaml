@@ -75,7 +75,10 @@ skills:
     description: Generate a morning digest combining calendar, tasks, efforts, and inbox status
     tier: reasoning
     category: digest
-    graph: react-verify
+    graph: critique-refine
+    graph_config:
+      critique_criteria: [completeness, accuracy, tone, actionability]
+      max_critique_rounds: 2
     services_used:
       - service: calendar
         operations: [events]
@@ -121,11 +124,15 @@ skills:
     description: Classify and file items from the vault inbox
     tier: reasoning
     category: ingest
-    graph: cascade
+    graph: gate
     graph_config:
-      confidence_threshold: 0.85
       classify_model: claude-haiku-4-5-20251001
-      escalation_model: claude-sonnet-4-6
+      routes:
+        email_handoff: react_email
+        web_clip: react_webclip
+        pdf_import: react_pdf
+        text_note: react_text
+        operator_handoff: react_handoff
     services_used:
       - service: vault
         operations: [read, lens_recall, lens_connections, move]
@@ -143,11 +150,10 @@ skills:
     description: Interactive morning triage across all sources
     tier: reasoning
     category: triage
-    graph: cascade
+    graph: consensus
     graph_config:
-      confidence_threshold: 0.80
-      classify_model: claude-haiku-4-5-20251001
-      escalation_model: claude-sonnet-4-6
+      consensus_workers: 3
+      voting_strategy: majority_vote
     services_used:
       - service: vault
         operations: [read, search, files, query_properties]
@@ -168,11 +174,16 @@ skills:
     description: Process colour-coded flagged emails from Apple Mail
     tier: reasoning
     category: triage
-    graph: cascade
+    graph: gate
     graph_config:
-      confidence_threshold: 0.85
       classify_model: apple-fm
-      escalation_model: claude-sonnet-4-6
+      routes:
+        red: react_urgent
+        orange: react_file
+        yellow: react_review
+        blue: react_reply
+        green: react_reference
+        purple: react_calendar
     services_used:
       - service: email
         operations: [search, read]
@@ -195,7 +206,10 @@ skills:
     description: Generate weekly digest with effort status and dispatch metrics
     tier: reasoning
     category: digest
-    graph: react-verify
+    graph: critique-refine
+    graph_config:
+      critique_criteria: [completeness, accuracy, tone, actionability]
+      max_critique_rounds: 2
     services_used:
       - service: vault
         operations: [read, search, query_properties, lens_fts, files, create]
@@ -216,7 +230,10 @@ skills:
     description: Generate per-effort status snapshots
     tier: reasoning
     category: digest
-    graph: react-verify
+    graph: critique-refine
+    graph_config:
+      critique_criteria: [completeness, accuracy, freshness, actionability]
+      max_critique_rounds: 2
     services_used:
       - service: vault
         operations: [read, search, query_properties, lens_fts, create]

@@ -39,7 +39,10 @@ skills:
     description: Find notes with no inbound or outbound links
     tier: reasoning
     category: review
-    graph: react
+    graph: map-reduce
+    graph_config:
+      workers: 5
+      split_strategy: per_item
     services_used:
       - service: vault
         operations: [search, backlinks, append]
@@ -62,7 +65,10 @@ skills:
     description: Find broken wikilinks that point to non-existent notes
     tier: reasoning
     category: review
-    graph: react
+    graph: map-reduce
+    graph_config:
+      workers: 5
+      split_strategy: per_item
     services_used:
       - service: vault
         operations: [links, read, append]

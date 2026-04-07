@@ -170,7 +170,7 @@ skills:
     description: Mark a maintenance item as resolved and record the cost
     tier: reasoning
     category: transform
-    graph: react-extract
+    graph: react-verify
     services_used:
       - service: vault
         operations: [search, read, append]
