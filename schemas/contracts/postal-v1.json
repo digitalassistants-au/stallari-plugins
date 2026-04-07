@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sidereal.dev/schemas/contracts/postal-v1.json",
+  "title": "postal-v1",
+  "description": "Postal service contract v1 — 21 operations across postage calculation, shipping, tracking, and locations.",
+  "type": "object",
+  "properties": {
+    "name": { "const": "postal-v1" },
+    "service": { "const": "postal" },
+    "version": { "const": 1 }
+  },
+  "operations": [
+    { "name": "postcode_search", "description": "Search postcodes and suburbs by name or code", "classification": "required" },
+    { "name": "domestic_services", "description": "List available domestic parcel services for a route and parcel size", "classification": "required" },
+    { "name": "domestic_calculate", "description": "Calculate domestic parcel postage for a specific service", "classification": "required" },
+    { "name": "international_services", "description": "List available international parcel services for a country and weight", "classification": "required" },
+    { "name": "international_calculate", "description": "Calculate international parcel postage for a specific service", "classification": "required" },
+    { "name": "letter_services", "description": "List available letter services (domestic or international)", "classification": "required" },
+    { "name": "letter_calculate", "description": "Calculate letter postage cost", "classification": "required" },
+    { "name": "parcel_sizes", "description": "Standard parcel box dimensions reference data", "classification": "required" },
+    { "name": "country_list", "description": "List countries with ISO codes for international postage", "classification": "required" },
+    { "name": "locations", "description": "Find post offices, parcel lockers, and collection points", "classification": "required" },
+    { "name": "track", "description": "Track parcels by tracking ID with event history", "classification": "recommended" },
+    { "name": "validate_address", "description": "Validate a postal address (suburb, state, postcode)", "classification": "recommended" },
+    { "name": "get_shipments", "description": "List or retrieve shipments by ID or status", "classification": "recommended" },
+    { "name": "get_order", "description": "Get order details by ID", "classification": "recommended" },
+    { "name": "account", "description": "Get commercial account details and available products", "classification": "recommended" },
+    { "name": "get_prices", "description": "Get contract-rate pricing for items", "classification": "optional" },
+    { "name": "get_labels", "description": "Check label generation status and get download URL", "classification": "optional" },
+    { "name": "create_shipment", "description": "Create a domestic or international shipment", "classification": "gated" },
+    { "name": "create_order", "description": "Finalise shipments into an order for despatch (may be irreversible)", "classification": "gated" },
+    { "name": "create_labels", "description": "Generate shipping labels for shipments", "classification": "gated" },
+    { "name": "delete_item", "description": "Delete an item from a shipment before order creation", "classification": "gated" }
+  ]
+}

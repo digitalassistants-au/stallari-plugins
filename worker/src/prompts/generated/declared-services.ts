@@ -15,6 +15,7 @@ export const DECLARED_SERVICES: string[] = [
   "home",
   "messages",
   "notifications",
+  "postal",
   "social",
   "storage",
   "tasks",

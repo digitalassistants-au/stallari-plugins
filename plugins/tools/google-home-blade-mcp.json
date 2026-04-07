@@ -6,7 +6,7 @@
   "licence": "MIT",
   "icon": "/icons/google-home-blade-mcp.svg",
   "tier": "certified",
-  "contract": "smarthome-v1",
+  "contract": "home-v1",
   "repository": "https://github.com/groupthink-dev/google-home-blade-mcp",
   "install": {
     "runtime": "uv",

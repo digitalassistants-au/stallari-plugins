@@ -1,0 +1,130 @@
+{
+  "name": "auspost-blade-mcp",
+  "description": "Australia Post — postage calculator, shipping, tracking, and locations via official AusPost APIs",
+  "version": "0.1.0",
+  "author": "groupthink-dev",
+  "licence": "MIT",
+  "icon": "/icons/auspost-blade-mcp.svg",
+  "tier": "certified",
+  "contract": "postal-v1",
+  "repository": "https://github.com/Groupthink-dev/auspost-blade-mcp",
+  "install": {
+    "runtime": "uv",
+    "package": "auspost-blade-mcp"
+  },
+  "env": [
+    {
+      "name": "AUSPOST_API_KEY",
+      "description": "PAC + Locations API key (free tier)",
+      "secret": true
+    },
+    {
+      "name": "AUSPOST_SHIPPING_API_KEY",
+      "description": "Shipping & Tracking API key (eParcel contract)",
+      "secret": true
+    },
+    {
+      "name": "AUSPOST_SHIPPING_API_PASSWORD",
+      "description": "Shipping & Tracking API password",
+      "secret": true
+    },
+    {
+      "name": "AUSPOST_ACCOUNT_NUMBER",
+      "description": "10-digit eParcel billing account number"
+    },
+    {
+      "name": "AUSPOST_WRITE_ENABLED",
+      "description": "Enable shipment/order/label creation",
+      "default": "false"
+    },
+    {
+      "name": "AUSPOST_SHIPPING_TEST_MODE",
+      "description": "Use AusPost test sandbox (no real shipments)",
+      "default": "false"
+    }
+  ],
+  "setup": {
+    "auth_model": "api_key",
+    "complexity": "moderate",
+    "icon": "shippingbox.fill",
+    "product": "Australia Post Developer Account",
+    "blurb": "Postage calculator, parcel tracking, shipping labels, and post office locations via official AusPost APIs",
+    "help_text": "Register for a free API key at developers.auspost.com.au for postage calculation and locations. Shipping & Tracking requires an eParcel or StarTrack contract with Australia Post.",
+    "fields": [
+      {
+        "key": "AUSPOST_API_KEY",
+        "label": "AusPost API Key",
+        "secret": true,
+        "required": true,
+        "placeholder": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+        "help": "Free API key from https://developers.auspost.com.au"
+      },
+      {
+        "key": "AUSPOST_SHIPPING_API_KEY",
+        "label": "Shipping API Key",
+        "secret": true,
+        "required": false,
+        "placeholder": "UUID from eParcel contract",
+        "help": "Shipping & Tracking API key — requires eParcel or StarTrack contract"
+      },
+      {
+        "key": "AUSPOST_SHIPPING_API_PASSWORD",
+        "label": "Shipping API Password",
+        "secret": true,
+        "required": false,
+        "placeholder": "API password",
+        "help": "Paired with Shipping API Key"
+      },
+      {
+        "key": "AUSPOST_ACCOUNT_NUMBER",
+        "label": "Account Number",
+        "secret": false,
+        "required": false,
+        "placeholder": "1234567890",
+        "help": "10-digit eParcel account number"
+      },
+      {
+        "key": "AUSPOST_WRITE_ENABLED",
+        "label": "Enable Write Operations",
+        "secret": false,
+        "required": false,
+        "placeholder": "false",
+        "help": "Set to 'true' to enable shipment creation, order placement, and label generation"
+      },
+      {
+        "key": "AUSPOST_SHIPPING_TEST_MODE",
+        "label": "Shipping Test Mode",
+        "secret": false,
+        "required": false,
+        "placeholder": "false",
+        "help": "Set to 'true' to use AusPost test sandbox — no real shipments created"
+      }
+    ],
+    "test": {
+      "endpoint": "https://digitalapi.auspost.com.au/postcode/search.json?q=Sydney",
+      "auth_style": "header",
+      "auth_header": "AUTH-KEY"
+    },
+    "help_links": [
+      {
+        "label": "Get a free API key",
+        "url": "https://developers.auspost.com.au"
+      },
+      {
+        "label": "PAC API documentation",
+        "url": "https://developers.auspost.com.au/apis/pac"
+      },
+      {
+        "label": "Shipping & Tracking API",
+        "url": "https://developers.auspost.com.au/apis/shipping-and-tracking"
+      }
+    ]
+  },
+  "conformance": {
+    "required": "10/10",
+    "recommended": "5/5",
+    "optional": "2/2",
+    "gated": "3/4",
+    "last_tested": "2026-04-07"
+  }
+}
