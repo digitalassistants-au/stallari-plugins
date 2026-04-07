@@ -58,9 +58,10 @@ function extractPackServices(pack) {
 
 /** Convert a raw plugin JSON to a CatalogEntry */
 function pluginToCatalogEntry(raw) {
-  const services = raw.contract
-    ? [contractToService(raw.contract)]
+  const contracts = raw.contract
+    ? (Array.isArray(raw.contract) ? raw.contract : [raw.contract])
     : [];
+  const services = contracts.map(contractToService);
 
   // DD106: setup metadata summary
   const setup = raw.setup;

@@ -78,9 +78,12 @@
       }
     },
     "contract": {
-      "type": ["string", "null"],
-      "pattern": "^[a-z]+-v\\d+$",
-      "description": "Domain contract identifier (e.g. email-v1, tasks-v1, calendar-v1). Null for uncontracted third-party tools."
+      "oneOf": [
+        { "type": "string", "pattern": "^[a-z]+-v\\d+$" },
+        { "type": "array", "items": { "type": "string", "pattern": "^[a-z]+-v\\d+$" }, "minItems": 1 },
+        { "type": "null" }
+      ],
+      "description": "Domain contract identifier(s). Single string, array of strings for multi-service MCPs, or null for uncontracted tools."
     },
     "services": {
       "type": "object",

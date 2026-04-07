@@ -6,7 +6,7 @@
   "licence": "MIT",
   "icon": "/icons/office365-blade-mcp.svg",
   "tier": "certified",
-  "contract": "email-v1",
+  "contract": ["email-v1", "calendar-v1", "tasks-v1"],
   "repository": "https://github.com/groupthink-dev/office365-blade-mcp",
   "install": {
     "runtime": "uv",
@@ -93,10 +93,60 @@
       }
     ]
   },
+  "services": {
+    "email": {
+      "inbox": "o365_inbox",
+      "message": "o365_message",
+      "search": "o365_search",
+      "send": "o365_send",
+      "reply": "o365_reply",
+      "labels": "o365_folders",
+      "threads": "o365_threads",
+      "move": "o365_move",
+      "delete": "o365_delete"
+    },
+    "calendar": {
+      "events": "o365_events",
+      "event": "o365_event",
+      "search": "o365_search_events",
+      "calendars": "o365_calendars",
+      "freebusy": "o365_freebusy",
+      "today": "o365_today",
+      "week": "o365_week",
+      "create": "o365_create_event",
+      "update": "o365_update_event",
+      "delete": "o365_delete_event"
+    },
+    "tasks": {
+      "list": "o365_tasks",
+      "search": "o365_search_tasks",
+      "projects": "o365_task_lists",
+      "today": "o365_tasks_today",
+      "create": "o365_create_task",
+      "update": "o365_update_task",
+      "complete": "o365_complete_task"
+    }
+  },
   "conformance": {
-    "required": "3/3",
-    "recommended": "2/2",
-    "optional": "3/3",
-    "last_tested": "2026-03-31"
+    "email-v1": {
+      "required": "3/3",
+      "recommended": "2/2",
+      "optional": "3/3",
+      "last_tested": "2026-03-31"
+    },
+    "calendar-v1": {
+      "required": "untested",
+      "recommended": "untested",
+      "optional": "untested",
+      "gated": "untested",
+      "last_tested": null
+    },
+    "tasks-v1": {
+      "required": "untested",
+      "recommended": "untested",
+      "optional": "untested",
+      "gated": "untested",
+      "last_tested": null
+    }
   }
 }
