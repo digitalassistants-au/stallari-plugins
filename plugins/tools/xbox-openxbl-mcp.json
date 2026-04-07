@@ -1,0 +1,73 @@
+{
+  "name": "xbox-openxbl-mcp",
+  "description": "Xbox Live profiles, achievements, and presence via OpenXBL (xbl.io) API proxy — simple API key auth, no OAuth",
+  "version": "0.1.0",
+  "author": "community",
+  "licence": "MIT",
+  "icon": "/icons/xbox-openxbl-mcp.svg",
+  "tier": "community",
+  "contract": "gaming-v1",
+  "repository": null,
+  "install": {
+    "runtime": "uv",
+    "package": "xbox-openxbl-mcp"
+  },
+  "env": [
+    {
+      "name": "OPENXBL_API_KEY",
+      "description": "OpenXBL API key from xbl.io",
+      "secret": true
+    }
+  ],
+  "setup": {
+    "auth_model": "api_key",
+    "complexity": "trivial",
+    "icon": "gamecontroller.fill",
+    "product": "OpenXBL",
+    "blurb": "Xbox Live data via the OpenXBL proxy — no OAuth, just an API key. Covers profiles, achievements, and presence. For full Xbox Live access (SmartGlass, messaging, clips), use xboxlive-blade-mcp instead.",
+    "help_text": "Register at xbl.io, verify your Xbox account, and copy your API key from the dashboard. Free tier includes limited requests; paid plans scale.",
+    "help_links": [
+      {
+        "label": "OpenXBL Registration",
+        "url": "https://xbl.io"
+      },
+      {
+        "label": "OpenXBL API Documentation",
+        "url": "https://xbl.io/api"
+      }
+    ],
+    "fields": [
+      {
+        "key": "OPENXBL_API_KEY",
+        "label": "API Key",
+        "secret": true,
+        "placeholder": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+        "required": true,
+        "help": "Dashboard → API Key at xbl.io"
+      }
+    ],
+    "test": {
+      "endpoint": "https://xbl.io/api/v2/account",
+      "auth_style": "header",
+      "auth_header": "X-Authorization"
+    }
+  },
+  "services": {
+    "gaming": {
+      "profile": "oxbl_profile",
+      "achievements": "oxbl_achievements",
+      "achievement_summary": "oxbl_achievement_summary",
+      "presence": "oxbl_presence",
+      "friends": "oxbl_friends",
+      "search_users": "oxbl_search_users"
+    }
+  },
+  "conformance": {
+    "required": "untested",
+    "recommended": "untested",
+    "optional": "untested",
+    "gated": "untested",
+    "last_tested": null
+  },
+  "notes": "Community alternative to xboxlive-blade-mcp. Trades feature coverage for setup simplicity — API key auth via xbl.io proxy instead of OAuth2. Limited to read-only operations exposed by the OpenXBL API. No SmartGlass, messaging, clips, or Store catalog. Free tier has rate limits; paid plans ($3/mo) for higher throughput."
+}
