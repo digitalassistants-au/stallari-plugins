@@ -1,5 +1,6 @@
 {
   "name": "sidereal-blade-mcp",
+  "title": "Sidereal Vault",
   "description": "Obsidian vault operations via Swift MCP — read, write, search, properties, graph analysis, lens semantic tools",
   "version": "0.5.0",
   "author": "groupthink-dev",

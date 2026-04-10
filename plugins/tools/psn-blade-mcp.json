@@ -1,5 +1,6 @@
 {
   "name": "psn-blade-mcp",
+  "title": "PlayStation Network",
   "description": "PlayStation Network operations — trophies, game library, friends, presence, and messaging via unofficial PSN API",
   "version": "0.1.0",
   "author": "groupthink-dev",

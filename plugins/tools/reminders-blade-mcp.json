@@ -1,5 +1,6 @@
 {
   "name": "reminders-blade-mcp",
+  "title": "Apple Reminders",
   "description": "Apple Reminders operations — lists, reminders, search, due dates, create, complete, update, delete",
   "version": "0.1.0",
   "author": "groupthink-dev",

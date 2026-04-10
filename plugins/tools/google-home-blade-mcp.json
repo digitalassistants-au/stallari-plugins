@@ -1,5 +1,6 @@
 {
   "name": "google-home-blade-mcp",
+  "title": "Google Home",
   "description": "Google Home / Nest device control via SDM API — thermostats, cameras, doorbells, event streams",
   "version": "0.1.0",
   "author": "groupthink-dev",

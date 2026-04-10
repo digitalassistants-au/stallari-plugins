@@ -1,5 +1,6 @@
 {
   "name": "slack-mcp",
+  "title": "Slack",
   "description": "Slack team messaging — channels, threads, search, users, reactions. Official vendor-hosted remote MCP.",
   "version": "1.0.0",
   "author": "slack",

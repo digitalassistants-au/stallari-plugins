@@ -1,5 +1,7 @@
 pack: "1.6"
 name: cloudflare-edge-platform
+title: "Cloudflare Edge Platform"
+featured: true
 version: "1.1.0"
 description: >-
   Turnkey edge networking for Sidereal — expose services via Cloudflare Tunnels,

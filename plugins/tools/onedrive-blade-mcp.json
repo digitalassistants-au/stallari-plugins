@@ -1,5 +1,6 @@
 {
   "name": "onedrive-blade-mcp",
+  "title": "OneDrive",
   "description": "OneDrive and SharePoint file operations via Microsoft Graph API — browse, read, search, upload, share, delta sync",
   "version": "0.1.0",
   "author": "groupthink-dev",

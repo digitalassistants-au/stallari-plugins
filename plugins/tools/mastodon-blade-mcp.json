@@ -1,5 +1,6 @@
 {
   "name": "mastodon-blade-mcp",
+  "title": "Mastodon",
   "description": "Mastodon operations — timelines, statuses, notifications, search, interactions, multi-instance",
   "version": "0.1.0",
   "author": "groupthink-dev",

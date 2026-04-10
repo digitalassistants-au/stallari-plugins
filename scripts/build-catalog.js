@@ -69,6 +69,7 @@ function pluginToCatalogEntry(raw) {
 
   return {
     name: raw.name,
+    title: raw.title || null,
     type: "plugin",
     version: raw.version,
     description: raw.description || null,
@@ -131,6 +132,8 @@ function packToCatalogEntry(pack) {
 
   return {
     name: pack.name,
+    title: pack.title || null,
+    featured: !!pack.featured,
     slug: slugify(pack.name),
     type: "pack",
     version: pack.version,

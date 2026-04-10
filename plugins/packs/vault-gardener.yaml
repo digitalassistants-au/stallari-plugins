@@ -1,5 +1,7 @@
 pack: "1.6"
 name: vault-gardener
+title: "Vault Gardener"
+featured: false
 version: "1.1.0"
 description: Finds orphaned notes, broken links, and stale content in your vault.
 icon: /icons/vault-gardener.svg

@@ -1,5 +1,6 @@
 {
   "name": "messages-blade-mcp",
+  "title": "Apple Messages",
   "description": "Apple Messages (iMessage) operations — conversations, search, contacts, attachments, send",
   "version": "0.1.0",
   "author": "groupthink-dev",

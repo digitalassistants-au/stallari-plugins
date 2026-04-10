@@ -1,5 +1,6 @@
 {
   "name": "prediction-mcp",
+  "title": "Prediction Markets",
   "version": "0.1.16",
   "description": "Unified prediction market data from Polymarket and Kalshi — search, prices, orderbooks, relevance-scored results",
   "author": "shaanmajid",

@@ -1,5 +1,6 @@
 {
   "name": "paddle-billing-blade-mcp",
+  "title": "Paddle Billing",
   "description": "Paddle Billing API operations — products, prices, subscriptions, transactions, webhooks. Token-efficient, write-gated, confirm-gated for destructive ops.",
   "version": "0.1.0",
   "author": "groupthink-dev",

@@ -1,5 +1,6 @@
 {
   "name": "steam-blade-mcp",
+  "title": "Steam",
   "description": "Steam gaming platform — library, achievements, friends, store data, market prices",
   "version": "0.1.0",
   "author": "groupthink-dev",

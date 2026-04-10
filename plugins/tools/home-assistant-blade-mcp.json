@@ -1,5 +1,6 @@
 {
   "name": "home-assistant-blade-mcp",
+  "title": "Home Assistant",
   "description": "Home Assistant operations — entities, state, history, device control, automations, energy, multi-site management",
   "version": "0.1.0",
   "author": "groupthink-dev",

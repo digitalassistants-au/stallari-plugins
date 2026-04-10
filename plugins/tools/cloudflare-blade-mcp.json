@@ -1,5 +1,6 @@
 {
   "name": "cloudflare-blade-mcp",
+  "title": "Cloudflare Platform",
   "description": "Cloudflare platform operations — DNS zones and records, Workers KV storage, D1 databases, and Cloudflare Tunnels with token-efficient defaults and confirm gates",
   "version": "0.1.0",
   "author": "groupthink-dev",

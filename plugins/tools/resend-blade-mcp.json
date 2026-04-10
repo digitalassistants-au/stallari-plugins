@@ -1,5 +1,6 @@
 {
   "name": "resend-blade-mcp",
+  "title": "Resend",
   "description": "Resend transactional email — send, contacts, broadcasts, templates, domains, webhooks. Security-first with no filesystem access.",
   "version": "0.1.0",
   "author": "groupthink-dev",

@@ -1,5 +1,6 @@
 {
   "name": "polymarket-blade-mcp",
+  "title": "Polymarket",
   "version": "0.1.0",
   "description": "Polymarket prediction market data — events, markets, orderbooks, prices, analytics. Token-efficient, rate-limited.",
   "author": "groupthink-dev",

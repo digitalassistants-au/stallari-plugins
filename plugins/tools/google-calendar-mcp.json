@@ -1,5 +1,6 @@
 {
   "name": "google-calendar-mcp",
+  "title": "Google Calendar",
   "description": "Google Calendar via REST API — events, calendars, freebusy, create/update/delete",
   "version": "0.1.0",
   "author": "community",

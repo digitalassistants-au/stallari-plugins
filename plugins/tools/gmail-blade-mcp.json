@@ -1,5 +1,6 @@
 {
   "name": "gmail-blade-mcp",
+  "title": "Gmail",
   "description": "Gmail email operations via Google API — search, read, send, threads, labels, drafts, filters. Gemini-powered classification and summarisation.",
   "version": "0.2.0",
   "author": "groupthink-dev",

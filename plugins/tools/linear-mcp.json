@@ -1,5 +1,6 @@
 {
   "name": "linear-mcp",
+  "title": "Linear",
   "description": "Linear project management — issues, projects, cycles, labels, teams. Official vendor-hosted remote MCP.",
   "version": "1.0.0",
   "author": "linear",

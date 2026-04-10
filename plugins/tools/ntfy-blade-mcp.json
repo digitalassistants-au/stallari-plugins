@@ -1,5 +1,6 @@
 {
     "name": "ntfy-blade-mcp",
+    "title": "ntfy",
     "description": "ntfy push notification MCP \u2014 publish, poll, topic reservation, and token management. Double-gate security with PII scrubbing.",
     "version": "0.1.0",
     "author": "groupthink-dev",

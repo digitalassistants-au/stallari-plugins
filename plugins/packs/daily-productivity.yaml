@@ -1,5 +1,7 @@
 pack: "1.6"
 name: daily-productivity
+title: "Daily Productivity"
+featured: true
 version: "2.1.0"
 description: >-
   Daily and weekly productivity automation — morning digest, email triage,

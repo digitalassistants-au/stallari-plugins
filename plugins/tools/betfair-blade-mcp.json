@@ -1,5 +1,6 @@
 {
   "name": "betfair-blade-mcp",
+  "title": "Betfair Exchange",
   "version": "0.1.0",
   "description": "Betfair Exchange MCP Server — markets, prices, orders, account, certificate auth, weight-aware rate limiting",
   "author": "groupthink-dev",

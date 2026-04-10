@@ -1,5 +1,6 @@
 {
   "name": "things-3-mcp",
+  "title": "Things 3",
   "description": "Things 3 task management via AppleScript and URL scheme — macOS only",
   "version": "0.1.0",
   "author": "groupthink-dev",

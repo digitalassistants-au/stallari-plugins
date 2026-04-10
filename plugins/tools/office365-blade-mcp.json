@@ -1,5 +1,6 @@
 {
   "name": "office365-blade-mcp",
+  "title": "Microsoft 365",
   "description": "Microsoft 365 operations via Graph API — email, calendar, tasks (To Do + Planner). Token-efficient, write-gated, dual auth.",
   "version": "0.1.0",
   "author": "groupthink-dev",
