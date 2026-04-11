@@ -105,6 +105,7 @@ function pluginToCatalogEntry(raw) {
     highlights: Array.isArray(raw.highlights) && raw.highlights.length > 0 ? raw.highlights : null,
     links: Array.isArray(raw.links) && raw.links.length > 0 ? raw.links : null,
     hero: raw.hero || null,
+    scenarios: Array.isArray(raw.scenarios) && raw.scenarios.length > 0 ? raw.scenarios : null,
   };
 }
 
@@ -281,7 +282,10 @@ function buildScenarios(entries) {
       }
     }
 
-    entry.scenarios = scenarios.length > 0 ? scenarios : null;
+    // Authored scenarios first, then auto-generated
+    const authored = Array.isArray(entry.scenarios) ? entry.scenarios : [];
+    const merged = [...authored, ...scenarios];
+    entry.scenarios = merged.length > 0 ? merged : null;
   }
 }
 
