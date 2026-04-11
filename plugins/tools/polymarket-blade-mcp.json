@@ -2,12 +2,55 @@
   "name": "polymarket-blade-mcp",
   "title": "Polymarket",
   "version": "0.1.0",
-  "description": "Polymarket prediction market data — events, markets, orderbooks, prices, analytics. Token-efficient, rate-limited.",
+  "description": "Polymarket prediction market data — events, markets, orderbooks, prices, analytics. 22 tools across 3 APIs. No credentials required.",
+  "tagline": "Real-time prediction market data, pricing, and analytics",
   "author": "groupthink-dev",
   "licence": "MIT",
   "tier": "certified",
   "contract": "prediction-market-v1",
   "homepage": "https://github.com/Groupthink-dev/polymarket-blade-mcp",
+  "repository": "https://github.com/Groupthink-dev/polymarket-blade-mcp",
+  "highlights": [
+    { "icon": "\ud83c\udfaf", "text": "Discovery \u2014 events, markets, categories, trending, search, sports" },
+    { "icon": "\ud83d\udcc8", "text": "Pricing \u2014 orderbooks, spreads, price history, last trade, tick size" },
+    { "icon": "\ud83d\udd0d", "text": "Analytics \u2014 open interest, top holders, leaderboard, volume" },
+    { "icon": "\u26a1", "text": "Batch tools \u2014 multi-token prices, orderbooks, spreads in one call" },
+    { "icon": "\ud83d\udd13", "text": "Zero credentials \u2014 public APIs, no auth needed, instant setup" },
+    { "icon": "\ud83d\udce6", "text": "Three APIs \u2014 Gamma (discovery), CLOB (pricing), Data (analytics)" }
+  ],
+  "links": [
+    { "label": "Source Code", "url": "https://github.com/Groupthink-dev/polymarket-blade-mcp" },
+    { "label": "Polymarket", "url": "https://polymarket.com" },
+    { "label": "API Documentation", "url": "https://docs.polymarket.com" },
+    { "label": "CLOB API Reference", "url": "https://docs.polymarket.com/#clob-api" }
+  ],
+  "readme": "### What it does\n\nPolymarket gives your AI agent access to the world\u2019s largest prediction market. Browse events across politics, crypto, sports, and culture. Get real-time prices, order books, and spreads. Analyse market structure with open interest, top holders, and trader leaderboards.\n\n22 tools span three Polymarket APIs, each serving a different purpose:\n\n### Three APIs, one server\n\n| API | Tools | Purpose |\n|-----|-------|---------|\n| Gamma | 9 | Discovery \u2014 events, markets, search, categories, trending, sports |\n| CLOB | 8 | Pricing \u2014 orderbooks, best price, spreads, history, last trade, tick size |\n| Data | 5 | Analytics \u2014 open interest, top holders, leaderboard, volume |\n\n### Batch operations\n\nScanning multiple markets? The batch tools (`pm_prices_batch`, `pm_orderbooks_batch`, `pm_spreads_batch`) fetch data for multiple tokens in a single call. This keeps your agent under rate limits and saves context window when comparing markets.\n\n### Zero-config setup\n\nPolymarket\u2019s public APIs require no authentication. Install the server and start querying immediately \u2014 no API keys, no OAuth, no certificate generation. The server handles rate limiting automatically.\n\n### What you can answer\n\n- What are the current odds on the next US election?\n- Which prediction markets have the highest volume today?\n- How has the price for a specific outcome moved over the past week?\n- Who are the largest holders in a controversial market?\n- What\u2019s the bid-ask spread on low-liquidity markets?",
+  "scenarios": [
+    {
+      "type": "workflow",
+      "target": "polymarket-blade-mcp",
+      "target_type": "plugin",
+      "shared_services": ["prediction-market"],
+      "label": "Daily prediction market briefing",
+      "body": "Fetch trending markets, get current prices for tracked events, check volume and price movement, and summarise the day\u2019s notable shifts."
+    },
+    {
+      "type": "workflow",
+      "target": "polymarket-blade-mcp",
+      "target_type": "plugin",
+      "shared_services": ["prediction-market"],
+      "label": "Deep-dive market analysis",
+      "body": "Search for an event by keyword, get all markets and current prices, pull orderbook depth and spreads, check top holders and open interest to assess market conviction."
+    },
+    {
+      "type": "workflow",
+      "target": "polymarket-blade-mcp",
+      "target_type": "plugin",
+      "shared_services": ["prediction-market"],
+      "label": "Cross-market price scan",
+      "body": "Batch-fetch prices across a category of markets, identify mispriced outcomes by comparing related events, and flag markets with unusual spread widening."
+    }
+  ],
   "install": {
     "runtime": "uv",
     "package": "polymarket-blade-mcp",
