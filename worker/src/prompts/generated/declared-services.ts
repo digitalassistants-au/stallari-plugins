@@ -14,7 +14,10 @@ export const DECLARED_SERVICES: string[] = [
   "filesystem",
   "gaming",
   "home",
+  "isp",
+  "leo-modem",
   "messages",
+  "network",
   "notifications",
   "postal",
   "prediction-market",
@@ -24,4 +27,5 @@ export const DECLARED_SERVICES: string[] = [
   "tasks",
   "transactional-email",
   "vault",
+  "vpn",
 ];
