@@ -1,0 +1,106 @@
+{
+  "name": "unifi-mcp",
+  "title": "UniFi (Full Management)",
+  "description": "Comprehensive UniFi network management — 161 tools covering devices, clients, networks, firewall, VPN, and system configuration",
+  "version": "1.5.5",
+  "author": "sirkirby",
+  "licence": "MIT",
+  "icon": "/icons/unifi-mcp.svg",
+  "tier": "community",
+  "contract": "network-v1",
+  "repository": "https://github.com/sirkirby/unifi-mcp",
+  "multi_instance": false,
+  "highlights": [
+    { "icon": "⚙️", "text": "161 tools — full network configuration management" },
+    { "icon": "🔄", "text": "Preview-then-confirm — safe write operations" },
+    { "icon": "📋", "text": "Claude Code plugin — available as npm package" },
+    { "icon": "🔐", "text": "TOTP 2FA — built-in support" }
+  ],
+  "links": [
+    { "label": "Source Code", "url": "https://github.com/sirkirby/unifi-mcp" },
+    { "label": "npm Package", "url": "https://www.npmjs.com/package/unifi-mcp" }
+  ],
+  "install": {
+    "runtime": "npx",
+    "package": "unifi-mcp"
+  },
+  "env": [
+    {
+      "name": "UNIFI_HOST",
+      "description": "UniFi controller IP or hostname"
+    },
+    {
+      "name": "UNIFI_USERNAME",
+      "description": "Controller admin username"
+    },
+    {
+      "name": "UNIFI_PASSWORD",
+      "description": "Controller admin password",
+      "secret": true
+    },
+    {
+      "name": "UNIFI_PORT",
+      "description": "Controller port (default 443)",
+      "default": "443"
+    },
+    {
+      "name": "UNIFI_SITE",
+      "description": "UniFi site ID",
+      "default": "default"
+    }
+  ],
+  "setup": {
+    "auth_model": "basic",
+    "complexity": "trivial",
+    "icon": "wifi.router",
+    "product": "Ubiquiti UniFi",
+    "blurb": "Full UniFi network management with 161 tools — devices, clients, networks, firewall, VPN, system config. For comprehensive configuration management.",
+    "help_text": "Enter your UniFi controller credentials. This MCP provides full management capability including network creation, VLAN configuration, and system settings.",
+    "help_links": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/sirkirby/unifi-mcp"
+      },
+      {
+        "label": "npm",
+        "url": "https://www.npmjs.com/package/unifi-mcp"
+      }
+    ],
+    "fields": [
+      {
+        "key": "UNIFI_HOST",
+        "label": "Controller Host",
+        "secret": false,
+        "placeholder": "192.168.1.1",
+        "required": true
+      },
+      {
+        "key": "UNIFI_USERNAME",
+        "label": "Username",
+        "secret": false,
+        "placeholder": "admin",
+        "required": true
+      },
+      {
+        "key": "UNIFI_PASSWORD",
+        "label": "Password",
+        "secret": true,
+        "placeholder": "Controller password",
+        "required": true
+      }
+    ],
+    "prerequisites": [
+      "UniFi controller (UDM, UDR, Cloud Key, or self-hosted)",
+      "Local admin account on the controller",
+      "Node.js runtime"
+    ]
+  },
+  "conformance": {
+    "required": "untested",
+    "recommended": "untested",
+    "optional": "untested",
+    "gated": "untested",
+    "last_tested": null
+  },
+  "notes": "Community listing for sirkirby/unifi-mcp (240+ stars). Full management MCP with 161 tools — use for network configuration changes. For monitoring and security visibility, use the certified ubiquiti-unifi-blade-mcp instead."
+}
