@@ -1,15 +1,28 @@
 {
   "name": "cloudflare-blade-mcp",
-  "title": "Cloudflare Platform",
-  "description": "Cloudflare platform operations — DNS zones and records, Workers KV storage, D1 databases, and Cloudflare Tunnels with token-efficient defaults and confirm gates",
-  "version": "0.1.0",
+  "title": "Cloudflare Edge Platform",
+  "description": "Manage your Cloudflare stack — DNS, Workers, Pages, R2, KV, D1, Tunnels, and cache purge. 53 tools with token-efficient output and safety gates on all writes.",
+  "tagline": "Full-stack Cloudflare management from DNS to deploy",
+  "version": "0.2.0",
   "author": "groupthink-dev",
   "licence": "MIT",
   "icon": "/icons/cloudflare-blade-mcp.svg",
   "tier": "certified",
-  "contract": "edge-platform-v1",
+  "contract": "edge-platform-v2",
   "homepage": "https://github.com/groupthink-dev/cloudflare-blade-mcp",
   "repository": "https://github.com/groupthink-dev/cloudflare-blade-mcp",
+  "highlights": [
+    { "icon": "8", "text": "Eight domains — DNS, Workers, Pages, R2, KV, D1, Tunnels, Cache" },
+    { "icon": "53", "text": "53 tools with full CRUD and observability" },
+    { "icon": "60%", "text": "Token-efficient formatters strip 60-80% of API noise" },
+    { "icon": "gate", "text": "Confirm gates on every destructive operation" }
+  ],
+  "links": [
+    { "label": "GitHub", "url": "https://github.com/groupthink-dev/cloudflare-blade-mcp" },
+    { "label": "Cloudflare Docs", "url": "https://developers.cloudflare.com/" },
+    { "label": "Create API Token", "url": "https://dash.cloudflare.com/profile/api-tokens" }
+  ],
+  "readme": "Cloudflare Edge Platform gives your AI agent full operational control over your Cloudflare infrastructure. Manage DNS records, deploy Workers, monitor Pages builds, store data in KV and D1, route traffic through Tunnels, manage R2 buckets, and purge cache — all through a single MCP server.\n\n**Token-efficient by design.** Every API response passes through a concise formatter that strips metadata noise and returns only the fields that matter. This saves 60-80% on context window usage compared to raw Cloudflare API responses.\n\n**Safety-first writes.** All destructive operations — record deletion, secret removal, cache purge, deployment rollback — require an explicit `confirm: true` parameter. Your agent can read freely but must be intentional about writes.\n\n**Eight integrated domains** cover the full Cloudflare platform: DNS zone and record management, Workers script deployment and versioning, Pages project observability and rollback, R2 bucket lifecycle, KV namespace storage, D1 SQLite databases, Cloudflare Tunnel routing, and edge cache purge.",
   "install": {
     "runtime": "node",
     "package": "cloudflare-blade-mcp",
@@ -18,12 +31,12 @@
   "env": [
     {
       "name": "CLOUDFLARE_API_TOKEN",
-      "description": "Cloudflare API token with Zone DNS Edit, Account Workers KV Edit, Account D1 Edit, and Account Tunnel Edit permissions",
+      "description": "Cloudflare API token with Zone DNS Edit, Workers Scripts/KV/D1/Tunnel/R2 Edit, Pages Read, Cache Purge permissions",
       "secret": true
     },
     {
       "name": "CLOUDFLARE_ACCOUNT_ID",
-      "description": "Cloudflare Account ID — required for KV, D1, and Tunnel tools. Found in dashboard overview page",
+      "description": "Cloudflare Account ID — required for KV, D1, Tunnel, Workers, Pages, and R2 tools",
       "secret": false
     },
     {
@@ -44,8 +57,8 @@
     "complexity": "moderate",
     "icon": "cloud.fill",
     "product": "Cloudflare Platform",
-    "blurb": "Manage DNS records, Workers KV, D1 databases, and Cloudflare Tunnels. Token-efficient concise output saves 60-80% on API response tokens.",
-    "help_text": "Create a custom API token at dash.cloudflare.com/profile/api-tokens. Grant Zone > DNS > Edit for DNS tools, and Account-level Workers KV Storage, D1, and Cloudflare Tunnel Edit permissions for the remaining tools. Tokens can be scoped to specific zones if you only need DNS.",
+    "blurb": "Manage DNS, Workers, Pages, R2, KV, D1, Tunnels, and Cache. 53 tools with token-efficient output.",
+    "help_text": "Create a custom API token at dash.cloudflare.com/profile/api-tokens. Grant Zone > DNS > Edit, Account > Workers Scripts/KV/D1/Tunnel/R2 > Edit, and Zone > Cache Purge > Purge permissions. Tokens can be scoped to specific zones if you only need DNS.",
     "help_url": "https://developers.cloudflare.com/fundamentals/api/get-started/create-token/",
     "fields": [
       {
@@ -85,9 +98,7 @@
     ]
   },
   "conformance": {
-    "required": "12/12",
-    "recommended": "5/5",
-    "gated": "14/14",
-    "last_tested": "2026-04-04"
+    "required": "53/53",
+    "last_tested": "2026-04-11"
   }
 }

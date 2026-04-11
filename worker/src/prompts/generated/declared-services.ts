@@ -5,6 +5,7 @@ export const DECLARED_SERVICES: string[] = [
   "accounting",
   "betting-exchange",
   "billing",
+  "brokerage",
   "calendar",
   "dns",
   "drive",

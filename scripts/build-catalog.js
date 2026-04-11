@@ -99,6 +99,12 @@ function pluginToCatalogEntry(raw) {
     setup_icon: setup?.icon || null,
     // Full setup block for install wizard credential forms
     setup: setup || null,
+    // v1.2: rich detail fields
+    tagline: raw.tagline || null,
+    readme: raw.readme || null,
+    highlights: Array.isArray(raw.highlights) && raw.highlights.length > 0 ? raw.highlights : null,
+    links: Array.isArray(raw.links) && raw.links.length > 0 ? raw.links : null,
+    hero: raw.hero || null,
   };
 }
 
@@ -173,6 +179,12 @@ function packToCatalogEntry(pack) {
     has_encryption: !!pack.encryption,
     has_readme: !!pack.readme,
     bundled: !!pack.bundled,
+    // v1.2: rich detail fields
+    tagline: pack.tagline || null,
+    readme: pack.readme || null,
+    highlights: Array.isArray(pack.highlights) && pack.highlights.length > 0 ? pack.highlights : null,
+    links: Array.isArray(pack.links) && pack.links.length > 0 ? pack.links : null,
+    hero: pack.hero || null,
     // v1.4: webhook metadata (DD113)
     webhook_count: webhookCount > 0 ? webhookCount : null,
     // v1.3: org access control (DD104)
