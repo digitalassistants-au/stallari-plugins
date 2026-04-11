@@ -507,17 +507,29 @@ skills:
 
   - name: mcp-lifecycle
     agent: fleet-operator
-    description: Monitor MCP server lifecycle and resource usage
+    description: Detect unused or unhealthy MCP servers and manage lifecycle
+    tier: reasoning
     category: review
     services_used:
       - service: vault
         operations: [read, create]
     trigger:
       schedule: "0 */4 * * *"
+      on_demand: true
     graph: react
     prompt: |
-      Check MCP server processes for orphans, resource leaks, and restart loops.
-      Report servers exceeding resource budgets.
+      Audit MCP server fleet health and lifecycle:
+
+      1. **Process health** — check MCP server processes for orphans, resource
+         leaks, restart loops, and servers exceeding resource budgets.
+      2. **Usage analysis** — identify MCP servers with no invocations in the
+         last 30+ days. Flag as candidates for decommission or reconfiguration.
+      3. **Error patterns** — detect servers with repeated errors, elevated
+         latency, or degraded availability. Suggest restart or investigation.
+      4. **Cleanup actions** — for unused or unhealthy servers, recommend
+         specific actions (restart, disable, remove from config).
+
+      Write a structured audit note to the vault with findings and actions.
 
   - name: capacity-forecast
     agent: fleet-operator
