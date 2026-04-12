@@ -98,7 +98,8 @@
         "label": "OneDrive API Reference",
         "url": "https://learn.microsoft.com/en-us/onedrive/developer/rest-api/"
       }
-    ]
+    ],
+    "setup_guide": "guides/onedrive-setup.md"
   },
   "highlights": [
     {

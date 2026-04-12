@@ -418,6 +418,10 @@
           "type": "array",
           "items": { "type": "string" },
           "description": "Human-readable external prerequisites (e.g. 'Xero developer account', 'Google Cloud project with Gmail API enabled')."
+        },
+        "setup_guide": {
+          "type": "string",
+          "description": "Relative path to a setup guide markdown file (e.g. 'guides/onedrive-setup.md'). When present, the setup UI shows a step-by-step walkthrough instead of the flat help_text."
         }
       }
     },
