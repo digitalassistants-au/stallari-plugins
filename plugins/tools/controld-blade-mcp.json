@@ -1,0 +1,120 @@
+{
+  "name": "controld-blade-mcp",
+  "title": "Control-D — DNS Filtering & Privacy",
+  "description": "Control-D DNS management — profiles, content filters, service routing, custom rules, device endpoints, and analytics. 22 tools with write gating and credential scrubbing.",
+  "tagline": "DNS filtering and privacy from the conversation",
+  "version": "0.1.0",
+  "author": "groupthink-dev",
+  "licence": "MIT",
+  "icon": "/icons/controld-blade-mcp.svg",
+  "tier": "certified",
+  "contract": "dns-v1",
+  "homepage": "https://github.com/Groupthink-dev/controld-blade-mcp",
+  "repository": "https://github.com/Groupthink-dev/controld-blade-mcp",
+  "highlights": [
+    { "icon": "\ud83d\udee1\ufe0f", "text": "Profiles \u2014 create, configure, and clone DNS filtering profiles" },
+    { "icon": "\ud83d\udeab", "text": "Filtering \u2014 native and external blocklists, per-profile toggle" },
+    { "icon": "\ud83c\udf10", "text": "Services \u2014 block, bypass, spoof, or redirect 300+ named services" },
+    { "icon": "\ud83d\udcdd", "text": "Custom rules \u2014 hostname-level DNS rules with folder organisation" },
+    { "icon": "\ud83d\udcbb", "text": "Devices \u2014 endpoint management with per-device profile assignment" },
+    { "icon": "\ud83d\udd12", "text": "Write-gated \u2014 reads always work, writes require explicit opt-in" }
+  ],
+  "links": [
+    { "label": "Source Code", "url": "https://github.com/Groupthink-dev/controld-blade-mcp" },
+    { "label": "Control-D API Docs", "url": "https://docs.controld.com/reference" },
+    { "label": "Control-D Dashboard", "url": "https://controld.com/dashboard" }
+  ],
+  "readme": "### What it does\n\nControl-D Blade gives your AI agent full operational control over a Control-D DNS filtering account \u2014 the privacy-first DNS service that blocks ads, trackers, malware, and lets you route traffic through global proxies on a per-service basis.\n\n22 tools across 8 categories cover the operational surface: account info, DNS profiles, content filters (native and third-party blocklists), service-level rules (block/bypass/spoof/redirect for 300+ named services), custom hostname rules, device endpoint management, IP access control, and analytics configuration.\n\n### Token efficiency\n\nDNS APIs return deeply nested JSON with metadata fields irrelevant to agent workflows. Each tool includes a concise formatter that extracts only actionable fields \u2014 pipe-delimited output at ~20\u201330 tokens per entity vs 80\u2013120 for raw JSON. The service catalog is cached in-memory (1hr TTL) to avoid redundant API calls.\n\n### Safety model\n\nAll 22 tools follow a read-free, write-gated pattern:\n\n- **Reads** (12 tools) work immediately \u2014 list profiles, inspect filters, search rules\n- **Writes** (10 tools) require `CONTROLD_WRITE_ENABLED=true`\n- **Destructive operations** (rule delete, IP deauthorize) require an additional `confirm=true` parameter\n\nCredentials are scrubbed from all error messages before they reach the LLM context.\n\n### Tool inventory\n\n| Category | Read | Write | What you can do |\n|----------|------|-------|-----------------|\n| Info | 3 | \u2014 | Account status, caller IP, network PoPs |\n| Profiles | 2 | 2 | List, inspect, create, update DNS profiles |\n| Filters | 1 | 1 | Native + external blocklists, batch toggle |\n| Services | 2 | 1 | Service catalog, active rules, set actions |\n| Rules | 2 | 3 | Custom hostname rules with folders |\n| Devices | 1 | 2 | Endpoints with profile assignment |\n| Access | 1 | 1 | IP authorisation on device endpoints |\n| Analytics | 1 | \u2014 | Log levels and storage regions |",
+  "install": {
+    "runtime": "uv",
+    "package": "controld-blade-mcp",
+    "command": "controld-blade-mcp"
+  },
+  "env": [
+    {
+      "name": "CONTROLD_API_KEY",
+      "description": "Control-D API token (from controld.com/dashboard/api)",
+      "secret": true
+    },
+    {
+      "name": "CONTROLD_WRITE_ENABLED",
+      "description": "Enable write operations (default: false)",
+      "secret": false,
+      "default": "false"
+    }
+  ],
+  "setup": {
+    "auth_model": "api_key",
+    "complexity": "trivial",
+    "icon": "shield",
+    "product": "Control-D",
+    "blurb": "DNS filtering and privacy \u2014 block ads, trackers, and malware with per-device policies and global service routing.",
+    "help_text": "Provide your Control-D API key. Get it from the Control-D dashboard under API settings. Enable write operations only if you want the agent to modify profiles, rules, and devices.",
+    "fields": [
+      {
+        "key": "CONTROLD_API_KEY",
+        "label": "API Key",
+        "secret": true,
+        "required": true,
+        "placeholder": "Get from controld.com/dashboard/api",
+        "help": "Control-D API token with appropriate permissions"
+      },
+      {
+        "key": "CONTROLD_WRITE_ENABLED",
+        "label": "Enable Writes",
+        "secret": false,
+        "required": false,
+        "type": "boolean",
+        "help": "Allow the agent to create, update, and delete profiles, rules, and devices"
+      }
+    ],
+    "test": {
+      "endpoint": "https://api.controld.com/users",
+      "auth_style": "bearer"
+    },
+    "help_links": [
+      {
+        "label": "Control-D API Reference",
+        "url": "https://docs.controld.com/reference"
+      },
+      {
+        "label": "Get API Key",
+        "url": "https://controld.com/dashboard/api"
+      }
+    ]
+  },
+  "scenarios": [
+    {
+      "type": "workflow",
+      "target": "controld-blade-mcp",
+      "target_type": "plugin",
+      "shared_services": ["dns"],
+      "label": "Audit DNS filtering coverage",
+      "body": "Pull all profiles with cd_profiles, check active filters and custom rules for each, review service-level blocks, and summarise protection gaps across devices."
+    },
+    {
+      "type": "workflow",
+      "target": "controld-blade-mcp",
+      "target_type": "plugin",
+      "shared_services": ["dns"],
+      "label": "Block a domain across all profiles",
+      "body": "List profiles with cd_profiles, then create a custom BLOCK rule for the target hostname on each profile using cd_rule_create. Verify the rules are active with cd_rules."
+    },
+    {
+      "type": "workflow",
+      "target": "controld-blade-mcp",
+      "target_type": "plugin",
+      "shared_services": ["dns"],
+      "label": "Route streaming through a proxy",
+      "body": "Search the service catalog with cd_service_catalog for the streaming service, then set a SPOOF rule with a proxy location using cd_service_update. Verify with cd_services."
+    }
+  ],
+  "conformance": {
+    "required": "6/6",
+    "recommended": "6/6",
+    "gated": "11/11",
+    "details": {
+      "note": "Full dns-v1 conformance via 22-tool Control-D API coverage. Write operations gated by CONTROLD_WRITE_ENABLED env var."
+    }
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "name": "adguard-home-mcp",
+  "title": "AdGuard Home — Network-Wide DNS Shield",
+  "description": "Full-coverage AdGuard Home management — DNS config, filtering rules, blocklists, query log, clients, DHCP, rewrites, safe browsing, parental controls, TLS, and blocked services. 65 tools with read-only mode and credential sanitisation.",
+  "tagline": "Your entire AdGuard Home from the conversation",
+  "version": "0.7.0",
+  "author": "samik081",
+  "licence": "MIT",
+  "icon": "/icons/adguard-home-mcp.svg",
+  "tier": "verified",
+  "contract": "dns-v1",
+  "homepage": "https://github.com/Samik081/mcp-adguard-home",
+  "repository": "https://github.com/Samik081/mcp-adguard-home",
+  "highlights": [
+    { "icon": "\ud83d\udee1\ufe0f", "text": "Filtering \u2014 blocklists, custom rules, safe browsing, parental, safe search" },
+    { "icon": "\ud83d\udcca", "text": "Query log \u2014 search, inspect, and clear DNS query history" },
+    { "icon": "\ud83d\udcbb", "text": "Clients \u2014 per-device policies, persistent config, runtime discovery" },
+    { "icon": "\ud83c\udf10", "text": "DNS \u2014 upstream servers, rate limiting, cache, access lists, rewrites" },
+    { "icon": "\ud83d\udd12", "text": "TLS & DHCP \u2014 certificate management, DHCP leases and static mappings" },
+    { "icon": "\u2699\ufe0f", "text": "Access tiers \u2014 read-only mode (29 tools) or full access (65 tools)" }
+  ],
+  "links": [
+    { "label": "Source Code", "url": "https://github.com/Samik081/mcp-adguard-home" },
+    { "label": "AdGuard Home API", "url": "https://github.com/AdguardTeam/AdGuardHome/tree/master/openapi" },
+    { "label": "AdGuard Home Docs", "url": "https://adguard.com/adguard-home/overview.html" }
+  ],
+  "readme": "### What it does\n\nAdGuard Home MCP gives your AI agent full operational control over a self-hosted AdGuard Home instance \u2014 the network-wide DNS filter that blocks ads, trackers, malware, and adult content for every device on your network.\n\n65 tools across 16 categories cover the entire AdGuard Home API: global protection status, DNS configuration, query log analysis, filtering rules, blocklist management, safe browsing, parental controls, safe search, per-client policies, DHCP, DNS rewrites, TLS certificates, blocked services, and access control.\n\n### Access tiers\n\nTwo access modes keep your instance safe:\n\n- **Read-only** (29 tools) \u2014 query status, inspect config, search logs. No mutations.\n- **Full access** (65 tools) \u2014 everything including rule changes, client config, DHCP, TLS.\n\nSet `ADGUARD_ACCESS_TIER=read-only` for monitoring-only agents. Default is `full`.\n\n### Fine-grained tool control\n\nBeyond tiers, you can scope exactly which tools are exposed:\n\n- `ADGUARD_CATEGORIES` \u2014 only load specific categories (e.g. `filtering,querylog`)\n- `ADGUARD_TOOL_WHITELIST` / `ADGUARD_TOOL_BLACKLIST` \u2014 per-tool allow/deny\n\nThis keeps the tool list tight for focused agents and reduces context window usage.\n\n### Credential safety\n\nAll error messages pass through `sanitizeMessage()` which strips usernames, passwords, and base64-encoded auth headers before they reach the LLM context. Your AdGuard Home credentials never leak into conversation history.\n\n### Domain coverage\n\n| Category | Tools | What you can do |\n|----------|-------|-----------------|\n| Global | 3 | Protection status, DNS status, version info |\n| DNS | 7 | Upstream config, rate limits, cache, access lists |\n| Filtering | 7 | Blocklists, custom rules, enable/disable, check host |\n| Query Log | 4 | Search, inspect, configure, clear |\n| Stats | 4 | Query stats, top clients, reset, configure |\n| Clients | 6 | Persistent config, runtime discovery, per-client policy |\n| Rewrites | 3 | DNS rewrites for local resolution |\n| Blocked Services | 4 | Service-level blocking (social media, gaming, etc.) |\n| Safe Browsing | 2 | Google Safe Browsing integration |\n| Parental | 2 | Parental control filter |\n| Safe Search | 3 | Per-service safe search enforcement |\n| DHCP | 6 | Server config, leases, static mappings |\n| TLS | 3 | Certificate status, configuration, validation |\n| Access | 3 | Allowed/blocked client and domain lists |\n| Install | 2 | Initial setup configuration |\n| Mobile | 1 | Mobile client configuration profile |",
+  "install": {
+    "runtime": "node",
+    "package": "@samik081/mcp-adguard-home",
+    "command": "mcp-adguard-home"
+  },
+  "env": [
+    {
+      "name": "ADGUARD_URL",
+      "description": "AdGuard Home base URL (e.g. http://192.168.1.1:3000)",
+      "secret": false
+    },
+    {
+      "name": "ADGUARD_USERNAME",
+      "description": "AdGuard Home admin username",
+      "secret": false
+    },
+    {
+      "name": "ADGUARD_PASSWORD",
+      "description": "AdGuard Home admin password",
+      "secret": true
+    },
+    {
+      "name": "ADGUARD_ACCESS_TIER",
+      "description": "Access level: full (65 tools) or read-only (29 tools)",
+      "secret": false,
+      "default": "full"
+    },
+    {
+      "name": "ADGUARD_CATEGORIES",
+      "description": "Comma-separated list of tool categories to expose (omit for all)",
+      "secret": false,
+      "default": ""
+    }
+  ],
+  "setup": {
+    "auth_model": "basic",
+    "complexity": "trivial",
+    "icon": "shield.checkered",
+    "product": "AdGuard Home",
+    "blurb": "Network-wide DNS filtering — ads, trackers, malware, and parental controls for every device.",
+    "help_text": "Provide the URL and admin credentials for your AdGuard Home instance. Use read-only tier for monitoring agents.",
+    "fields": [
+      {
+        "key": "ADGUARD_URL",
+        "label": "AdGuard Home URL",
+        "secret": false,
+        "placeholder": "http://192.168.1.1:3000",
+        "required": true,
+        "help": "Base URL of your AdGuard Home instance (including port)"
+      },
+      {
+        "key": "ADGUARD_USERNAME",
+        "label": "Username",
+        "secret": false,
+        "placeholder": "admin",
+        "required": true,
+        "help": "AdGuard Home admin username"
+      },
+      {
+        "key": "ADGUARD_PASSWORD",
+        "label": "Password",
+        "secret": true,
+        "required": true,
+        "help": "AdGuard Home admin password"
+      }
+    ],
+    "test": {
+      "endpoint": "{ADGUARD_URL}/control/status",
+      "auth_style": "basic"
+    },
+    "help_links": [
+      {
+        "label": "AdGuard Home Setup",
+        "url": "https://adguard.com/adguard-home/getting-started.html"
+      },
+      {
+        "label": "API Documentation",
+        "url": "https://github.com/AdguardTeam/AdGuardHome/tree/master/openapi"
+      }
+    ]
+  },
+  "scenarios": [
+    {
+      "type": "workflow",
+      "target": "adguard-home-mcp",
+      "target_type": "plugin",
+      "shared_services": ["dns"],
+      "label": "Audit blocking effectiveness",
+      "body": "Pull query stats and top blocked domains, review active blocklists, check for any client-specific overrides that might weaken protection, and summarise filtering coverage."
+    },
+    {
+      "type": "workflow",
+      "target": "adguard-home-mcp",
+      "target_type": "plugin",
+      "shared_services": ["dns"],
+      "label": "Set up kid-safe browsing",
+      "body": "Enable parental controls and safe search, create a client policy for the child's devices, block social media and gaming services, and verify the rules are active in the query log."
+    },
+    {
+      "type": "workflow",
+      "target": "adguard-home-mcp",
+      "target_type": "plugin",
+      "shared_services": ["dns"],
+      "label": "Investigate slow DNS resolution",
+      "body": "Check upstream DNS servers and their response times, review cache hit rates, inspect rate limiting config, and search query log for patterns of slow or failed lookups."
+    }
+  ],
+  "conformance": {
+    "required": "6/6",
+    "recommended": "6/6",
+    "gated": "11/11",
+    "details": {
+      "note": "Full dns-v1 conformance via 65-tool AdGuard Home API coverage. Access tier and category filtering provide granular control."
+    }
+  }
+}

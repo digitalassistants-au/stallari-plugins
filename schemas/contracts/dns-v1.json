@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sidereal.dev/schemas/contracts/dns-v1.json",
+  "title": "dns-v1",
+  "description": "DNS filtering and privacy service contract v1 — 22 operations for profile-based DNS policy management, content filtering, service routing, custom rules, and device endpoint management. Designed for Control-D, NextDNS, AdGuard, and similar DNS filtering services.",
+  "type": "object",
+  "properties": {
+    "name": { "const": "dns-v1" },
+    "service": { "const": "dns" },
+    "version": { "const": 1 }
+  },
+  "operations": [
+    {
+      "name": "dns_info",
+      "description": "Account info and connectivity health check — caller IP, PoP, account status",
+      "classification": "required"
+    },
+    {
+      "name": "dns_profiles",
+      "description": "List all DNS filtering profiles with rule/device counts",
+      "classification": "required"
+    },
+    {
+      "name": "dns_profile",
+      "description": "Get full detail for a single profile including active options",
+      "classification": "required"
+    },
+    {
+      "name": "dns_filters",
+      "description": "List native and third-party content filters for a profile",
+      "classification": "required"
+    },
+    {
+      "name": "dns_rules",
+      "description": "List custom hostname-level DNS rules for a profile",
+      "classification": "required"
+    },
+    {
+      "name": "dns_devices",
+      "description": "List DNS endpoints (devices/resolvers) with profile assignments",
+      "classification": "required"
+    },
+    {
+      "name": "dns_network",
+      "description": "Service availability and latency across points of presence",
+      "classification": "recommended"
+    },
+    {
+      "name": "dns_services",
+      "description": "List active service-level rules (block/bypass/redirect) for a profile",
+      "classification": "recommended"
+    },
+    {
+      "name": "dns_service_catalog",
+      "description": "Full catalog of blockable/routable services and proxy locations",
+      "classification": "recommended"
+    },
+    {
+      "name": "dns_default_rule",
+      "description": "Get the catch-all default rule for a profile",
+      "classification": "recommended"
+    },
+    {
+      "name": "dns_access",
+      "description": "List IPs that have queried a device endpoint",
+      "classification": "recommended"
+    },
+    {
+      "name": "dns_analytics_config",
+      "description": "Analytics configuration — log levels and storage regions",
+      "classification": "recommended"
+    },
+    {
+      "name": "dns_profile_create",
+      "description": "Create a new DNS filtering profile (blank or cloned)",
+      "classification": "gated"
+    },
+    {
+      "name": "dns_profile_update",
+      "description": "Update profile settings (name, TTL, lock status)",
+      "classification": "gated"
+    },
+    {
+      "name": "dns_filters_update",
+      "description": "Enable/disable content filters (single or batch)",
+      "classification": "gated"
+    },
+    {
+      "name": "dns_service_update",
+      "description": "Set a service-level rule — block, bypass, spoof, or redirect",
+      "classification": "gated"
+    },
+    {
+      "name": "dns_rule_create",
+      "description": "Create custom hostname-level DNS rules",
+      "classification": "gated"
+    },
+    {
+      "name": "dns_rule_update",
+      "description": "Update existing custom DNS rules",
+      "classification": "gated"
+    },
+    {
+      "name": "dns_rule_delete",
+      "description": "Delete a custom DNS rule (destructive, requires confirmation)",
+      "classification": "gated"
+    },
+    {
+      "name": "dns_default_rule_set",
+      "description": "Set the default catch-all rule for a profile",
+      "classification": "gated"
+    },
+    {
+      "name": "dns_device_create",
+      "description": "Create a new DNS endpoint (device/resolver)",
+      "classification": "gated"
+    },
+    {
+      "name": "dns_device_update",
+      "description": "Update device settings (profile assignment, name, status)",
+      "classification": "gated"
+    },
+    {
+      "name": "dns_access_update",
+      "description": "Authorize or deauthorize IP access on a device (requires confirmation)",
+      "classification": "gated"
+    }
+  ]
+}
