@@ -1,0 +1,431 @@
+pack: "1.6"
+name: gaming-lounge
+title: "Gaming Lounge"
+featured: true
+version: "1.0.0"
+tagline: "PlayStation, Xbox, and Steam in one conversation — friends, trophies, and game night coordination"
+description: >-
+  Cross-platform gaming presence — friends online, achievement progress, game
+  libraries, and session coordination across PlayStation, Xbox, and Steam.
+  Three platforms, one agent, zero tab-switching.
+icon: /icons/gaming-lounge.svg
+author:
+  name: Stallari
+  url: https://stallari.ai
+licence: Proprietary
+visibility: open
+tier: certified
+author_type: first-party
+readiness: beta
+pricing: null
+bundled: false
+
+readme:
+  format: markdown
+  body: |
+    # Gaming Lounge
+
+    Cross-platform gaming presence for Stallari — PlayStation, Xbox, and Steam
+    unified in one conversation. See who's online across all platforms, compare
+    achievements, browse game libraries, and coordinate game night without
+    switching between three apps.
+
+    ## What it does
+
+    Stop checking three apps to find out who's online. The Gaming Lounge gives
+    your agent visibility across PlayStation Network, Xbox Live, and Steam
+    simultaneously. One question — "who's online?" — returns friends from all
+    three platforms.
+
+    ## Platform coverage
+
+    | Platform | Contract | Certified plugin | Community |
+    |----------|----------|-----------------|-----------|
+    | PlayStation | `gaming-v1` | PSN Blade (16 tools) | — |
+    | Xbox | `gaming-v1` | Xbox Live Blade (22 tools) | Xbox OpenXBL (6 tools) |
+    | Steam | `gaming-v1` | Steam Blade (12 tools) | — |
+
+    ## What the contract gives you
+
+    Every gaming plugin implements the same `gaming-v1` contract, so skills
+    work identically across platforms:
+
+    | Operation | PSN | Xbox | Steam |
+    |-----------|-----|------|-------|
+    | Profile | ✓ | ✓ | ✓ |
+    | Achievements/Trophies | ✓ | ✓ | ✓ |
+    | Game library | ✓ | ✓ | ✓ |
+    | Friends + presence | ✓ | ✓ | ✓ |
+    | Game search | ✓ | ✓ | ✓ |
+    | Messaging | ✓ (gated) | ✓ (gated) | ✗ (deprecated) |
+    | SmartGlass/console | ✗ | ✓ (gated) | ✗ |
+
+    Install only the platforms you use. The pack degrades gracefully — if you
+    only have Steam and PSN, Xbox skills are simply skipped.
+
+    ## Skills overview
+
+    ### Social
+    - **whos-online** — Cross-platform friends check: who's online, what are they playing?
+    - **game-night** — Coordinate a session: find a game everyone owns, check who's free
+
+    ### Collection
+    - **trophy-hunt** — Achievement progress across all platforms, rare trophy finder
+    - **library-census** — Complete game inventory with play time stats
+
+    ### Discovery
+    - **game-scout** — Search across all platform catalogs, compare prices and player counts
+
+    ## Safety model
+
+    This pack is **read-only**. It never sends messages, adds friends, or
+    controls consoles. If you want those capabilities, use the individual
+    plugins directly with write mode enabled.
+
+highlights:
+  - "Three platforms — PSN, Xbox, and Steam friends, trophies, and libraries in one view"
+  - "gaming-v1 contract — same operations, different platforms, skills work everywhere"
+  - "Graceful degradation — install only the platforms you use"
+  - "Read-only pack — no messages, no friend requests, no console control"
+  - "Game Night skill — find games everyone owns and coordinate sessions"
+
+links:
+  - label: Stallari Marketplace
+    url: https://marketplace.stallari.app
+  - label: Gaming contract (gaming-v1)
+    url: https://stallari.dev/schemas/contracts/gaming-v1
+
+min_sidereal: "0.60"
+
+# ── Plugin suggestions ──────────────────────────────────────────────
+
+suggested_plugins:
+  - service: gaming
+    required: true
+    note: "Install one or more gaming platform plugins. At least one required."
+    plugins:
+      - name: psn-blade-mcp
+        title: "PlayStation Network"
+        author_type: first-party
+        note: "Trophies, game library, friends, presence. NPSSO token auth."
+      - name: xboxlive-blade-mcp
+        title: "Xbox Live"
+        author_type: first-party
+        note: "Full Xbox Live — profiles, achievements, SmartGlass, messaging. Azure OAuth."
+      - name: xbox-openxbl-mcp
+        title: "Xbox Live (OpenXBL)"
+        author_type: community
+        note: "Simpler Xbox access via API key proxy. Read-only, limited coverage."
+      - name: steam-blade-mcp
+        title: "Steam"
+        author_type: first-party
+        note: "Library, achievements, friends, store, market prices. API key auth."
+
+# ── Service requirements ────────────────────────────────────────────
+
+requires:
+  services:
+    - service: gaming
+      operations:
+        - profile
+        - achievements
+        - achievement_summary
+        - games_played
+
+recommends:
+  services:
+    - service: gaming
+      operations:
+        - games_recent
+        - friends
+        - presence
+        - search_users
+        - achievement_compare
+        - game_details
+        - search_games
+    - service: notifications
+      operations: [send]
+
+data:
+  reads: [gaming]
+  writes: []
+  stores: nothing
+  phones_home: false
+
+# ── Agent ───────────────────────────────────────────────────────────
+
+agents:
+  gaming-operator:
+    role: operator
+    prompt: |
+      You are a gaming operator for the Stallari Gaming Lounge pack. You have
+      visibility across PlayStation Network, Xbox Live, and Steam — whichever
+      platforms the user has configured.
+
+      Your job is cross-platform gaming intelligence. When the user asks "who's
+      online?", you check all configured platforms. When they ask about a game,
+      you search all catalogs. When they want to compare achievements, you pull
+      from every platform.
+
+      Platform detection:
+        - Try each platform's profile/info call at the start of cross-platform
+          skills. If a call fails with "no provider", that platform isn't
+          configured — skip it silently and note it in output.
+        - Always report which platforms were checked so the user knows the
+          scope of your answer.
+
+      Safety rules:
+        - This pack is read-only. Never call gated operations (send_message,
+          friend_add, friend_remove, SmartGlass commands).
+        - If the user asks to send a message or power on a console, explain
+          that the Lounge is read-only and suggest they use the platform
+          plugin directly with write mode enabled.
+
+      Output style:
+        - Use platform emoji prefixes: 🎮 PSN, 🟢 Xbox, 🎯 Steam
+        - Group results by platform, then synthesise cross-platform insights
+        - Keep output scannable — tables for lists, bullet points for findings
+
+    model_preference:
+      - claude-sonnet-4-6
+
+# ── Skills ──────────────────────────────────────────────────────────
+
+skills:
+
+  # ── Social ───────────────────────────────────────────────────────
+
+  - name: whos-online
+    agent: gaming-operator
+    description: Cross-platform friends check — who's online and what are they playing?
+    tier: standard
+    category: report
+    graph: react-extract
+    services_used:
+      - service: gaming
+        operations: [friends, presence]
+    trigger:
+      on_demand: true
+    outputs:
+      - type: report
+        description: "Cross-platform online friends with current activity"
+    prompt: |
+      Check who's online across all configured gaming platforms.
+
+      For each platform:
+        - Call {{gaming.friends}} to get the friends list with online status
+        - For online friends, check {{gaming.presence}} for current activity
+
+      Present results grouped by platform:
+
+      **🎮 PlayStation** (if configured)
+      | Friend | Status | Playing |
+      |--------|--------|---------|
+
+      **🟢 Xbox** (if configured)
+      | Friend | Status | Playing |
+      |--------|--------|---------|
+
+      **🎯 Steam** (if configured)
+      | Friend | Status | Playing |
+      |--------|--------|---------|
+
+      Then synthesise: "N friends online across K platforms. M are playing
+      the same game." Highlight any cross-platform friends (same display name
+      appearing on multiple platforms — note this is a heuristic).
+
+  - name: game-night
+    agent: gaming-operator
+    description: Coordinate a gaming session — find common games and available friends
+    tier: reasoning
+    category: triage
+    graph: react
+    services_used:
+      - service: gaming
+        operations: [friends, presence, games_played, games_recent, search_users]
+    inputs:
+      - key: friends
+        type: string
+        label: Friends to include
+        description: "Comma-separated display names or gamertags to check"
+        required: false
+      - key: game
+        type: string
+        label: Target game
+        description: "Specific game to check ownership for (optional)"
+        required: false
+    trigger:
+      on_demand: true
+    outputs:
+      - type: report
+        description: "Game night coordination report with availability and common games"
+    prompt: |
+      Coordinate a gaming session by finding who's available and what you can
+      play together.
+
+      If config.friends is provided, focus on those specific players. Otherwise,
+      check all online friends.
+
+      If config.game is provided, check ownership of that specific game.
+      Otherwise, find common games.
+
+      Steps:
+        1. For each configured platform, call {{gaming.friends}} and
+           {{gaming.presence}} to find who's online or recently active.
+
+        2. If specific friends are named (config.friends), look them up via
+           {{gaming.search_users}} on each platform.
+
+        3. For each candidate friend, call {{gaming.games_played}} or
+           {{gaming.games_recent}} to get their library.
+
+        4. Cross-reference libraries to find games that multiple people own.
+           Prioritise games with recent play time (more likely installed).
+
+        5. If config.game is set, check each friend's library for that
+           specific title.
+
+      Present:
+        - **Available friends** — who's online or recently active, by platform
+        - **Common games** — titles owned by 2+ people, sorted by player count
+        - **Recommendation** — "You could play [Game] with [Friend1] and
+          [Friend2] on [Platform]"
+
+      If a friend appears on multiple platforms, note which platform has the
+      game in common.
+
+  # ── Collection ───────────────────────────────────────────────────
+
+  - name: trophy-hunt
+    agent: gaming-operator
+    description: Achievement progress across all platforms with rare trophy finder
+    tier: standard
+    category: report
+    graph: react-extract
+    services_used:
+      - service: gaming
+        operations: [achievement_summary, achievements, achievement_compare, achievement_groups, games_recent]
+    inputs:
+      - key: game
+        type: string
+        label: Game title
+        description: "Focus on a specific game (optional — omit for overview)"
+        required: false
+      - key: compare_with
+        type: string
+        label: Compare with friend
+        description: "Display name or gamertag to compare achievements against"
+        required: false
+    trigger:
+      on_demand: true
+    outputs:
+      - type: report
+        description: "Achievement progress report with rare trophy highlights"
+    prompt: |
+      Generate an achievement/trophy progress report across all configured
+      gaming platforms.
+
+      **Overview mode** (no game specified):
+        - Call {{gaming.achievement_summary}} on each platform for the user's
+          overall stats (level, total trophies/gamerscore, completion rates).
+        - Call {{gaming.games_recent}} to find recently played games.
+        - For the top 5 recent games, call {{gaming.achievements}} to check
+          completion percentage.
+        - Highlight games closest to 100% completion ("you're 2 trophies away
+          from platinum in [Game]").
+
+      **Game-specific mode** (config.game provided):
+        - Search for the game on each platform.
+        - Call {{gaming.achievements}} for detailed achievement lists.
+        - Call {{gaming.achievement_groups}} if available for DLC breakdowns.
+        - Highlight unearned achievements, sorted by global unlock rate
+          (rarest first).
+
+      **Comparison mode** (config.compare_with provided):
+        - Look up the friend on each platform.
+        - Call {{gaming.achievement_compare}} for head-to-head.
+        - Show who's ahead overall and per-game.
+
+      Present a summary table:
+
+      | Platform | Level/Score | Completion | Recent highlight |
+      |----------|------------|------------|------------------|
+
+  - name: library-census
+    agent: gaming-operator
+    description: Complete game inventory across all platforms with play time stats
+    tier: standard
+    category: report
+    graph: react-extract
+    services_used:
+      - service: gaming
+        operations: [games_played, games_recent, games_purchased, game_details]
+    trigger:
+      on_demand: true
+    outputs:
+      - type: report
+        description: "Cross-platform game library inventory"
+    prompt: |
+      Build a complete inventory of the user's game library across all
+      configured platforms.
+
+      For each platform:
+        - Call {{gaming.games_played}} for the full library with play time.
+        - Call {{gaming.games_recent}} for recent activity.
+        - Call {{gaming.games_purchased}} if available for purchase history.
+
+      Present by platform, sorted by play time (descending):
+
+      **🎮 PlayStation** — N games, X hours total
+      | Game | Play time | Last played |
+      |------|-----------|-------------|
+
+      (repeat for each platform)
+
+      Then synthesise cross-platform stats:
+        - Total games owned across all platforms
+        - Total play time
+        - Most-played game overall
+        - Games owned on multiple platforms (duplicates)
+        - "Shame pile" — games with 0 hours played
+
+  # ── Discovery ────────────────────────────────────────────────────
+
+  - name: game-scout
+    agent: gaming-operator
+    description: Search for a game across all platform catalogs
+    tier: standard
+    category: report
+    graph: react-extract
+    services_used:
+      - service: gaming
+        operations: [search_games, game_details]
+    inputs:
+      - key: query
+        type: string
+        label: Game to search for
+        description: "Game title or keyword"
+        required: true
+    trigger:
+      on_demand: true
+    outputs:
+      - type: report
+        description: "Cross-platform game search results"
+    prompt: |
+      Search for a game across all configured platform catalogs.
+
+      For each platform:
+        - Call {{gaming.search_games}} with config.query
+        - For the top result, call {{gaming.game_details}} for full metadata
+
+      Present results side by side:
+
+      | | PlayStation | Xbox | Steam |
+      |---|---|---|---|
+      | Title | ... | ... | ... |
+      | Platform | PS5 | Series X | PC |
+      | Details | ... | ... | ... |
+
+      Note which platforms carry the game and any platform-exclusive status.
+      If the user already owns it (cross-reference with their library if
+      possible), note that too.

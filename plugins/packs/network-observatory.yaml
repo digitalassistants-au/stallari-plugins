@@ -1,0 +1,611 @@
+pack: "1.6"
+name: network-observatory
+title: "Network Observatory"
+featured: true
+version: "1.0.0"
+tagline: "Full-stack network visibility — from satellite downlink to DNS query, every layer in one conversation"
+description: >-
+  Cross-layer network monitoring and diagnosis — ISP accounts, DNS filtering,
+  local infrastructure, overlay networks, and LEO satellite terminals. Five
+  services, one agent, and skills that correlate across the entire stack.
+icon: /icons/network-observatory.svg
+author:
+  name: Stallari
+  url: https://stallari.ai
+licence: Proprietary
+visibility: open
+tier: certified
+author_type: first-party
+readiness: beta
+pricing: null
+bundled: false
+
+readme:
+  format: markdown
+  body: |
+    # Network Observatory
+
+    Full-stack network visibility for Stallari — from LEO satellite downlink to
+    ISP handoff to local routing to overlay mesh to DNS privacy. Every layer of
+    your network, observable and diagnosable from a single conversation.
+
+    ## What it does
+
+    This pack treats your entire network stack as one observable system. Instead
+    of logging into five dashboards (ISP portal, DNS filtering console, UniFi
+    controller, Tailscale admin, Starlink app), you ask your agent.
+
+    ## Layer model
+
+    | Layer | Service | Contract | What you see |
+    |-------|---------|----------|-------------|
+    | **WAN** | ISP account | `isp-v1` | Usage, outages, billing, line diagnostics |
+    | **DNS** | DNS filtering | `dns-v1` | Profiles, filters, rules, blocked services |
+    | **LAN** | Network infra | `network-v1` | Devices, clients, firewall, traffic rules |
+    | **Overlay** | VPN/mesh | `overlay-network-v1` | Devices, ACLs, keys, routes, audit |
+    | **Uplink** | LEO terminal | `leo-modem-v1` | Signal, obstruction, alerts, throughput |
+
+    ## Plugin marketplace
+
+    This pack declares abstract services — you bring the concrete plugins for
+    your hardware and providers. Install them from the Stallari marketplace:
+
+    | Service | Certified plugin | Community alternatives |
+    |---------|------------------|-----------------------|
+    | ISP | Aussie Broadband | _(contribute yours!)_ |
+    | DNS | Control-D | AdGuard Home |
+    | Network | Ubiquiti UniFi | UniFi Full Management |
+    | Overlay | Tailscale | Tailscale Full Management |
+    | LEO modem | Starlink Dish | Starlink Enterprise |
+
+    Install only the layers you have. The pack degrades gracefully — if you
+    don't have a Starlink dish, the LEO layer is simply skipped. ISP and DNS
+    are required; everything else is optional.
+
+    ## Skills overview
+
+    ### Observability
+    - **stack-health** — One-command health check across every configured layer
+    - **network-census** — Full device and endpoint inventory across all layers
+
+    ### Diagnosis
+    - **connectivity-triage** — Layer-by-layer diagnosis when something breaks
+    - **dns-security-audit** — DNS filtering coverage, firewall policies, overlay ACLs
+
+    ### Reporting
+    - **morning-network-brief** — Quick daily status: ISP usage, outages, device counts, overlay health
+
+    ## Why this pack
+
+    - **Five service contracts** spanning the full network stack
+    - **Graceful degradation** — install only the layers you have
+    - **Cross-layer correlation** — ISP outage + Starlink failover + overlay reroute, understood together
+    - **Plugin choice** — swap providers without changing skills (Aussie BB → any ISP plugin)
+    - **Read-heavy, write-gated** — monitoring by default, mutations only with confirmation
+
+highlights:
+  - "Five service contracts — ISP, DNS, LAN, overlay, and LEO terminal in one pack"
+  - "Graceful degradation — install only the layers you have, skip the rest"
+  - "Cross-layer correlation — diagnose issues that span ISP, local network, and overlay"
+  - "Plugin choice — swap providers without changing skills (contract abstraction)"
+  - "Read-heavy, write-gated — monitoring by default, never mutates without confirmation"
+
+links:
+  - label: Stallari Marketplace
+    url: https://marketplace.stallari.app
+  - label: Network contract (network-v1)
+    url: https://stallari.dev/schemas/contracts/network-v1
+  - label: DNS contract (dns-v1)
+    url: https://stallari.dev/schemas/contracts/dns-v1
+  - label: Overlay contract (overlay-network-v1)
+    url: https://stallari.dev/schemas/contracts/overlay-network-v1
+
+min_sidereal: "0.60"
+
+# ── Plugin suggestions ──────────────────────────────────────────────
+# Maps abstract services to concrete MCP plugins available in the
+# marketplace. The harness uses this to guide users through plugin
+# installation when a required or recommended service has no provider
+# configured. Each entry specifies the service, lists candidate plugins
+# with their marketplace name, and optionally notes install constraints.
+
+suggested_plugins:
+  - service: isp
+    required: true
+    note: "Install one plugin per ISP account. Multi-instance supported."
+    plugins:
+      - name: aussiebb-blade-mcp
+        title: "Aussie Broadband"
+        author_type: first-party
+        note: "Australian NBN provider (Aussie Broadband accounts)"
+      # Future: other ISP blades (e.g. superloop-blade-mcp, belong-blade-mcp)
+
+  - service: dns
+    required: true
+    note: "Install one DNS filtering plugin. Self-hosted or cloud."
+    plugins:
+      - name: controld-blade-mcp
+        title: "Control-D"
+        author_type: first-party
+        note: "Cloud DNS filtering and privacy service"
+      - name: adguard-home-mcp
+        title: "AdGuard Home"
+        author_type: community
+        note: "Self-hosted DNS filtering (65 tools, full management)"
+
+  - service: network
+    required: false
+    note: "Install if you have managed network hardware (switches, APs, gateways)."
+    plugins:
+      - name: ubiquiti-unifi-blade-mcp
+        title: "Ubiquiti UniFi"
+        author_type: first-party
+        note: "Monitoring-focused (18 tools, token-efficient)"
+      - name: unifi-mcp
+        title: "UniFi Full Management"
+        author_type: community
+        note: "Full config management (161 tools, write-heavy)"
+
+  - service: overlay-network
+    required: false
+    note: "Install if you run a VPN or overlay mesh."
+    plugins:
+      - name: tailscale-blade-mcp
+        title: "Tailscale"
+        author_type: first-party
+        note: "Monitoring and security audit (17 tools)"
+      - name: hexsleeves-tailscale-mcp
+        title: "Tailscale Full Management"
+        author_type: community
+        note: "Full management including ACL editing"
+
+  - service: leo-modem
+    required: false
+    note: "Install if you have a Starlink dish or LEO terminal on the local network."
+    plugins:
+      - name: starlink-blade-mcp
+        title: "Starlink Dish"
+        author_type: first-party
+        note: "Local gRPC — no cloud, no credentials, residential dish"
+      - name: starlink-enterprise-mcp
+        title: "Starlink Enterprise"
+        author_type: community
+        note: "Cloud API for enterprise fleet management"
+
+# ── Service requirements ────────────────────────────────────────────
+
+requires:
+  services:
+    - service: isp
+      operations:
+        - info
+        - services
+        - usage
+        - outages
+    - service: dns
+      operations:
+        - dns_info
+        - dns_profiles
+        - dns_filters
+        - dns_rules
+        - dns_devices
+
+recommends:
+  services:
+    - service: isp
+      operations:
+        - billing
+        - tickets
+        - diagnostics_list
+    - service: dns
+      operations:
+        - dns_services
+        - dns_service_catalog
+        - dns_network
+        - dns_access
+    - service: network
+      operations:
+        - info
+        - devices
+        - device
+        - clients
+        - client
+        - firewall
+        - port_forwards
+        - traffic_routes
+    - service: overlay-network
+      operations:
+        - info
+        - devices
+        - device
+        - device_routes
+        - acl
+        - dns
+        - keys
+        - audit_log
+    - service: leo-modem
+      operations:
+        - status
+        - alerts
+        - obstruction
+        - history
+        - diagnostics
+    - service: notifications
+      operations: [send]
+
+data:
+  reads: [isp, dns, network, overlay-network, leo-modem]
+  writes: [vault]
+  stores: nothing
+  phones_home: false
+
+# ── Agent ───────────────────────────────────────────────────────────
+
+agents:
+  network-operator:
+    role: operator
+    prompt: |
+      You are a network operator for the Stallari Network Observatory pack. You
+      monitor and diagnose the full network stack — ISP, DNS filtering, local
+      infrastructure, overlay networks, and LEO satellite terminals.
+
+      Your job is observability and diagnosis. You read freely across all layers
+      and correlate signals to give the user a single coherent picture of their
+      network health.
+
+      Layer model (query in order for diagnosis):
+        1. LEO modem (if configured) — satellite uplink, signal quality
+        2. ISP — WAN connectivity, usage, outages
+        3. DNS — filtering policies, blocked services, query routing
+        4. Network — local devices, clients, firewall, traffic rules
+        5. Overlay — mesh devices, ACLs, routes, key health
+
+      Safety rules:
+        - This pack is read-only. You never call gated/write operations.
+        - If the user asks to change DNS rules, block a client, or restart
+          a device, explain that the Observatory pack is monitoring-only and
+          suggest they use the relevant plugin directly for write operations.
+        - Never display credentials, API keys, or secrets.
+
+      When a service is not configured (tool call fails with "no provider"),
+      skip that layer and note it in output. Never error out — degrade
+      gracefully and report on what you can see.
+
+      Write reports to vault at atlas/registers/network/ if the user requests
+      a saved audit. Use agentic-timestamp for timestamps.
+
+    model_preference:
+      - claude-sonnet-4-6
+
+# ── Skills ──────────────────────────────────────────────────────────
+
+skills:
+
+  # ── Observability ────────────────────────────────────────────────
+
+  - name: stack-health
+    agent: network-operator
+    description: One-command health check across every configured network layer
+    tier: standard
+    category: report
+    graph: react-extract
+    services_used:
+      - service: isp
+        operations: [info, usage, outages]
+      - service: dns
+        operations: [dns_info, dns_profiles, dns_devices]
+      - service: network
+        operations: [info, devices, clients]
+      - service: overlay-network
+        operations: [info, devices]
+      - service: leo-modem
+        operations: [status, alerts]
+    trigger:
+      on_demand: true
+    outputs:
+      - type: report
+        description: "Cross-layer health summary with per-layer status"
+    prompt: |
+      Perform a full-stack network health check across every configured layer.
+      Query each layer in sequence. If a service has no provider configured,
+      skip it and note "not configured" — never fail the whole check.
+
+      For each available layer, report:
+
+      **LEO Modem** (if configured):
+        - Call {{leo-modem.status}} — connectivity state, throughput, SNR
+        - Call {{leo-modem.alerts}} — any active hardware/environment alerts
+        - Flag: signal degradation, active alerts, offline
+
+      **ISP**:
+        - Call {{isp.info}} — connection status
+        - Call {{isp.usage}} — current billing period usage and remaining
+        - Call {{isp.outages}} — active or scheduled outages
+        - Flag: outages, usage above 80%, connection issues
+
+      **DNS Filtering**:
+        - Call {{dns.dns_info}} — service health, account status
+        - Call {{dns.dns_profiles}} — profile count and active policies
+        - Call {{dns.dns_devices}} — endpoint count
+        - Flag: service degradation, unconfigured endpoints
+
+      **Local Network** (if configured):
+        - Call {{network.info}} — controller health, device/client counts
+        - Call {{network.devices}} — device states (connected/disconnected)
+        - Call {{network.clients}} — connected client count
+        - Flag: disconnected devices, firmware updates, unknown clients
+
+      **Overlay Network** (if configured):
+        - Call {{overlay-network.info}} — device counts, key warnings
+        - Call {{overlay-network.devices}} — online/offline, key expiry flags
+        - Flag: KEY_EXPIRY_OFF, UNAUTHORIZED devices, offline nodes
+
+      Present a unified summary table:
+
+      | Layer | Status | Detail |
+      |-------|--------|--------|
+      | LEO | ✓/⚠/✗ | throughput, alerts |
+      | ISP | ✓/⚠/✗ | usage %, outages |
+      | DNS | ✓/⚠/✗ | profiles, endpoints |
+      | LAN | ✓/⚠/✗ | devices, clients |
+      | Overlay | ✓/⚠/✗ | nodes, key health |
+
+      Then list any flags/warnings below the table, grouped by severity.
+
+  - name: network-census
+    agent: network-operator
+    description: Full device and endpoint inventory across all network layers
+    tier: standard
+    category: report
+    graph: react-extract
+    services_used:
+      - service: isp
+        operations: [info, services]
+      - service: dns
+        operations: [dns_profiles, dns_devices]
+      - service: network
+        operations: [devices, clients, wlans]
+      - service: overlay-network
+        operations: [devices, users, keys]
+      - service: leo-modem
+        operations: [status, diagnostics]
+    trigger:
+      on_demand: true
+    outputs:
+      - type: report
+        description: "Complete device and endpoint inventory across all layers"
+    prompt: |
+      Build a complete inventory of every device, endpoint, and service across
+      the network stack. This is the "what do I actually have?" audit.
+
+      For each available layer:
+
+      **ISP**:
+        - Call {{isp.info}} and {{isp.services}}
+        - List every service: plan name, speed tier, technology type, address
+
+      **DNS Filtering**:
+        - Call {{dns.dns_profiles}} — list all profiles with rule/device counts
+        - Call {{dns.dns_devices}} — list all endpoints with profile assignments
+        - Summarise: N profiles, M endpoints, which profiles are active
+
+      **Local Network** (if configured):
+        - Call {{network.devices}} — list APs, switches, gateways with model,
+          firmware, client count, uptime
+        - Call {{network.clients}} — list connected clients with name, IP, type
+        - Call {{network.wlans}} if available — list SSIDs and status
+        - Summarise: N infrastructure devices, M connected clients, K SSIDs
+
+      **Overlay Network** (if configured):
+        - Call {{overlay-network.devices}} — list all nodes with OS, IP, status
+        - Call {{overlay-network.users}} — list users and device counts
+        - Call {{overlay-network.keys}} — list auth keys with expiry status
+        - Summarise: N devices (M online), K users, J auth keys
+
+      **LEO Modem** (if configured):
+        - Call {{leo-modem.status}} — terminal identity and firmware
+        - Call {{leo-modem.diagnostics}} — hardware version, GPS sats
+        - Summarise: model, firmware, uptime
+
+      Present the full inventory grouped by layer. End with totals:
+      "N infrastructure devices, M network clients, K overlay nodes,
+      J DNS endpoints, L ISP services."
+
+  # ── Diagnosis ────────────────────────────────────────────────────
+
+  - name: connectivity-triage
+    agent: network-operator
+    description: Layer-by-layer diagnosis when connectivity is degraded or down
+    tier: reasoning
+    category: triage
+    graph: react
+    services_used:
+      - service: leo-modem
+        operations: [status, alerts, obstruction, history]
+      - service: isp
+        operations: [info, usage, outages, diagnostics_list]
+      - service: dns
+        operations: [dns_info, dns_profiles, dns_rules, dns_network]
+      - service: network
+        operations: [info, devices, clients, firewall, traffic_routes]
+      - service: overlay-network
+        operations: [info, devices, device_routes, acl, dns]
+    inputs:
+      - key: symptom
+        type: string
+        label: What's broken?
+        description: "Describe the connectivity issue (e.g. 'can't reach external sites', 'overlay node offline', 'slow speeds')"
+        required: false
+    trigger:
+      on_demand: true
+    outputs:
+      - type: report
+        description: "Layer-by-layer diagnosis with root cause analysis"
+    prompt: |
+      Diagnose a connectivity issue by walking the network stack from physical
+      layer upward. The user's symptom (if provided): {{config.symptom}}
+
+      Work through layers in order. Stop when you find the likely root cause.
+      If a layer has no provider configured, skip and note it.
+
+      **Step 1 — LEO Modem** (if configured):
+        - {{leo-modem.status}} — is the dish connected? throughput?
+        - {{leo-modem.alerts}} — hardware or environment alerts?
+        - {{leo-modem.obstruction}} — signal blocked in any direction?
+        - {{leo-modem.history}} — recent throughput/latency trends
+        - If dish is down or degraded, this likely explains the issue.
+
+      **Step 2 — ISP**:
+        - {{isp.info}} — is the connection up?
+        - {{isp.outages}} — any active outages?
+        - {{isp.usage}} — is the account throttled or over quota?
+        - {{isp.diagnostics_list}} if available — what tests can we run?
+        - If ISP reports outage or connection down, report and stop.
+
+      **Step 3 — DNS**:
+        - {{dns.dns_info}} — is the DNS service responding?
+        - {{dns.dns_profiles}} — which profile is active?
+        - {{dns.dns_rules}} — is a custom rule blocking the target?
+        - {{dns.dns_network}} if available — PoP latency?
+        - If DNS is blocking or down, this explains resolution failures.
+
+      **Step 4 — Local Network** (if configured):
+        - {{network.info}} — controller healthy?
+        - {{network.devices}} — any disconnected APs/switches?
+        - {{network.clients}} — is the affected device connected?
+        - {{network.firewall}} — any rules blocking traffic?
+        - {{network.traffic_routes}} — any misrouted traffic?
+
+      **Step 5 — Overlay** (if configured):
+        - {{overlay-network.info}} — tailnet healthy?
+        - {{overlay-network.devices}} — is the target node online?
+        - {{overlay-network.device_routes}} — are routes approved?
+        - {{overlay-network.acl}} — does ACL allow the traffic?
+        - {{overlay-network.dns}} — MagicDNS / split DNS correct?
+
+      Present findings as:
+        1. **Root cause** — which layer and what's wrong
+        2. **Evidence** — the specific data points
+        3. **Suggested action** — what the user should do (may involve
+           write operations via the relevant plugin directly)
+
+  - name: dns-security-audit
+    agent: network-operator
+    description: Cross-layer security posture review — DNS filtering, firewall, overlay ACLs
+    tier: reasoning
+    category: review
+    graph: react-extract
+    services_used:
+      - service: dns
+        operations: [dns_profiles, dns_filters, dns_rules, dns_services, dns_devices, dns_access]
+      - service: network
+        operations: [info, devices, clients, firewall, port_forwards, dpi]
+      - service: overlay-network
+        operations: [info, devices, acl, keys, audit_log]
+    trigger:
+      on_demand: true
+    outputs:
+      - type: report
+        description: "Security posture summary with findings and recommendations"
+    prompt: |
+      Perform a cross-layer security audit covering DNS filtering, local
+      network security, and overlay network posture.
+
+      **DNS Filtering Audit**:
+        - {{dns.dns_profiles}} — list all profiles
+        - For each profile: {{dns.dns_filters}} — check filter coverage
+        - {{dns.dns_rules}} — review custom rules for anomalies
+        - {{dns.dns_services}} if available — check service-level blocks
+        - {{dns.dns_devices}} — verify all endpoints have profiles assigned
+        - {{dns.dns_access}} if available — review IP access lists
+        - Flag: unfiltered profiles, endpoints without profiles, overly
+          permissive rules, stale access entries
+
+      **Local Network Security** (if configured):
+        - {{network.info}} — controller version (outdated firmware?)
+        - {{network.devices}} — firmware update status across all devices
+        - {{network.clients}} — unknown or blocked clients
+        - {{network.firewall}} — disabled policies, overly permissive rules
+        - {{network.port_forwards}} — exposed services (attack surface)
+        - {{network.dpi}} if available — disabled DPI restrictions
+
+      **Overlay Network Posture** (if configured):
+        - {{overlay-network.info}} — key expiry warnings
+        - {{overlay-network.devices}} — KEY_EXPIRY_OFF, UNAUTHORIZED flags
+        - {{overlay-network.acl}} — overly permissive rules, missing SSH rules
+        - {{overlay-network.keys}} — reusable keys without tags, expired keys
+        - {{overlay-network.audit_log}} — recent policy changes
+
+      Present findings grouped by severity:
+        🔴 **Critical** — immediate action required
+        🟡 **Warning** — should be addressed
+        🟢 **Good** — no issues found
+
+      End with a prioritised action list.
+
+  # ── Reporting ────────────────────────────────────────────────────
+
+  - name: morning-network-brief
+    agent: network-operator
+    description: Quick daily network status — ISP usage, outages, device counts, overlay health
+    tier: fast
+    category: digest
+    graph: react-extract
+    services_used:
+      - service: isp
+        operations: [info, usage, outages]
+      - service: dns
+        operations: [dns_info]
+      - service: network
+        operations: [info]
+      - service: overlay-network
+        operations: [info]
+      - service: leo-modem
+        operations: [status]
+    trigger:
+      schedule: "0 7 * * *"
+    outputs:
+      - type: report
+        description: "Daily network status brief"
+      - type: notification
+        description: "Network brief notification"
+    prompt: |
+      Generate a concise morning network brief. Keep it short — this runs
+      daily and should be scannable in 30 seconds.
+
+      Query each configured layer with a single lightweight call:
+        - {{isp.info}} + {{isp.usage}} + {{isp.outages}}
+        - {{dns.dns_info}}
+        - {{network.info}} (if configured)
+        - {{overlay-network.info}} (if configured)
+        - {{leo-modem.status}} (if configured)
+
+      Format as a compact brief:
+
+      **Network Brief — {date}**
+
+      | Layer | Status | Key metric |
+      |-------|--------|-----------|
+      | ISP | ✓/⚠ | usage: X% (Y days remaining) |
+      | DNS | ✓/⚠ | N profiles, M endpoints |
+      | LAN | ✓/⚠ | N devices, M clients |
+      | Overlay | ✓/⚠ | N nodes (M online) |
+      | Starlink | ✓/⚠ | throughput, signal |
+
+      Only expand on items that need attention (outages, high usage,
+      offline devices, key warnings). If everything is green, the table
+      is the whole report.
+
+      Set notification_body to a one-line summary (e.g. "Network OK — 45%
+      ISP usage, 12 devices, 8 overlay nodes"). Set notification_priority
+      to 2 (batched into digest) unless there are warnings, then 3.
+      Set notification_category to "digest".
+
+# ── Workflows ───────────────────────────────────────────────────────
+
+workflows:
+  - name: morning-network
+    description: Daily network health check
+    schedule: "0 7 * * *"
+    steps:
+      - skill: morning-network-brief

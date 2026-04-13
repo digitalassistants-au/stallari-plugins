@@ -214,6 +214,10 @@ function packToCatalogEntry(pack) {
     hero: pack.hero || null,
     // v1.4: webhook metadata (DD113)
     webhook_count: webhookCount > 0 ? webhookCount : null,
+    // Suggested plugins for install wizard
+    suggested_plugins: Array.isArray(pack.suggested_plugins) && pack.suggested_plugins.length > 0
+      ? pack.suggested_plugins
+      : null,
     // v1.3: org access control (DD104)
     access: pack.access || "public",
     organization: pack.organization || null,

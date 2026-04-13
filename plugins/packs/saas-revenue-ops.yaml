@@ -1,0 +1,511 @@
+pack: "1.6"
+name: saas-revenue-ops
+title: "SaaS Revenue Ops"
+featured: true
+version: "1.0.0"
+tagline: "Subscriptions, orders, and delivery in one view — Paddle, Shopify, and Resend unified"
+description: >-
+  End-to-end SaaS and e-commerce revenue operations — subscription billing,
+  storefront orders, and transactional email delivery. Three services, one
+  agent, and skills that follow the money from checkout to inbox.
+icon: /icons/saas-revenue-ops.svg
+author:
+  name: Stallari
+  url: https://stallari.ai
+licence: Proprietary
+visibility: open
+tier: certified
+author_type: first-party
+readiness: beta
+pricing: null
+bundled: false
+
+readme:
+  format: markdown
+  body: |
+    # SaaS Revenue Ops
+
+    End-to-end revenue operations for Stallari — subscription billing, storefront
+    management, and transactional email delivery unified in one conversation. Stop
+    switching between Paddle, Shopify, and Resend dashboards.
+
+    ## What it does
+
+    This pack treats your revenue stack as one observable pipeline. A customer
+    subscribes (Paddle), orders a product (Shopify), and receives a confirmation
+    email (Resend). Your agent can trace that entire flow, diagnose where it
+    broke, and report on the health of each layer.
+
+    ## Revenue stack
+
+    | Layer | Service | Contract | What you see |
+    |-------|---------|----------|-------------|
+    | **Billing** | Subscriptions | `billing-v1` | Products, prices, subscriptions, transactions, MRR |
+    | **Commerce** | Storefront | `ecommerce-v1` | Products, orders, customers, inventory, fulfillment |
+    | **Delivery** | Email | `transactional-email-v1` | Sends, delivery status, domains, contacts, broadcasts |
+
+    ## Plugin marketplace
+
+    | Service | Certified plugin | What it covers |
+    |---------|-----------------|----------------|
+    | Billing | Paddle Billing | Products, prices, subscriptions, transactions, webhooks |
+    | Commerce | Shopify | Products, orders, customers, inventory, discounts, analytics |
+    | Delivery | Resend | Send, contacts, broadcasts, templates, domains, webhooks |
+
+    Billing is required. Commerce and delivery are recommended — the pack
+    degrades gracefully without them, but the cross-layer skills lose
+    correlation capability.
+
+    ## Skills overview
+
+    ### Observability
+    - **revenue-pulse** — Daily revenue snapshot: MRR, new subscriptions, churn, orders, delivery health
+    - **pipeline-health** — End-to-end pipeline audit: billing → commerce → delivery status
+
+    ### Investigation
+    - **customer-lookup** — Unified customer view: subscriptions, orders, emails, payment history
+    - **churn-triage** — Investigate cancelled/past-due subscriptions with transaction and email context
+
+    ### Reporting
+    - **morning-revenue-brief** — Scheduled daily brief: key metrics, failures, and action items
+
+    ## Safety model
+
+    This pack is **read-only by default**. It never creates subscriptions,
+    processes refunds, fulfills orders, or sends emails. The agent monitors
+    and diagnoses — write operations require the individual plugins with
+    write mode enabled.
+
+highlights:
+  - "Three revenue layers — billing, commerce, and email delivery in one conversation"
+  - "Cross-layer correlation — trace a customer from subscription to order to email"
+  - "Morning revenue brief — daily MRR, churn, orders, and delivery health on schedule"
+  - "Customer lookup — unified view across all revenue systems by email or name"
+  - "Read-only by default — monitoring and diagnosis, never mutates billing or commerce"
+
+links:
+  - label: Stallari Marketplace
+    url: https://marketplace.stallari.app
+  - label: Billing contract (billing-v1)
+    url: https://stallari.dev/schemas/contracts/billing-v1
+  - label: E-commerce contract (ecommerce-v1)
+    url: https://stallari.dev/schemas/contracts/ecommerce-v1
+  - label: Transactional email contract (transactional-email-v1)
+    url: https://stallari.dev/schemas/contracts/transactional-email-v1
+
+min_sidereal: "0.60"
+
+# ── Plugin suggestions ──────────────────────────────────────────────
+
+suggested_plugins:
+  - service: billing
+    required: true
+    note: "Subscription billing platform. Required for MRR tracking and churn analysis."
+    plugins:
+      - name: paddle-billing-blade-mcp
+        title: "Paddle Billing"
+        author_type: first-party
+        note: "Full Paddle API — products, prices, subscriptions, transactions. Sandbox-first."
+
+  - service: ecommerce
+    required: false
+    note: "E-commerce storefront. Adds order tracking and inventory visibility."
+    plugins:
+      - name: shopify-blade-mcp
+        title: "Shopify"
+        author_type: first-party
+        note: "Full Shopify Admin GraphQL — products, orders, customers, inventory, analytics."
+
+  - service: transactional-email
+    required: false
+    note: "Transactional email delivery. Adds email delivery tracking and domain health."
+    plugins:
+      - name: resend-blade-mcp
+        title: "Resend"
+        author_type: first-party
+        note: "Send, contacts, broadcasts, templates, domains. Security-first, no filesystem access."
+
+# ── Service requirements ────────────────────────────────────────────
+
+requires:
+  services:
+    - service: billing
+      operations:
+        - products
+        - product
+        - prices
+        - customers
+        - subscriptions
+        - transactions
+
+recommends:
+  services:
+    - service: billing
+      operations:
+        - customer
+        - subscription
+        - transaction
+        - invoice
+        - adjustments
+        - discounts
+        - events
+        - credit_balance
+    - service: ecommerce
+      operations:
+        - shop_info
+        - products
+        - product
+        - orders
+        - order
+        - customers
+        - customer
+        - inventory
+        - search_orders
+        - fulfillments
+        - analytics
+    - service: transactional-email
+      operations:
+        - send
+        - get_email
+        - list_emails
+        - list_contacts
+        - list_domains
+        - get_domain
+        - list_broadcasts
+    - service: notifications
+      operations: [send]
+
+data:
+  reads: [billing, ecommerce, transactional-email]
+  writes: [vault]
+  stores: nothing
+  phones_home: false
+
+# ── Agent ───────────────────────────────────────────────────────────
+
+agents:
+  revenue-operator:
+    role: operator
+    prompt: |
+      You are a revenue operator for the Stallari SaaS Revenue Ops pack. You
+      monitor the full revenue pipeline — subscription billing, e-commerce
+      orders, and transactional email delivery.
+
+      Your job is revenue observability and diagnosis. You read freely across
+      all layers and correlate signals to give the user a single coherent
+      picture of their business health.
+
+      Revenue pipeline model:
+        1. Billing — subscriptions, MRR, churn, transactions (Paddle)
+        2. Commerce — orders, fulfillment, inventory, customers (Shopify)
+        3. Delivery — email sends, delivery status, domain health (Resend)
+
+      Cross-layer correlation:
+        - A customer email appears in all three systems — use it as the join key
+        - A failed payment (billing) may correlate with an unfulfilled order (commerce)
+        - A bounced email (delivery) may explain why a customer didn't complete onboarding
+
+      Safety rules:
+        - This pack is read-only. Never call gated/write operations.
+        - Never create subscriptions, process refunds, fulfill orders, or send emails.
+        - If the user asks to refund a customer or cancel a subscription, explain
+          that the Revenue Ops pack is monitoring-only and suggest they use the
+          relevant plugin directly.
+        - Never display full payment method details. Mask card numbers.
+
+      Output style:
+        - Currency amounts always include the currency code (e.g. $49.00 USD)
+        - Subscription statuses: active, past_due, cancelled, trialing, paused
+        - Use tables for lists, bullet points for findings
+        - Always report which layers were checked
+
+    model_preference:
+      - claude-sonnet-4-6
+
+# ── Skills ──────────────────────────────────────────────────────────
+
+skills:
+
+  # ── Observability ────────────────────────────────────────────────
+
+  - name: revenue-pulse
+    agent: revenue-operator
+    description: Daily revenue snapshot — MRR, subscriptions, churn, orders, delivery health
+    tier: standard
+    category: report
+    graph: react-extract
+    services_used:
+      - service: billing
+        operations: [subscriptions, transactions, customers, adjustments]
+      - service: ecommerce
+        operations: [orders, analytics]
+      - service: transactional-email
+        operations: [list_emails, list_domains]
+    trigger:
+      on_demand: true
+    outputs:
+      - type: report
+        description: "Revenue health snapshot across billing, commerce, and delivery"
+    prompt: |
+      Generate a revenue health snapshot across all configured layers.
+
+      **Billing** (required):
+        - Call {{billing.subscriptions}} — count by status (active, past_due,
+          cancelled, trialing, paused). Estimate MRR from active subscriptions.
+        - Call {{billing.transactions}} with recent date range — count
+          successful vs failed, total revenue.
+        - Call {{billing.adjustments}} if available — refunds, credits,
+          chargebacks in the period.
+        - Flag: past_due subscriptions, failed transactions, refund spikes.
+
+      **Commerce** (if configured):
+        - Call {{ecommerce.orders}} — recent orders by status (pending,
+          fulfilled, cancelled).
+        - Call {{ecommerce.analytics}} if available — sales summary.
+        - Flag: unfulfilled orders, cancelled orders, inventory alerts.
+
+      **Delivery** (if configured):
+        - Call {{transactional-email.list_emails}} — recent sends by status
+          (delivered, bounced, complained).
+        - Call {{transactional-email.list_domains}} — domain verification
+          status and health.
+        - Flag: bounce rate above 2%, unverified domains, delivery failures.
+
+      Present a unified dashboard:
+
+      | Metric | Value | Trend |
+      |--------|-------|-------|
+      | MRR (est.) | $X,XXX | — |
+      | Active subscriptions | N | — |
+      | Past-due | N | ⚠ if > 0 |
+      | Failed transactions | N | ⚠ if > 0 |
+      | Recent orders | N | — |
+      | Email delivery rate | X% | ⚠ if < 98% |
+
+      Then list action items: past-due accounts, failed payments, bounced emails.
+
+  - name: pipeline-health
+    agent: revenue-operator
+    description: End-to-end pipeline audit — billing to commerce to delivery
+    tier: reasoning
+    category: review
+    graph: react-extract
+    services_used:
+      - service: billing
+        operations: [subscriptions, transactions, events, customers]
+      - service: ecommerce
+        operations: [orders, fulfillments, inventory]
+      - service: transactional-email
+        operations: [list_emails, list_domains, list_broadcasts]
+    trigger:
+      on_demand: true
+    outputs:
+      - type: report
+        description: "End-to-end revenue pipeline health report"
+    prompt: |
+      Audit the full revenue pipeline for breakages and bottlenecks.
+
+      **Billing layer**:
+        - {{billing.subscriptions}} — any stuck in processing? Past-due > 7 days?
+        - {{billing.transactions}} — failed payment rate over last 7 days
+        - {{billing.events}} if available — webhook delivery failures
+        - {{billing.customers}} — customers without subscriptions (orphaned?)
+
+      **Commerce layer** (if configured):
+        - {{ecommerce.orders}} — orders pending > 48h (stuck fulfillment?)
+        - {{ecommerce.fulfillments}} if available — tracking numbers missing?
+        - {{ecommerce.inventory}} — any products at zero stock?
+
+      **Delivery layer** (if configured):
+        - {{transactional-email.list_emails}} — bounce rate, complaint rate
+        - {{transactional-email.list_domains}} — DNS verification status,
+          SPF/DKIM/DMARC alignment
+        - {{transactional-email.list_broadcasts}} — recent broadcast delivery
+
+      **Cross-layer checks**:
+        - Are there subscriptions with no corresponding orders? (webhook gap)
+        - Are there orders with no delivery confirmation email? (email gap)
+        - Are there customers in billing but not in commerce? (sync gap)
+
+      Present findings by severity:
+        🔴 **Broken** — pipeline blockage, immediate action needed
+        🟡 **Degraded** — working but not healthy
+        🟢 **Healthy** — no issues found
+
+  # ── Investigation ────────────────────────────────────────────────
+
+  - name: customer-lookup
+    agent: revenue-operator
+    description: Unified customer view — subscriptions, orders, emails, payment history
+    tier: reasoning
+    category: triage
+    graph: react
+    services_used:
+      - service: billing
+        operations: [customers, customer, subscriptions, subscription, transactions, transaction, invoice]
+      - service: ecommerce
+        operations: [customers, customer, orders, order]
+      - service: transactional-email
+        operations: [list_emails, list_contacts]
+    inputs:
+      - key: query
+        type: string
+        label: Customer identifier
+        description: "Email address, name, or customer ID"
+        required: true
+    trigger:
+      on_demand: true
+    outputs:
+      - type: report
+        description: "Unified customer profile across all revenue systems"
+    prompt: |
+      Look up a customer across all configured revenue systems and build a
+      unified profile.
+
+      Search term: {{config.query}} (could be email, name, or ID)
+
+      **Billing**:
+        - Call {{billing.customers}} to search for the customer.
+        - For matches, call {{billing.customer}} for full detail.
+        - Call {{billing.subscriptions}} filtered to this customer — status,
+          plan, billing period, next payment date.
+        - Call {{billing.transactions}} filtered to this customer — recent
+          payments, failures, refunds.
+
+      **Commerce** (if configured):
+        - Call {{ecommerce.customers}} to search.
+        - For matches, call {{ecommerce.customer}} for full detail with
+          order history.
+        - Call {{ecommerce.orders}} filtered to this customer — recent
+          orders, fulfillment status.
+
+      **Delivery** (if configured):
+        - Call {{transactional-email.list_emails}} filtered to this email —
+          recent sends, delivery status, bounces.
+        - Call {{transactional-email.list_contacts}} to check audience
+          membership.
+
+      Present a unified customer card:
+
+      **Customer: [Name] ([email])**
+
+      | System | Status | Detail |
+      |--------|--------|--------|
+      | Billing | active/past_due/... | Plan, MRR, next payment |
+      | Commerce | N orders | Last order date, lifetime value |
+      | Email | delivered/bounced | Last email, delivery rate |
+
+      Then timeline: recent events across all systems, sorted chronologically.
+
+  - name: churn-triage
+    agent: revenue-operator
+    description: Investigate cancelled and past-due subscriptions with full context
+    tier: reasoning
+    category: triage
+    graph: react
+    services_used:
+      - service: billing
+        operations: [subscriptions, subscription, transactions, adjustments, events]
+      - service: ecommerce
+        operations: [customers, orders]
+      - service: transactional-email
+        operations: [list_emails]
+    trigger:
+      on_demand: true
+    outputs:
+      - type: report
+        description: "Churn analysis with root cause investigation"
+    prompt: |
+      Investigate recent churn — cancelled and past-due subscriptions — with
+      full cross-layer context.
+
+      **Step 1 — Find at-risk accounts**:
+        - {{billing.subscriptions}} filtered to status=cancelled (last 30 days)
+          and status=past_due (all).
+        - For each, call {{billing.subscription}} for detail — when cancelled,
+          cancellation reason if available, billing period.
+
+      **Step 2 — Transaction history**:
+        - For each at-risk account, call {{billing.transactions}} — look for
+          failed payments preceding cancellation.
+        - Call {{billing.adjustments}} if available — were there refunds or
+          disputes before churn?
+
+      **Step 3 — Commerce context** (if configured):
+        - {{ecommerce.customers}} — did they have active orders?
+        - {{ecommerce.orders}} — any unfulfilled or cancelled orders?
+
+      **Step 4 — Email context** (if configured):
+        - {{transactional-email.list_emails}} — did reminder/dunning emails
+          bounce? Were they delivered but unopened?
+
+      **Step 5 — Event timeline** (if available):
+        - {{billing.events}} — reconstruct the sequence: when did payment
+          fail, when was the reminder sent, when did they cancel?
+
+      Present:
+        - **Churn summary** — N cancelled, M past-due in period
+        - **Root cause breakdown** — voluntary vs involuntary (payment failure)
+        - **Per-account detail** (top 10) — timeline, last payment, email status
+        - **Recommendations** — accounts worth reaching out to, patterns to watch
+
+  # ── Reporting ────────────────────────────────────────────────────
+
+  - name: morning-revenue-brief
+    agent: revenue-operator
+    description: Scheduled daily revenue brief — key metrics, failures, and action items
+    tier: fast
+    category: digest
+    graph: react-extract
+    services_used:
+      - service: billing
+        operations: [subscriptions, transactions]
+      - service: ecommerce
+        operations: [orders]
+      - service: transactional-email
+        operations: [list_domains]
+    trigger:
+      schedule: "0 7 * * *"
+    outputs:
+      - type: report
+        description: "Daily revenue status brief"
+      - type: notification
+        description: "Revenue brief notification"
+    prompt: |
+      Generate a concise morning revenue brief. This runs daily — keep it
+      scannable in 30 seconds.
+
+      Quick checks:
+        - {{billing.subscriptions}} — active count, any new past_due?
+        - {{billing.transactions}} — yesterday's revenue, failed payments
+        - {{ecommerce.orders}} if configured — yesterday's orders
+        - {{transactional-email.list_domains}} if configured — all verified?
+
+      Format:
+
+      **Revenue Brief — {date}**
+
+      | Metric | Value |
+      |--------|-------|
+      | Active subs | N |
+      | Yesterday revenue | $X,XXX |
+      | Failed payments | N |
+      | New past-due | N |
+      | Orders (yesterday) | N |
+      | Email domains | N/N verified |
+
+      Only expand on items that need attention. If everything is green, the
+      table is the whole report.
+
+      Set notification_body to a one-line summary. Set notification_priority
+      to 2 unless there are failures (then 3). Set notification_category
+      to "digest".
+
+# ── Workflows ───────────────────────────────────────────────────────
+
+workflows:
+  - name: morning-revenue
+    description: Daily revenue health check
+    schedule: "0 7 * * *"
+    steps:
+      - skill: morning-revenue-brief

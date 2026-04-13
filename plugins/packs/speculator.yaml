@@ -1,0 +1,524 @@
+pack: "1.6"
+name: speculator
+title: "Speculator"
+featured: true
+version: "1.0.0"
+tagline: "Betting exchanges, prediction markets, and brokerage — cross-market pricing in one conversation"
+description: >-
+  Cross-market speculation and analysis — Betfair exchange odds, Polymarket
+  prediction prices, and Interactive Brokers portfolio data. Three market
+  types, one agent, and skills that find pricing discrepancies across them.
+icon: /icons/speculator.svg
+author:
+  name: Stallari
+  url: https://stallari.ai
+licence: Proprietary
+visibility: open
+tier: certified
+author_type: first-party
+readiness: beta
+pricing: null
+bundled: false
+
+readme:
+  format: markdown
+  body: |
+    # Speculator
+
+    Cross-market pricing intelligence for Stallari — betting exchanges,
+    prediction markets, and securities brokerage unified in one conversation.
+    The same event priced three different ways, compared in seconds.
+
+    ## What it does
+
+    Markets disagree. An election has odds on Betfair, a price on Polymarket,
+    and options pricing on IB. A sporting event has exchange odds on Betfair
+    and correlated futures on IB. This pack lets your agent see all three
+    price sources simultaneously and flag when they diverge.
+
+    ## Market stack
+
+    | Layer | Service | Contract | What you see |
+    |-------|---------|----------|-------------|
+    | **Exchange** | Betting exchange | `betting-exchange-v1` | Sports/event odds, market books, P&L, settlements |
+    | **Prediction** | Prediction market | `prediction-market-v1` | Binary outcomes, orderbooks, analytics, leaderboards |
+    | **Securities** | Brokerage | `brokerage-v1` | Portfolio, quotes, historical data, scanners |
+
+    ## Plugin marketplace
+
+    | Service | Certified plugin | Community alternatives |
+    |---------|------------------|-----------------------|
+    | Exchange | Betfair Exchange (22 tools) | — |
+    | Prediction | Polymarket (22 tools) | Prediction Markets (Polymarket + Kalshi) |
+    | Securities | Interactive Brokers (21 tools) | — |
+
+    Prediction market is required (zero-config, no auth needed). Exchange and
+    brokerage are recommended — they unlock cross-market correlation.
+
+    ## Skills overview
+
+    ### Analysis
+    - **market-scan** — Cross-market event search: same event, three price sources
+    - **price-check** — Implied probability comparison across all configured markets
+
+    ### Portfolio
+    - **exposure-report** — Open positions and P&L across all three market types
+    - **settlement-review** — Cleared bets, resolved predictions, recent trades
+
+    ### Discovery
+    - **morning-markets** — Daily market brief: trending predictions, live events, portfolio moves
+
+    ## Safety model
+
+    This pack is **strictly read-only**. It never places orders, bets, or
+    trades. The Speculator observes and analyses — execution requires the
+    individual plugins with write mode enabled.
+
+    Real money is at stake across all three services. The read-only constraint
+    is non-negotiable for the pack. If you need to trade, use the plugins
+    directly.
+
+highlights:
+  - "Three market types — betting exchange, prediction market, and brokerage in one view"
+  - "Cross-market pricing — same event compared across Betfair, Polymarket, and IB"
+  - "Implied probability — convert odds, prices, and option premiums to comparable probabilities"
+  - "Strictly read-only — never places orders, bets, or trades through the pack"
+  - "Zero-config entry — Polymarket needs no credentials, start scanning immediately"
+
+links:
+  - label: Stallari Marketplace
+    url: https://marketplace.stallari.app
+  - label: Betting exchange contract
+    url: https://stallari.dev/schemas/contracts/betting-exchange-v1
+  - label: Prediction market contract
+    url: https://stallari.dev/schemas/contracts/prediction-market-v1
+  - label: Brokerage contract
+    url: https://stallari.dev/schemas/contracts/brokerage-v1
+
+min_sidereal: "0.60"
+
+# ── Plugin suggestions ──────────────────────────────────────────────
+
+suggested_plugins:
+  - service: prediction-market
+    required: true
+    note: "No credentials needed for Polymarket. Install and start scanning immediately."
+    plugins:
+      - name: polymarket-blade-mcp
+        title: "Polymarket"
+        author_type: first-party
+        note: "22 tools across 3 APIs. Zero-config — no auth required."
+      - name: prediction-mcp
+        title: "Prediction Markets (Multi)"
+        author_type: community
+        note: "Polymarket + Kalshi in one server. Community plugin."
+
+  - service: betting-exchange
+    required: false
+    note: "Requires Betfair account with API access and client certificate."
+    plugins:
+      - name: betfair-blade-mcp
+        title: "Betfair Exchange"
+        author_type: first-party
+        note: "22 tools. Certificate auth, weight-aware rate limiting. Full exchange API."
+
+  - service: brokerage
+    required: false
+    note: "Requires IB Client Portal Gateway running locally."
+    plugins:
+      - name: ib-blade-mcp
+        title: "Interactive Brokers"
+        author_type: first-party
+        note: "21 tools. Gateway isolation — IB credentials never touch the MCP."
+
+# ── Service requirements ────────────────────────────────────────────
+
+requires:
+  services:
+    - service: prediction-market
+      operations:
+        - events
+        - markets
+        - orderbook
+        - prices
+        - search
+
+recommends:
+  services:
+    - service: prediction-market
+      operations:
+        - price_history
+        - spread
+        - trending
+        - categories
+        - closing_soon
+        - leaderboard
+    - service: betting-exchange
+      operations:
+        - event_types
+        - events
+        - market_catalogue
+        - market_book
+        - account_funds
+        - current_orders
+        - competitions
+        - runner_book
+        - cleared_orders
+        - market_pnl
+    - service: brokerage
+      operations:
+        - status
+        - accounts
+        - positions
+        - portfolio_summary
+        - orders
+        - contract_search
+        - quote
+        - historical
+        - cash_balances
+        - pnl
+        - trades
+    - service: notifications
+      operations: [send]
+
+data:
+  reads: [prediction-market, betting-exchange, brokerage]
+  writes: [vault]
+  stores: nothing
+  phones_home: false
+
+# ── Agent ───────────────────────────────────────────────────────────
+
+agents:
+  markets-analyst:
+    role: operator
+    prompt: |
+      You are a markets analyst for the Stallari Speculator pack. You have
+      visibility across prediction markets, betting exchanges, and securities
+      brokerages — whichever the user has configured.
+
+      Your job is cross-market pricing intelligence. You observe, compare, and
+      analyse — you never execute trades.
+
+      Market layer model:
+        1. Prediction markets — binary/multi-outcome events with orderbook pricing
+        2. Betting exchanges — sports and event odds with back/lay markets
+        3. Brokerage — securities, options, futures with real-time quotes
+
+      Cross-market correlation:
+        - Convert all prices to implied probability for comparison:
+          - Prediction market: price = probability (e.g. $0.65 = 65%)
+          - Betting exchange: implied prob = 1/decimal_odds (e.g. 2.0 = 50%)
+          - Options: use Black-Scholes implied probability or delta as proxy
+        - Flag divergences >5% across sources for the same event
+        - Note that different markets have different fees, liquidity, and
+          settlement rules that explain some pricing gaps
+
+      Safety rules:
+        - This pack is STRICTLY read-only. You MUST NOT call any gated
+          operations: no place_orders, place_order, confirm_order, cancel_order,
+          approve_allowance, heartbeat, or any write operation.
+        - If the user asks to place a trade, explain that the Speculator pack
+          is analysis-only and suggest they use the relevant plugin directly
+          with write mode enabled.
+        - Never recommend specific trades. Present data and analysis — the
+          user makes their own decisions.
+        - When showing account balances or positions, note that this is
+          real money and all analysis is informational, not financial advice.
+
+      Output style:
+        - Probabilities as percentages to 1 decimal place (e.g. 65.2%)
+        - Odds in decimal format with implied probability in parentheses
+        - Currency amounts with currency code
+        - Use tables for price comparisons
+        - Always state which markets were checked and which weren't configured
+
+    model_preference:
+      - claude-sonnet-4-6
+
+# ── Skills ──────────────────────────────────────────────────────────
+
+skills:
+
+  # ── Analysis ─────────────────────────────────────────────────────
+
+  - name: market-scan
+    agent: markets-analyst
+    description: Cross-market event search — same event priced across exchanges, predictions, and securities
+    tier: reasoning
+    category: report
+    graph: react
+    services_used:
+      - service: prediction-market
+        operations: [search, events, markets, prices, orderbook]
+      - service: betting-exchange
+        operations: [event_types, events, market_catalogue, market_book]
+      - service: brokerage
+        operations: [contract_search, quote]
+    inputs:
+      - key: query
+        type: string
+        label: Event or topic
+        description: "Event, topic, or question to search across markets (e.g. 'US election', 'Champions League final', 'Fed rate cut')"
+        required: true
+    trigger:
+      on_demand: true
+    outputs:
+      - type: report
+        description: "Cross-market pricing comparison for an event"
+    prompt: |
+      Search for an event or topic across all configured market sources and
+      compare pricing.
+
+      Search term: {{config.query}}
+
+      **Prediction Markets**:
+        - Call {{prediction-market.search}} with the query.
+        - For top results, call {{prediction-market.markets}} for outcome prices.
+        - Call {{prediction-market.orderbook}} for liquidity depth on the
+          most relevant market.
+        - Convert prices to implied probabilities.
+
+      **Betting Exchange** (if configured):
+        - Call {{betting-exchange.events}} with relevant filters.
+        - If found, call {{betting-exchange.market_catalogue}} for market list.
+        - Call {{betting-exchange.market_book}} for live odds.
+        - Convert decimal odds to implied probabilities:
+          implied_prob = 1 / decimal_odds (adjust for overround).
+
+      **Brokerage** (if configured):
+        - Call {{brokerage.contract_search}} for related instruments
+          (e.g. election futures, sector ETFs, event-correlated stocks).
+        - Call {{brokerage.quote}} for current pricing.
+        - Note: securities pricing is indirect — it correlates with the
+          event but doesn't directly price the outcome.
+
+      Present a comparison table:
+
+      **"{{config.query}}" — Cross-Market Pricing**
+
+      | Outcome | Prediction | Exchange | Securities proxy |
+      |---------|-----------|----------|-----------------|
+      | Yes/Win | 65.2% ($0.652) | 62.5% (1.60) | — |
+      | No/Lose | 34.8% ($0.348) | 37.5% (2.67) | — |
+
+      Analysis:
+        - Price divergence: X% between sources
+        - Liquidity: which market has the deepest book
+        - Note any structural reasons for the gap (fees, settlement timing,
+          market hours, geo-restrictions)
+
+  - name: price-check
+    agent: markets-analyst
+    description: Quick implied probability comparison for a specific market or outcome
+    tier: standard
+    category: report
+    graph: react-extract
+    services_used:
+      - service: prediction-market
+        operations: [markets, prices, spread, price_history]
+      - service: betting-exchange
+        operations: [market_book, runner_book]
+      - service: brokerage
+        operations: [quote, historical]
+    inputs:
+      - key: market_id
+        type: string
+        label: Market or token ID
+        description: "Prediction market ID, Betfair market ID, or ticker symbol"
+        required: true
+      - key: market_type
+        type: choice
+        label: Market type
+        description: "Which market system to query"
+        choices: [prediction, exchange, brokerage, all]
+        default: all
+        required: false
+    trigger:
+      on_demand: true
+    outputs:
+      - type: report
+        description: "Price and probability snapshot for a specific market"
+    prompt: |
+      Get current pricing for a specific market identified by config.market_id.
+
+      If config.market_type is "all" or not specified, try all configured
+      sources. Otherwise, query only the specified source.
+
+      **Prediction market**:
+        - {{prediction-market.prices}} — current bid/ask/mid/last
+        - {{prediction-market.spread}} — bid-ask spread
+        - {{prediction-market.price_history}} if available — recent trend
+
+      **Betting exchange**:
+        - {{betting-exchange.market_book}} — live back/lay prices
+        - {{betting-exchange.runner_book}} — depth for specific selection
+
+      **Brokerage**:
+        - {{brokerage.quote}} — last, bid, ask, volume, change
+        - {{brokerage.historical}} — recent price bars
+
+      Present:
+
+      | Source | Bid | Ask | Mid | Implied Prob | Volume |
+      |--------|-----|-----|-----|-------------|--------|
+
+      Add: spread analysis, 24h price movement, notable volume.
+
+  # ── Portfolio ────────────────────────────────────────────────────
+
+  - name: exposure-report
+    agent: markets-analyst
+    description: Open positions and P&L across all three market types
+    tier: standard
+    category: report
+    graph: react-extract
+    services_used:
+      - service: prediction-market
+        operations: [positions, portfolio_value]
+      - service: betting-exchange
+        operations: [account_funds, current_orders, market_pnl]
+      - service: brokerage
+        operations: [positions, portfolio_summary, cash_balances, pnl]
+    trigger:
+      on_demand: true
+    outputs:
+      - type: report
+        description: "Cross-market exposure and P&L summary"
+    prompt: |
+      Generate a unified exposure report across all configured market sources.
+
+      **Prediction Markets** (if configured with auth):
+        - {{prediction-market.positions}} — open positions with entry price
+        - {{prediction-market.portfolio_value}} if available — total value
+
+      **Betting Exchange** (if configured):
+        - {{betting-exchange.account_funds}} — balance, exposure, available
+        - {{betting-exchange.current_orders}} — active/unmatched bets
+        - {{betting-exchange.market_pnl}} for markets with exposure — P&L
+          per selection
+
+      **Brokerage** (if configured):
+        - {{brokerage.portfolio_summary}} — NAV, cash, unrealised P&L, margin
+        - {{brokerage.positions}} — open positions with P&L and market value
+        - {{brokerage.cash_balances}} — cash by currency
+        - {{brokerage.pnl}} — daily and unrealised P&L
+
+      Present a unified summary:
+
+      | Source | Balance/NAV | Exposure | Unrealised P&L | Positions |
+      |--------|------------|----------|---------------|-----------|
+      | Predictions | — | $X | +$Y | N |
+      | Exchange | $X | $Y | +$Z | N bets |
+      | Brokerage | $X NAV | $Y margin | +$Z | N positions |
+
+      Then detail positions by source. For the brokerage, group by asset class
+      (equity, options, futures, forex). For the exchange, group by sport.
+
+      End with total cross-market exposure estimate. Note that positions
+      across markets may hedge each other.
+
+  - name: settlement-review
+    agent: markets-analyst
+    description: Cleared bets, resolved predictions, and recent trades
+    tier: standard
+    category: report
+    graph: react-extract
+    services_used:
+      - service: prediction-market
+        operations: [trade_history]
+      - service: betting-exchange
+        operations: [cleared_orders, account_statement]
+      - service: brokerage
+        operations: [trades, orders]
+    trigger:
+      on_demand: true
+    outputs:
+      - type: report
+        description: "Recent settlements and trade history across all markets"
+    prompt: |
+      Review recent settlements and trade history across all configured markets.
+
+      **Prediction Markets**:
+        - {{prediction-market.trade_history}} — resolved markets, P&L per trade
+
+      **Betting Exchange** (if configured):
+        - {{betting-exchange.cleared_orders}} — settled bets with profit/loss
+        - {{betting-exchange.account_statement}} — transaction history
+          including commission
+
+      **Brokerage** (if configured):
+        - {{brokerage.trades}} — recent executions with fill prices
+        - {{brokerage.orders}} — completed orders
+
+      Present chronologically (most recent first):
+
+      | Date | Source | Event/Instrument | Side | Result | P&L |
+      |------|--------|-----------------|------|--------|-----|
+
+      Summarise: total realised P&L by source, win/loss ratio, largest
+      single outcome.
+
+  # ── Discovery ────────────────────────────────────────────────────
+
+  - name: morning-markets
+    agent: markets-analyst
+    description: Daily market brief — trending predictions, live events, portfolio moves
+    tier: fast
+    category: digest
+    graph: react-extract
+    services_used:
+      - service: prediction-market
+        operations: [trending, events, closing_soon]
+      - service: betting-exchange
+        operations: [events, account_funds]
+      - service: brokerage
+        operations: [portfolio_summary, pnl]
+    trigger:
+      schedule: "0 7 * * *"
+    outputs:
+      - type: report
+        description: "Daily markets brief"
+      - type: notification
+        description: "Markets brief notification"
+    prompt: |
+      Generate a concise morning markets brief. Runs daily — keep it scannable.
+
+      **Prediction Markets**:
+        - {{prediction-market.trending}} — top 5 trending markets with prices
+        - {{prediction-market.closing_soon}} if available — markets resolving today
+        - {{prediction-market.events}} — notable new events
+
+      **Betting Exchange** (if configured):
+        - {{betting-exchange.events}} — today's live events by sport
+        - {{betting-exchange.account_funds}} — current balance
+
+      **Brokerage** (if configured):
+        - {{brokerage.portfolio_summary}} — overnight NAV change
+        - {{brokerage.pnl}} — unrealised P&L
+
+      Format:
+
+      **Markets Brief — {date}**
+
+      **Trending predictions:**
+      1. [Event] — Yes $0.65 / No $0.35
+      2. ...
+
+      **Closing today:** N markets resolving
+
+      **Live events:** N events across K sports
+
+      **Portfolio:** NAV $X (+/-$Y overnight)
+
+      Set notification_body to a one-line summary. Set notification_priority
+      to 2. Set notification_category to "digest".
+
+# ── Workflows ───────────────────────────────────────────────────────
+
+workflows:
+  - name: morning-markets
+    description: Daily markets briefing
+    schedule: "0 7 * * *"
+    steps:
+      - skill: morning-markets
