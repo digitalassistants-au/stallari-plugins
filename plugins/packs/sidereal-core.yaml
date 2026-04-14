@@ -131,7 +131,6 @@ agents:
       You are a PKM operator for an Obsidian vault. You execute vault operations:
       filing notes, generating digests, processing inbox items. Follow every step
       precisely. Use the available MCP tools. Log every action.
-    model_preference: [claude-sonnet-4-6, grok-4-1-fast-reasoning]
 
   comms-operator:
     role: operator
@@ -139,7 +138,6 @@ agents:
       You are a communications operator. You triage email across configured
       providers and create handoff notes for relevant items. Read-only by default
       — do not send, archive, or delete email unless explicitly instructed.
-    model_preference: [claude-sonnet-4-6, grok-4-1-fast-reasoning]
 
   scheduling-operator:
     role: operator
@@ -147,7 +145,6 @@ agents:
       You are a scheduling operator. You manage calendar events, detect conflicts,
       create events from structured handoffs, and provide scheduling intelligence.
       Check free/busy before creating events. Log all calendar modifications.
-    model_preference: [claude-sonnet-4-6, grok-4-1-fast-reasoning]
 
   secops-operator:
     role: operator
@@ -155,7 +152,6 @@ agents:
       You are a security operations operator. You audit macOS security posture,
       monitor TCC grants, track launchd agent drift, and verify system integrity.
       Read-only probes — never modify system state without explicit human approval.
-    model_preference: [claude-sonnet-4-6, grok-4-1-fast-reasoning]
 
   fleet-operator:
     role: operator
@@ -163,7 +159,6 @@ agents:
       You are a fleet operations operator. You monitor Sidereal daemon health,
       MCP server connectivity, version drift across fleet peers, and platform
       infrastructure status. Report findings — never auto-remediate.
-    model_preference: [claude-sonnet-4-6, grok-4-1-fast-reasoning]
 
   notifications-operator:
     role: operator
@@ -172,7 +167,6 @@ agents:
       other operators via structured result JSON fields and route them to
       appropriate delivery channels. You do not generate notifications from
       raw data — only route what other operators produce.
-    model_preference: [claude-sonnet-4-6, grok-4-1-fast-reasoning]
 
 skills:
   # --- PKM operations (pkm-operator) ---
@@ -180,6 +174,7 @@ skills:
   - name: process-inbox
     agent: pkm-operator
     description: Process unclassified items in the vault inbox
+    tier: standard
     category: triage
     services_used:
       - service: vault
@@ -191,7 +186,7 @@ skills:
       on_demand: true
     graph: gate
     graph_config:
-      classify_model: claude-haiku-4-5-20251001
+      classify_tier: fast
       routes:
         email_handoff: react_email
         web_clip: react_webclip
@@ -218,6 +213,7 @@ skills:
   - name: daily-digest
     agent: pkm-operator
     description: Generate daily morning digest note
+    tier: standard
     category: digest
     services_used:
       - service: vault
@@ -251,6 +247,7 @@ skills:
   - name: weekly-digest
     agent: pkm-operator
     description: Generate weekly digest note
+    tier: standard
     category: digest
     services_used:
       - service: vault
@@ -285,6 +282,7 @@ skills:
   - name: decompose-inbox
     agent: pkm-operator
     description: Decompose text blobs into discrete vault artefacts
+    tier: standard
     category: transform
     services_used:
       - service: vault
@@ -314,6 +312,7 @@ skills:
   - name: morning-sweep
     agent: pkm-operator
     description: Interactive morning triage across all sources
+    tier: standard
     category: triage
     services_used:
       - service: vault
@@ -324,10 +323,11 @@ skills:
         operations: [read]
     trigger:
       on_demand: true
-    graph: consensus
+    graph: cascade
     graph_config:
-      consensus_workers: 3
-      voting_strategy: majority_vote
+      confidence_threshold: 0.80
+      classify_tier: fast
+      escalation_tier: standard
     prompt: |
       Run a structured morning sweep: aggregate pending work from all sources,
       classify each item, present for human approval, then dispatch approved work.
@@ -350,6 +350,7 @@ skills:
   - name: email-triage
     agent: comms-operator
     description: Triage inbox email for relevant items
+    tier: standard
     category: triage
     services_used:
       - service: vault
@@ -363,8 +364,8 @@ skills:
     graph: cascade
     graph_config:
       confidence_threshold: 0.85
-      classify_model: claude-haiku-4-5-20251001
-      escalation_model: claude-sonnet-4-6
+      classify_tier: fast
+      escalation_tier: reasoning
     prompt: |
       Scan configured email providers for emails relevant to active areas of
       influence. Create handoff notes for relevant items. Ignore everything else.
@@ -387,6 +388,7 @@ skills:
   - name: calendar-sync
     agent: scheduling-operator
     description: Detect calendar conflicts, match events to efforts
+    tier: standard
     category: sync
     services_used:
       - service: calendar
@@ -412,6 +414,7 @@ skills:
   - name: schedule-event
     agent: scheduling-operator
     description: Interactive calendar event creation
+    tier: standard
     category: transform
     services_used:
       - service: calendar
@@ -435,6 +438,7 @@ skills:
   - name: process-calendar-handoffs
     agent: scheduling-operator
     description: Process calendar handoffs from other operators
+    tier: standard
     category: sync
     services_used:
       - service: calendar
@@ -460,6 +464,7 @@ skills:
   - name: darwin-state-audit
     agent: secops-operator
     description: Audit macOS imperative state residue and security posture
+    tier: standard
     category: review
     services_used:
       - service: vault
@@ -476,13 +481,18 @@ skills:
   - name: tcc-drift-monitor
     agent: secops-operator
     description: Monitor TCC privacy grant changes
+    tier: standard
     category: review
     services_used:
       - service: vault
         operations: [read, create]
     trigger:
       schedule: "0 6 * * *"
-    graph: react
+    graph: cascade
+    graph_config:
+      confidence_threshold: 0.90
+      classify_tier: fast
+      escalation_tier: standard
     prompt: |
       Check TCC privacy grants for unexpected changes since last run. Alert on
       new grants to unsigned or ad-hoc binaries. Compare against known-good baseline.
@@ -490,13 +500,18 @@ skills:
   - name: credential-expiry-watch
     agent: secops-operator
     description: Check credential freshness and expiry
+    tier: standard
     category: review
     services_used:
       - service: vault
         operations: [read, create]
     trigger:
       schedule: "0 6 * * *"
-    graph: react
+    graph: cascade
+    graph_config:
+      confidence_threshold: 0.90
+      classify_tier: fast
+      escalation_tier: standard
     prompt: |
       Scan stored credentials for approaching expiry. Check API tokens, TLS certs,
       and OAuth refresh tokens. Alert on credentials expiring within 7 days.
@@ -504,13 +519,18 @@ skills:
   - name: network-exposure-scan
     agent: secops-operator
     description: Scan for unexpected network listeners
+    tier: standard
     category: review
     services_used:
       - service: vault
         operations: [read, create]
     trigger:
       schedule: "0 6 * * *"
-    graph: react
+    graph: cascade
+    graph_config:
+      confidence_threshold: 0.90
+      classify_tier: fast
+      escalation_tier: standard
     prompt: |
       Scan for unexpected network listeners and open ports. Compare against
       known services. Alert on unrecognised listeners.
@@ -518,6 +538,8 @@ skills:
   - name: security-correlation
     agent: secops-operator
     description: Correlate security events across audit sources
+    tier: reasoning
+    fallback_tier: standard
     category: review
     services_used:
       - service: vault
@@ -532,6 +554,7 @@ skills:
   - name: fleet-trust-audit
     agent: secops-operator
     description: Audit fleet peer trust and enrollment integrity
+    tier: standard
     category: review
     services_used:
       - service: vault
@@ -548,6 +571,7 @@ skills:
   - name: platform-health
     agent: fleet-operator
     description: Probe daemon, MCP servers, Lens, and identity provider health
+    tier: standard
     category: review
     services_used:
       - service: vault
@@ -564,6 +588,7 @@ skills:
   - name: version-drift-check
     agent: fleet-operator
     description: Compare component versions across fleet peers
+    tier: standard
     category: review
     services_used:
       - service: vault
@@ -579,6 +604,7 @@ skills:
   - name: dispatch-analytics
     agent: fleet-operator
     description: Analyse dispatch success rates and performance
+    tier: standard
     category: report
     services_used:
       - service: vault
@@ -594,6 +620,7 @@ skills:
     agent: fleet-operator
     description: Detect unused or unhealthy MCP servers and manage lifecycle
     tier: reasoning
+    fallback_tier: standard
     category: review
     services_used:
       - service: vault
@@ -619,6 +646,8 @@ skills:
   - name: capacity-forecast
     agent: fleet-operator
     description: Forecast infrastructure capacity needs
+    tier: reasoning
+    fallback_tier: standard
     category: report
     services_used:
       - service: vault
@@ -633,6 +662,8 @@ skills:
   - name: upgrade-coordinator
     agent: fleet-operator
     description: Coordinate fleet-wide upgrades
+    tier: reasoning
+    fallback_tier: standard
     category: sync
     services_used:
       - service: vault
@@ -651,6 +682,7 @@ skills:
   - name: notification-channel-status
     agent: notifications-operator
     description: Probe notification delivery channel health
+    tier: standard
     category: review
     services_used:
       - service: vault
@@ -666,6 +698,7 @@ skills:
   - name: notification-delivery-audit
     agent: notifications-operator
     description: Aggregate delivery stats and flag unreliable channels
+    tier: standard
     category: report
     services_used:
       - service: vault
@@ -681,6 +714,7 @@ skills:
   - name: delivery-report
     agent: notifications-operator
     description: Daily aggregate of all notification deliveries
+    tier: standard
     category: report
     services_used:
       - service: vault

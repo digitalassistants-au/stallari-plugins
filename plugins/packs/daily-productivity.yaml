@@ -152,7 +152,7 @@ skills:
   - name: daily-digest
     agent: pkm-operator
     description: Generate a morning digest combining calendar, tasks, efforts, and inbox status
-    tier: reasoning
+    tier: standard
     category: digest
     graph: critique-refine
     graph_config:
@@ -176,13 +176,13 @@ skills:
   - name: email-triage
     agent: comms-operator
     description: Scan recent inbox for messages relevant to active domains of influence
-    tier: reasoning
+    tier: standard
     category: triage
     graph: cascade
     graph_config:
       confidence_threshold: 0.85
-      classify_model: claude-haiku-4-5-20251001
-      escalation_model: claude-sonnet-4-6
+      classify_tier: fast
+      escalation_tier: reasoning
     services_used:
       - service: email
         operations: [changes, state, search, snippets, read]
@@ -201,11 +201,11 @@ skills:
   - name: process-inbox
     agent: pkm-operator
     description: Classify and file items from the vault inbox
-    tier: reasoning
+    tier: standard
     category: ingest
     graph: gate
     graph_config:
-      classify_model: claude-haiku-4-5-20251001
+      classify_tier: fast
       routes:
         email_handoff: react_email
         web_clip: react_webclip
@@ -227,12 +227,13 @@ skills:
   - name: morning-sweep
     agent: digital-assistant
     description: Interactive morning triage across all sources
-    tier: reasoning
+    tier: standard
     category: triage
-    graph: consensus
+    graph: cascade
     graph_config:
-      consensus_workers: 3
-      voting_strategy: majority_vote
+      confidence_threshold: 0.80
+      classify_tier: fast
+      escalation_tier: standard
     services_used:
       - service: vault
         operations: [read, search, files, query_properties]
@@ -251,11 +252,11 @@ skills:
   - name: flag-triage
     agent: comms-operator
     description: Process colour-coded flagged emails from Apple Mail
-    tier: reasoning
+    tier: standard
     category: triage
     graph: gate
     graph_config:
-      classify_model: apple-fm
+      classify_tier: fast
       routes:
         red: react_urgent
         orange: react_file
@@ -283,7 +284,7 @@ skills:
   - name: weekly-digest
     agent: pkm-operator
     description: Generate weekly digest with effort status and dispatch metrics
-    tier: reasoning
+    tier: standard
     category: digest
     graph: critique-refine
     graph_config:
@@ -307,7 +308,7 @@ skills:
   - name: effort-digest
     agent: pkm-operator
     description: Generate per-effort status snapshots
-    tier: reasoning
+    tier: standard
     category: digest
     graph: critique-refine
     graph_config:
