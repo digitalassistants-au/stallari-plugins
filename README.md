@@ -1,18 +1,18 @@
 <p align="center">
-  <a href="https://marketplace.sidereal.cc">
-    <img src="assets/sidereal-icon.png" width="128" alt="Sidereal">
+  <a href="https://marketplace.stallari.app">
+    <img src="assets/stallari-icon.png" width="128" alt="Stallari">
   </a>
 </p>
 
-<h1 align="center">Sidereal Plugins</h1>
+<h1 align="center">Stallari Plugins</h1>
 
 <p align="center">
-  <a href="https://marketplace.sidereal.cc"><img src="https://img.shields.io/badge/marketplace-sidereal.cc-0066CC" alt="marketplace.sidereal.cc"></a>
+  <a href="https://marketplace.stallari.app"><img src="https://img.shields.io/badge/marketplace-stallari.app-0066CC" alt="marketplace.stallari.app"></a>
   <img src="https://img.shields.io/badge/status-developer%20preview-orange" alt="Developer Preview">
   <img src="https://img.shields.io/badge/licence-Apache%202.0-green" alt="Apache 2.0">
 </p>
 
-Plugin and pack manifests for the [Sidereal](https://sidereal.cc) agentic platform. Service contract definitions, validation tooling, and contribution workflow.
+Plugin and pack manifests for the [Stallari](https://stallari.ai) agentic platform. Service contract definitions, validation tooling, and contribution workflow.
 
 ## Overview
 
@@ -21,7 +21,7 @@ This repository manages two types of entries:
 - **Plugins** (MCP tools) — JSON manifests in `plugins/tools/` declaring Model Context Protocol servers that implement service contracts.
 - **Packs** (workflow bundles) — YAML manifests in `plugins/packs/` defining multi-agent skills, workflows, and automation pipelines.
 
-Both are distributed through the [Sidereal Marketplace](https://marketplace.sidereal.cc).
+Both are distributed through the [Stallari Marketplace](https://marketplace.stallari.app).
 
 ## Service Contracts
 
@@ -32,7 +32,7 @@ Plugins implement versioned **service contracts** — abstract interfaces that l
 | `email-v1` | 13 | fastmail-blade-mcp, gmail-blade-mcp |
 | `calendar-v1` | 8 | caldav-blade-mcp, google-calendar-mcp |
 | `tasks-v1` | 11 | things3-blade-mcp, todoist-blade-mcp |
-| `vault-v1` | 25 | sidereal-blade-mcp |
+| `vault-v1` | 25 | stallari-blade-mcp |
 | `billing-v1` | 28 | paddle-billing-blade-mcp |
 | `accounting-v1` | 39 | xero-blade-mcp |
 | `ecommerce-v1` | 40 | shopify-blade-mcp |

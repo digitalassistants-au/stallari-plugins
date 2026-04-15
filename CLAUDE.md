@@ -1,9 +1,9 @@
 ---
 kind: shim
-project: sidereal-plugins
+project: stallari-plugins
 shim_version: 1.0.0
 deployed_to:
-  - "~/src/sidereal-plugins/CLAUDE.md (Claude Code — Nix-deployed via shimDeployments)"
+  - "~/src/stallari-plugins/CLAUDE.md (Claude Code — Nix-deployed via shimDeployments)"
 canonical: "[[atlas/utilities/agent-harness/boot/sidereal-plugins.CLAUDE]]"
 last_updated: 2026-04-07T12:37:03+10:00
 publish: false
@@ -14,23 +14,23 @@ related:
   - "[[atlas/utilities/agent-harness/directives/system-architect]]"
   - "[[atlas/utilities/agent-harness/state/system-architect]]"
 ---
-# Sidereal Plugins — Session Boot Loader
+# Stallari Plugins — Session Boot Loader
 
 @/Users/piers/master-ai/atlas/utilities/agent-harness/directives/access-policy.md
 
 ## Project
 
-Public plugin content repository for Sidereal. Contains pack YAML definitions,
+Public plugin content repository for Stallari. Contains pack YAML definitions,
 asset bundles, schemas, and build tooling for the plugin catalog.
 
-**Split from `sidereal-registry-infra`** — this repo owns *content* (pack
+**Split from `stallari-registry-infra`** — this repo owns *content* (pack
 definitions, skill metadata, asset images). The registry-infra repo owns
 *infrastructure* (API worker, marketplace site, R2 deployment).
 
 ## Structure
 
 ```
-sidereal-plugins/
+stallari-plugins/
 ├── plugins/              # Pack YAML definitions (one dir per pack)
 ├── assets/               # Pack icons, screenshots
 ├── data/                 # Generated data files
@@ -50,15 +50,15 @@ node scripts/build-catalog.js        # Build catalog from pack YAMLs
 node scripts/build-forge-context.js  # Build forge context
 ```
 
-Output in `dist/` is deployed to R2 by `sidereal-registry-infra`.
+Output in `dist/` is deployed to R2 by `stallari-registry-infra`.
 
 ## Pack YAML spec
 
-Schema in `schemas/`. Format defined by `sidereal-pack-spec`. Each pack YAML
+Schema in `schemas/`. Format defined by `stallari-pack-spec`. Each pack YAML
 declares skills, graph methodology, services, and sealed status.
 
 Current state: 53 skills across 8 open packs (Pack Spec v1.6). Sealed packs
-are in a separate private repo (`sidereal-packs-private`).
+are in a separate private repo (`stallari-packs-private`).
 
 ## Conventions
 
