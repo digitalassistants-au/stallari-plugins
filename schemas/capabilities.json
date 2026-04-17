@@ -1,0 +1,100 @@
+{
+  "availabilities": [
+    "stable",
+    "beta",
+    "experimental"
+  ],
+  "capabilities": [
+    "reasoning",
+    "tools",
+    "vision",
+    "extendedContext",
+    "streaming",
+    "jsonMode",
+    "parallelTools",
+    "multiAgent"
+  ],
+  "deployments": [
+    "cloud_only",
+    "local_preferred",
+    "local_only",
+    "any"
+  ],
+  "meta": {
+    "availability": {
+      "description": "Release gate for a skill. Skills tagged `beta` or `experimental` are hidden from normal operators unless the user opts in via Settings → General → Preview Features.",
+      "values": [
+        {
+          "description": "Generally available. Default for new skills.",
+          "name": "stable"
+        },
+        {
+          "description": "Feature-complete but may have sharp edges. Opt-in.",
+          "name": "beta"
+        },
+        {
+          "description": "Early-stage, subject to breaking changes. Opt-in.",
+          "name": "experimental"
+        }
+      ]
+    },
+    "capability": {
+      "description": "A feature a model backend can advertise. Skills declare which capabilities they require; the resolver filters candidate backends to those that advertise all required capabilities.",
+      "values": [
+        {
+          "description": "Stepwise / chain-of-thought style generation, supports complex tool orchestration.",
+          "name": "reasoning"
+        },
+        {
+          "description": "Can call MCP tools during generation.",
+          "name": "tools"
+        },
+        {
+          "description": "Accepts image inputs alongside text.",
+          "name": "vision"
+        },
+        {
+          "description": "Supports context windows beyond the provider's default (e.g. 1M tokens).",
+          "name": "extendedContext"
+        },
+        {
+          "description": "Streams tokens as they are generated.",
+          "name": "streaming"
+        },
+        {
+          "description": "Constrained JSON output (structured responses).",
+          "name": "jsonMode"
+        },
+        {
+          "description": "Can emit multiple tool calls concurrently in a single turn.",
+          "name": "parallelTools"
+        },
+        {
+          "description": "Designed for sub-agent / coordinator patterns (Anthropic's Managed Agents, MCP sub-sessions).",
+          "name": "multiAgent"
+        }
+      ]
+    },
+    "deployment": {
+      "description": "Cloud/local preference for skill dispatch. Interacts with the user's privacy posture and provider routing rules.",
+      "values": [
+        {
+          "description": "Only dispatches to cloud providers (Anthropic, OpenAI, etc.).",
+          "name": "cloud_only"
+        },
+        {
+          "description": "Prefer local backends (MLX, llama.cpp); fall back to cloud on capability miss.",
+          "name": "local_preferred"
+        },
+        {
+          "description": "Only dispatches to local backends. No cloud fallback.",
+          "name": "local_only"
+        },
+        {
+          "description": "No preference — resolver picks by other criteria (latency, cost, availability).",
+          "name": "any"
+        }
+      ]
+    }
+  }
+}

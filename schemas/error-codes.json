@@ -1,0 +1,120 @@
+{
+  "codes": [
+    {
+      "code": "yaml-parse-failed",
+      "description": "The manifest is not well-formed YAML."
+    },
+    {
+      "code": "not-a-mapping",
+      "description": "The manifest top level is a sequence or scalar instead of a mapping."
+    },
+    {
+      "code": "missing-pack-version",
+      "description": "The top-level pack: field is absent."
+    },
+    {
+      "code": "unsupported-pack-version",
+      "description": "The pack: field is not one of the supported spec versions."
+    },
+    {
+      "code": "malformed-pack-version",
+      "description": "The pack: field is present but not a valid version string."
+    },
+    {
+      "code": "missing-required-field",
+      "description": "A field required by the current spec version is absent."
+    },
+    {
+      "code": "missing-author",
+      "description": "The author block is absent."
+    },
+    {
+      "code": "missing-description",
+      "description": "The description field is absent or empty."
+    },
+    {
+      "code": "missing-data-block",
+      "description": "The data: block (reads/writes/stores/phones_home) is absent."
+    },
+    {
+      "code": "missing-skills",
+      "description": "The skills: block is absent or empty."
+    },
+    {
+      "code": "invalid-semver",
+      "description": "The version field is not a semver major.minor.patch."
+    },
+    {
+      "code": "description-too-long",
+      "description": "The description exceeds the per-spec character limit."
+    },
+    {
+      "code": "invalid-licence",
+      "description": "The licence field is not an SPDX identifier."
+    },
+    {
+      "code": "unknown-service",
+      "description": "A service referenced in requires.services is not in services.yaml."
+    },
+    {
+      "code": "unknown-capability",
+      "description": "A capability referenced in requires_capabilities is not in capabilities.yaml."
+    },
+    {
+      "code": "unknown-skill-category",
+      "description": "A skill's category is not in skill-categories.yaml."
+    },
+    {
+      "code": "unknown-visibility",
+      "description": "The visibility field is not 'open' or 'sealed'."
+    },
+    {
+      "code": "unknown-tier",
+      "description": "The tier field is not 'certified', 'verified', or 'community'."
+    },
+    {
+      "code": "unknown-author-type",
+      "description": "The author.type field is not 'first-party' or 'community'."
+    },
+    {
+      "code": "unknown-readiness",
+      "description": "The readiness field is not in the closed enum."
+    },
+    {
+      "code": "unknown-pricing-model",
+      "description": "The pricing.model field is not in the closed enum."
+    },
+    {
+      "code": "unknown-data-store",
+      "description": "A value in data.stores is not in the closed enum."
+    },
+    {
+      "code": "writes-without-gate",
+      "description": "A pack declares writes but has no corresponding gate acknowledgement."
+    },
+    {
+      "code": "sealed-missing-seal",
+      "description": "visibility sealed but required seal metadata is absent."
+    },
+    {
+      "code": "service-operation-missing",
+      "description": "A service operation referenced is not in that contract's published operations."
+    },
+    {
+      "code": "invalid-pack-name",
+      "description": "The name contains disallowed characters or is reserved."
+    },
+    {
+      "code": "duplicate-skill-name",
+      "description": "Two skills in the pack share a name."
+    },
+    {
+      "code": "seal-signature-invalid",
+      "description": "A sealed pack's signature does not validate against the author's published key."
+    },
+    {
+      "code": "seal-payload-mismatch",
+      "description": "A sealed pack's HMAC does not match the cleartext payload."
+    }
+  ]
+}

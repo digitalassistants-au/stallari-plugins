@@ -1,0 +1,22 @@
+# The smallest pack that validates: required fields only, single skill with
+# manual trigger, no services beyond vault. Any schema change that tightens
+# requirements must not break this fixture.
+pack: "1.0"
+name: minimal-pack
+version: "1.0.0"
+description: Minimal valid pack used as a schema regression test fixture.
+
+author:
+  name: Stallari
+
+data:
+  reads: []
+  writes: []
+  stores: nothing
+  phones_home: false
+
+skills:
+  - name: noop
+    description: A skill that does nothing.
+    prompt: |
+      Respond with 'ok'.

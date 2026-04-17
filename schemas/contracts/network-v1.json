@@ -1,28 +1,90 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://stallari.app/schemas/contracts/network-v1.json",
-  "title": "network-v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "Network infrastructure service contract v1 — 14 operations across device monitoring, client visibility, firewall state, and network security for managed switches, APs, gateways, and routers.",
-  "type": "object",
-  "properties": {
-    "name": { "const": "network-v1" },
-    "service": { "const": "network" },
-    "version": { "const": 1 }
-  },
   "operations": [
-    { "name": "info", "description": "Controller health check — version, hostname, device and client counts", "classification": "required" },
-    { "name": "devices", "description": "List network devices (APs, switches, gateways) with state, model, clients, uptime, firmware", "classification": "required" },
-    { "name": "device", "description": "Full detail for a single device — ports, PoE, firmware, upgrade status", "classification": "required" },
-    { "name": "clients", "description": "Connected clients — name, IP, SSID/wired, signal strength, experience score, blocked status", "classification": "required" },
-    { "name": "client", "description": "Full detail for a single client — TX/RX, vendor, AP association", "classification": "required" },
-    { "name": "firewall", "description": "Firewall policies — name, action, enabled/disabled, source/destination", "classification": "required" },
-    { "name": "port_forwards", "description": "Port forwarding rules — name, protocol, external to internal mapping", "classification": "recommended" },
-    { "name": "traffic_routes", "description": "Traffic routes — description, enabled/disabled, target", "classification": "recommended" },
-    { "name": "traffic_rules", "description": "Traffic rules — description, action, enabled/disabled", "classification": "recommended" },
-    { "name": "dpi", "description": "DPI restriction groups and apps — name, enabled/disabled", "classification": "optional" },
-    { "name": "wlans", "description": "Wireless networks (SSIDs) — name, enabled/disabled, security, guest flag", "classification": "optional" },
-    { "name": "block_client", "description": "Block a client from the network", "classification": "gated" },
-    { "name": "toggle_wlan", "description": "Enable or disable a wireless network", "classification": "gated" },
-    { "name": "restart_device", "description": "Restart a network device (AP, switch, gateway)", "classification": "gated" }
-  ]
+    {
+      "classification": "required",
+      "description": "Controller health check — version, hostname, device and client counts",
+      "name": "info"
+    },
+    {
+      "classification": "required",
+      "description": "List network devices (APs, switches, gateways) with state, model, clients, uptime, firmware",
+      "name": "devices"
+    },
+    {
+      "classification": "required",
+      "description": "Full detail for a single device — ports, PoE, firmware, upgrade status",
+      "name": "device"
+    },
+    {
+      "classification": "required",
+      "description": "Connected clients — name, IP, SSID/wired, signal strength, experience score, blocked status",
+      "name": "clients"
+    },
+    {
+      "classification": "required",
+      "description": "Full detail for a single client — TX/RX, vendor, AP association",
+      "name": "client"
+    },
+    {
+      "classification": "required",
+      "description": "Firewall policies — name, action, enabled/disabled, source/destination",
+      "name": "firewall"
+    },
+    {
+      "classification": "recommended",
+      "description": "Port forwarding rules — name, protocol, external to internal mapping",
+      "name": "port_forwards"
+    },
+    {
+      "classification": "recommended",
+      "description": "Traffic routes — description, enabled/disabled, target",
+      "name": "traffic_routes"
+    },
+    {
+      "classification": "recommended",
+      "description": "Traffic rules — description, action, enabled/disabled",
+      "name": "traffic_rules"
+    },
+    {
+      "classification": "optional",
+      "description": "DPI restriction groups and apps — name, enabled/disabled",
+      "name": "dpi"
+    },
+    {
+      "classification": "optional",
+      "description": "Wireless networks (SSIDs) — name, enabled/disabled, security, guest flag",
+      "name": "wlans"
+    },
+    {
+      "classification": "gated",
+      "description": "Block a client from the network",
+      "name": "block_client"
+    },
+    {
+      "classification": "gated",
+      "description": "Enable or disable a wireless network",
+      "name": "toggle_wlan"
+    },
+    {
+      "classification": "gated",
+      "description": "Restart a network device (AP, switch, gateway)",
+      "name": "restart_device"
+    }
+  ],
+  "properties": {
+    "name": {
+      "const": "network-v1"
+    },
+    "service": {
+      "const": "network"
+    },
+    "version": {
+      "const": 1
+    }
+  },
+  "title": "network-v1",
+  "type": "object"
 }

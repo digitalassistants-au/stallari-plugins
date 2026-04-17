@@ -1,129 +1,135 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://stallari.app/schemas/contracts/dns-v1.json",
-  "title": "dns-v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "DNS filtering and privacy service contract v1 — 22 operations for profile-based DNS policy management, content filtering, service routing, custom rules, and device endpoint management. Designed for Control-D, NextDNS, AdGuard, and similar DNS filtering services.",
-  "type": "object",
-  "properties": {
-    "name": { "const": "dns-v1" },
-    "service": { "const": "dns" },
-    "version": { "const": 1 }
-  },
   "operations": [
     {
-      "name": "dns_info",
+      "classification": "required",
       "description": "Account info and connectivity health check — caller IP, PoP, account status",
-      "classification": "required"
+      "name": "dns_info"
     },
     {
-      "name": "dns_profiles",
+      "classification": "required",
       "description": "List all DNS filtering profiles with rule/device counts",
-      "classification": "required"
+      "name": "dns_profiles"
     },
     {
-      "name": "dns_profile",
+      "classification": "required",
       "description": "Get full detail for a single profile including active options",
-      "classification": "required"
+      "name": "dns_profile"
     },
     {
-      "name": "dns_filters",
+      "classification": "required",
       "description": "List native and third-party content filters for a profile",
-      "classification": "required"
+      "name": "dns_filters"
     },
     {
-      "name": "dns_rules",
+      "classification": "required",
       "description": "List custom hostname-level DNS rules for a profile",
-      "classification": "required"
+      "name": "dns_rules"
     },
     {
-      "name": "dns_devices",
+      "classification": "required",
       "description": "List DNS endpoints (devices/resolvers) with profile assignments",
-      "classification": "required"
+      "name": "dns_devices"
     },
     {
-      "name": "dns_network",
+      "classification": "recommended",
       "description": "Service availability and latency across points of presence",
-      "classification": "recommended"
+      "name": "dns_network"
     },
     {
-      "name": "dns_services",
+      "classification": "recommended",
       "description": "List active service-level rules (block/bypass/redirect) for a profile",
-      "classification": "recommended"
+      "name": "dns_services"
     },
     {
-      "name": "dns_service_catalog",
+      "classification": "recommended",
       "description": "Full catalog of blockable/routable services and proxy locations",
-      "classification": "recommended"
+      "name": "dns_service_catalog"
     },
     {
-      "name": "dns_default_rule",
+      "classification": "recommended",
       "description": "Get the catch-all default rule for a profile",
-      "classification": "recommended"
+      "name": "dns_default_rule"
     },
     {
-      "name": "dns_access",
+      "classification": "recommended",
       "description": "List IPs that have queried a device endpoint",
-      "classification": "recommended"
+      "name": "dns_access"
     },
     {
-      "name": "dns_analytics_config",
+      "classification": "recommended",
       "description": "Analytics configuration — log levels and storage regions",
-      "classification": "recommended"
+      "name": "dns_analytics_config"
     },
     {
-      "name": "dns_profile_create",
+      "classification": "gated",
       "description": "Create a new DNS filtering profile (blank or cloned)",
-      "classification": "gated"
+      "name": "dns_profile_create"
     },
     {
-      "name": "dns_profile_update",
+      "classification": "gated",
       "description": "Update profile settings (name, TTL, lock status)",
-      "classification": "gated"
+      "name": "dns_profile_update"
     },
     {
-      "name": "dns_filters_update",
+      "classification": "gated",
       "description": "Enable/disable content filters (single or batch)",
-      "classification": "gated"
+      "name": "dns_filters_update"
     },
     {
-      "name": "dns_service_update",
+      "classification": "gated",
       "description": "Set a service-level rule — block, bypass, spoof, or redirect",
-      "classification": "gated"
+      "name": "dns_service_update"
     },
     {
-      "name": "dns_rule_create",
+      "classification": "gated",
       "description": "Create custom hostname-level DNS rules",
-      "classification": "gated"
+      "name": "dns_rule_create"
     },
     {
-      "name": "dns_rule_update",
+      "classification": "gated",
       "description": "Update existing custom DNS rules",
-      "classification": "gated"
+      "name": "dns_rule_update"
     },
     {
-      "name": "dns_rule_delete",
+      "classification": "gated",
       "description": "Delete a custom DNS rule (destructive, requires confirmation)",
-      "classification": "gated"
+      "name": "dns_rule_delete"
     },
     {
-      "name": "dns_default_rule_set",
+      "classification": "gated",
       "description": "Set the default catch-all rule for a profile",
-      "classification": "gated"
+      "name": "dns_default_rule_set"
     },
     {
-      "name": "dns_device_create",
+      "classification": "gated",
       "description": "Create a new DNS endpoint (device/resolver)",
-      "classification": "gated"
+      "name": "dns_device_create"
     },
     {
-      "name": "dns_device_update",
+      "classification": "gated",
       "description": "Update device settings (profile assignment, name, status)",
-      "classification": "gated"
+      "name": "dns_device_update"
     },
     {
-      "name": "dns_access_update",
+      "classification": "gated",
       "description": "Authorize or deauthorize IP access on a device (requires confirmation)",
-      "classification": "gated"
+      "name": "dns_access_update"
     }
-  ]
+  ],
+  "properties": {
+    "name": {
+      "const": "dns-v1"
+    },
+    "service": {
+      "const": "dns"
+    },
+    "version": {
+      "const": 1
+    }
+  },
+  "title": "dns-v1",
+  "type": "object"
 }

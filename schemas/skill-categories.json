@@ -1,0 +1,36 @@
+{
+  "categories": [
+    {
+      "description": "Pulls data in from external sources (email, web, RSS, files). No outbound writes.",
+      "name": "ingest"
+    },
+    {
+      "description": "Classifies and routes inbound items (inbox triage, task priority, noise filtering).",
+      "name": "triage"
+    },
+    {
+      "description": "Summarises across a window of time (daily digest, weekly review, project status).",
+      "name": "digest"
+    },
+    {
+      "description": "Restructures or enriches existing data (reformatting, tagging, linking, merging).",
+      "name": "transform"
+    },
+    {
+      "description": "Pushes outbound alerts, reminders, or messages based on triggers.",
+      "name": "notify"
+    },
+    {
+      "description": "Surfaces items for human attention (HITL queues, approval flows, quality checks).",
+      "name": "review"
+    },
+    {
+      "description": "Keeps two or more sources in lockstep (bidirectional updates, reconciliation).",
+      "name": "sync"
+    },
+    {
+      "description": "Produces structured output for audit or sharing (monthly financials, health reports).",
+      "name": "report"
+    }
+  ]
+}

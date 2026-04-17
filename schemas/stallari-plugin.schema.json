@@ -1,603 +1,752 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://stallari.app/schemas/stallari-plugin.schema.json",
-  "title": "Stallari Plugin Manifest",
-  "description": "Schema for stallari-plugin.yaml — the manifest format for Stallari platform plugins. The legacy filename sidereal-plugin.yaml is also accepted during the Sidereal→Stallari rebrand transition; both resolve to this schema.",
-  "type": "object",
-  "required": ["name", "version", "description", "author", "licence", "install"],
-  "additionalProperties": false,
-  "properties": {
-    "name": {
-      "type": "string",
-      "pattern": "^[a-z0-9][a-z0-9-]*$",
-      "description": "Plugin identifier. Lowercase alphanumeric with hyphens."
-    },
-    "version": {
-      "type": "string",
-      "pattern": "^\\d+\\.\\d+\\.\\d+$",
-      "description": "Semantic version (major.minor.patch)."
-    },
-    "description": {
-      "type": "string",
-      "maxLength": 200,
-      "description": "Human-readable summary of the plugin's capabilities."
-    },
-    "author": {
-      "type": "string",
-      "description": "Plugin author identifier."
-    },
-    "licence": {
-      "type": "string",
-      "description": "SPDX licence identifier (e.g. MIT, Apache-2.0)."
-    },
-    "tier": {
-      "type": "string",
-      "enum": ["certified", "verified", "community"],
-      "deprecated": true,
-      "description": "DEPRECATED — use author_type + readiness. Legacy quality tier. Certified = first-party, Verified = third-party validated, Community = interest signal. Either tier or both author_type + readiness should be present."
-    },
-    "author_type": {
-      "type": "string",
-      "enum": ["first-party", "community"],
-      "description": "Author provenance. first-party = published and maintained by Stallari."
-    },
-    "readiness": {
-      "type": "string",
-      "enum": ["production", "beta", "experimental", "stub"],
-      "description": "Testing completeness. production = all certification checklist items pass. beta = partially tested. experimental = untested. stub = scaffolded but not functional."
-    },
-    "icon": {
-      "type": "string",
-      "description": "Relative URL path to icon asset for marketplace display (e.g. '/icons/xero-blade-mcp.svg')."
-    },
-    "homepage": {
-      "type": "string",
-      "format": "uri",
-      "description": "Plugin homepage or repository URL."
-    },
-    "repository": {
-      "type": "string",
-      "format": "uri",
-      "description": "Source repository URL."
-    },
-    "notes": {
-      "type": "string",
-      "description": "Free-form notes about the plugin (curation status, caveats, context)."
-    },
-    "multi_instance": {
-      "type": "boolean",
-      "default": false,
-      "description": "Whether this plugin supports multiple named instances (e.g. multi-site Home Assistant, multi-account email)."
-    },
-    "inference": {
-      "type": "object",
-      "additionalProperties": false,
-      "description": "Optional declaration of embedded LLM inference. Informational — platform does not enforce or route.",
-      "properties": {
-        "provider": {
-          "type": "string",
-          "description": "Inference provider identifier (e.g. google-gemini, openai)."
-        },
-        "model": {
-          "type": "string",
-          "description": "Model identifier (e.g. gemini-2.0-flash-lite)."
-        },
-        "purpose": {
-          "type": "string",
-          "description": "What the inference is used for (e.g. classification, summarisation)."
-        }
-      }
-    },
-    "contract": {
-      "oneOf": [
-        { "type": "string", "pattern": "^[a-z]+-v\\d+$" },
-        { "type": "array", "items": { "type": "string", "pattern": "^[a-z]+-v\\d+$" }, "minItems": 1 },
-        { "type": "null" }
-      ],
-      "description": "Domain contract identifier(s). Single string, array of strings for multi-service MCPs, or null for uncontracted tools."
-    },
-    "services": {
-      "type": "object",
-      "description": "Service operation mappings. Keys are service names, values map contract operation names to concrete MCP tool names.",
-      "minProperties": 1,
-      "additionalProperties": {
-        "type": "object",
-        "additionalProperties": {
-          "type": "string",
-          "description": "Concrete MCP tool name that implements this operation."
-        }
-      }
-    },
-    "install": {
-      "type": "object",
-      "required": ["runtime"],
-      "additionalProperties": false,
-      "description": "Installation specification.",
-      "properties": {
-        "runtime": {
-          "type": "string",
-          "enum": ["uv", "npm", "npx", "node", "docker", "native", "remote"],
-          "description": "Runtime type for executing the plugin."
-        },
-        "package": {
-          "type": "string",
-          "description": "Package name for local runtimes (uv/npm)."
-        },
-        "command": {
-          "type": "string",
-          "description": "Command to invoke the plugin."
-        },
-        "args": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "Additional arguments passed to the command."
-        },
-        "url": {
-          "type": "string",
-          "format": "uri",
-          "description": "Remote MCP endpoint URL (for runtime = remote)."
-        },
-        "auth": {
-          "type": "object",
-          "additionalProperties": false,
-          "description": "Authentication configuration for remote MCPs.",
-          "properties": {
-            "type": {
-              "type": "string",
-              "enum": ["bearer", "header", "oauth2"],
-              "description": "Authentication method."
-            },
-            "header": {
-              "type": "string",
-              "description": "HTTP header name for token injection."
-            },
-            "prefix": {
-              "type": "string",
-              "description": "Token prefix (e.g. 'Bearer')."
-            }
-          },
-          "required": ["type"]
-        }
-      },
-      "allOf": [
-        {
-          "if": {
-            "properties": { "runtime": { "const": "remote" } }
-          },
-          "then": {
-            "required": ["runtime", "url"]
-          }
-        },
-        {
-          "if": {
-            "properties": { "runtime": { "enum": ["uv", "npm", "npx"] } }
-          },
-          "then": {
-            "required": ["runtime", "package"]
-          }
-        }
-      ]
-    },
-    "env": {
-      "oneOf": [
-        {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "required": ["name", "description"],
-            "additionalProperties": false,
-            "properties": {
-              "name": {
-                "type": "string",
-                "pattern": "^[A-Z][A-Z0-9_]*$",
-                "description": "Environment variable name."
-              },
-              "description": {
-                "type": "string",
-                "description": "Human-readable description of the variable's purpose."
-              },
-              "secret": {
-                "type": "boolean",
-                "default": false,
-                "description": "Whether this value should be stored in the system keychain."
-              },
-              "default": {
-                "type": "string",
-                "description": "Default value if not set by the user."
-              }
-            }
-          }
-        },
-        {
-          "type": "array",
-          "maxItems": 0
-        }
-      ],
-      "description": "Required environment variables."
-    },
-    "requires": {
-      "type": "object",
-      "additionalProperties": false,
-      "description": "Dependency requirements.",
-      "properties": {
-        "stallari": {
-          "type": "string",
-          "pattern": "^[><=!~^]+\\d+\\.\\d+\\.\\d+",
-          "description": "Minimum Stallari version (e.g. >=0.3.0)."
-        }
-      }
-    },
-    "conformance": {
-      "type": "object",
-      "additionalProperties": false,
-      "description": "Contract conformance test results.",
-      "properties": {
-        "required": {
-          "type": "string",
-          "pattern": "^(\\d+/\\d+|untested)$",
-          "description": "Required operations met (e.g. 3/3) or 'untested'."
-        },
-        "recommended": {
-          "type": "string",
-          "pattern": "^(\\d+/\\d+|untested)$",
-          "description": "Recommended operations met (e.g. 2/2) or 'untested'."
-        },
-        "optional": {
-          "type": "string",
-          "pattern": "^(\\d+/\\d+|untested)$",
-          "description": "Optional operations met (e.g. 1/1) or 'untested'."
-        },
-        "gated": {
-          "type": "string",
-          "pattern": "^(\\d+/\\d+|untested)$",
-          "description": "Gated (write) operations met."
-        },
-        "last_tested": {
-          "type": ["string", "null"],
-          "format": "date",
-          "description": "ISO date of last conformance run, or null if untested."
-        }
-      }
-    },
-    "webhooks": {
-      "type": "array",
-      "items": { "$ref": "#/$defs/webhookSetup" },
-      "description": "Webhook endpoint requirements (v1.4, DD113). Declares endpoints the plugin needs wired at install time."
-    },
-    "setup": {
-      "type": "object",
-      "additionalProperties": false,
-      "description": "Setup metadata for credential UI generation, marketplace display, and preflight readiness checks.",
-      "properties": {
-        "auth_model": {
-          "type": "string",
-          "enum": ["api_key", "oauth2", "basic", "file", "none"],
-          "description": "Primary authentication model. Drives harness setup flow selection."
-        },
-        "complexity": {
-          "type": "string",
-          "enum": ["trivial", "moderate", "involved"],
-          "description": "Setup effort signal for marketplace. trivial = paste one key, moderate = create app + configure, involved = multi-step OAuth or external setup."
-        },
-        "icon": {
-          "type": "string",
-          "description": "SF Symbol name for credential card (e.g. 'cart.fill', 'envelope.fill')."
-        },
-        "product": {
-          "type": "string",
-          "description": "Service label for credential card subtitle (e.g. 'Admin API Token', 'OAuth2 Client')."
-        },
-        "help_text": {
-          "type": "string",
-          "description": "Human-readable setup instructions shown in credential wizard."
-        },
-        "help_url": {
-          "type": "string",
-          "format": "uri",
-          "description": "Link to external setup docs or developer console."
-        },
-        "blurb": {
-          "type": "string",
-          "maxLength": 200,
-          "description": "Short marketing copy for the setup wizard (e.g. 'Connect to your Home Assistant instance for device monitoring'). Distinct from help_text which is step-by-step instructions."
-        },
-        "help": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "required": ["label", "url"],
-            "additionalProperties": false,
-            "properties": {
-              "label": {
-                "type": "string",
-                "description": "Human-readable link label."
-              },
-              "url": {
-                "type": "string",
-                "format": "uri",
-                "description": "External URL."
-              }
-            }
-          },
-          "description": "Labelled documentation links shown in the setup wizard and settings card (guides, developer consoles, API docs)."
-        },
-        "fields": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "type": "object",
-            "required": ["key", "label"],
-            "additionalProperties": false,
-            "properties": {
-              "key": {
-                "type": "string",
-                "pattern": "^[A-Z][A-Z0-9_]*$",
-                "description": "Environment variable name. Should match an entry in the env array."
-              },
-              "label": {
-                "type": "string",
-                "description": "Human-readable field label for UI (e.g. 'API Token', 'Store URL')."
-              },
-              "type": {
-                "type": "string",
-                "enum": ["string", "boolean"],
-                "default": "string",
-                "description": "Field type. 'string' renders as text/secure input. 'boolean' renders as checkbox (e.g. write-enable gates)."
-              },
-              "secret": {
-                "type": "boolean",
-                "default": false,
-                "description": "true = SecureField in UI, stored encrypted. false = plain TextField. Ignored when type is 'boolean'."
-              },
-              "placeholder": {
-                "type": "string",
-                "description": "Placeholder text for the input field (e.g. 'ghp_...', 'https://store.myshopify.com'). Ignored when type is 'boolean'."
-              },
-              "required": {
-                "type": "boolean",
-                "default": true,
-                "description": "Whether this field is mandatory for the plugin to function."
-              },
-              "help": {
-                "type": "string",
-                "description": "Per-field guidance shown below the input (e.g. 'Run make auth to obtain', 'Create at Profile → Security')."
-              }
-            }
-          },
-          "description": "Credential fields. Each maps to an environment variable injected at plugin launch."
-        },
-        "test": {
-          "type": "object",
-          "additionalProperties": false,
-          "description": "Connection test configuration. Enables 'Test Connection' button in credential UI.",
-          "properties": {
-            "endpoint": {
-              "type": "string",
-              "description": "URL template for connection test. Use {FIELD_KEY} for variable substitution (e.g. '{SHOPIFY_STORE_URL}/admin/api/2024-01/shop.json')."
-            },
-            "auth_style": {
-              "type": "string",
-              "enum": ["bearer", "basic", "header", "none"],
-              "description": "How to attach credentials to the test request."
-            },
-            "auth_header": {
-              "type": "string",
-              "description": "Custom header name when auth_style is 'header' (e.g. 'X-Shopify-Access-Token')."
-            },
-            "expected_status": {
-              "type": "array",
-              "items": { "type": "integer" },
-              "default": [200],
-              "description": "HTTP status codes that indicate success."
-            }
-          }
-        },
-        "oauth2": {
-          "type": "object",
-          "additionalProperties": false,
-          "description": "OAuth2 flow metadata. Present when auth_model is 'oauth2'.",
-          "properties": {
-            "grant_type": {
-              "type": "string",
-              "enum": ["authorization_code", "client_credentials"],
-              "description": "OAuth2 grant type."
-            },
-            "scopes": {
-              "type": "array",
-              "items": { "type": "string" },
-              "description": "Required OAuth2 scopes."
-            },
-            "setup_url": {
-              "type": "string",
-              "format": "uri",
-              "description": "URL where user creates the OAuth2 app/client."
-            }
-          }
-        },
-        "prerequisites": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "Human-readable external prerequisites (e.g. 'Xero developer account', 'Google Cloud project with Gmail API enabled')."
-        },
-        "setup_guide": {
-          "type": "string",
-          "description": "Relative path to a setup guide markdown file (e.g. 'guides/onedrive-setup.md'). When present, the setup UI shows a step-by-step walkthrough instead of the flat help_text."
-        }
-      }
-    },
-    "certification": {
-      "type": "object",
-      "additionalProperties": false,
-      "description": "Third-party validation and certification state. Tracks the process of promoting community plugins to verified tier.",
-      "properties": {
-        "status": {
-          "type": "string",
-          "enum": ["pending", "validated", "certified", "revoked"],
-          "description": "Certification workflow status. pending = queued for review, validated = passed checklist, certified = first-party full conformance, revoked = previously validated but withdrawn."
-        },
-        "validated_version": {
-          "type": "string",
-          "pattern": "^\\d+\\.\\d+\\.\\d+",
-          "description": "Upstream version that was validated."
-        },
-        "validated_commit": {
-          "type": "string",
-          "pattern": "^[0-9a-f]{7,40}$",
-          "description": "Git commit SHA of the validated version."
-        },
-        "validated_date": {
-          "type": "string",
-          "format": "date",
-          "description": "ISO date when validation was performed."
-        },
-        "validator": {
-          "type": "string",
-          "description": "Who performed the validation (e.g. system-architect, CI)."
-        },
-        "security_review": {
-          "type": "string",
-          "enum": ["pass", "warn", "fail"],
-          "description": "Security review outcome. warn = acceptable with noted caveats."
-        },
-        "security_notes": {
-          "type": "string",
-          "description": "Free-form notes on security findings or caveats."
-        },
-        "stability": {
-          "type": "string",
-          "enum": ["stable", "beta", "experimental"],
-          "description": "Upstream project maturity assessment."
-        },
-        "platform_tested": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "Platforms where validation was performed (e.g. macos-arm64, linux-x64)."
-        },
-        "checklist": {
-          "type": "object",
-          "additionalProperties": false,
-          "description": "Validation checklist results.",
-          "properties": {
-            "installs_cleanly": {
-              "type": "boolean",
-              "description": "Plugin installs without errors via declared runtime."
-            },
-            "tools_enumerate": {
-              "type": "boolean",
-              "description": "MCP tools/list returns valid tool schemas."
-            },
-            "tools_callable": {
-              "type": "boolean",
-              "description": "At least one tool can be called with valid inputs."
-            },
-            "no_data_exfil": {
-              "type": "boolean",
-              "description": "No unexpected network calls or data exfiltration observed."
-            },
-            "auth_reviewed": {
-              "type": "boolean",
-              "description": "Authentication model reviewed and documented."
-            },
-            "licence_compatible": {
-              "type": "boolean",
-              "description": "Licence is compatible (MIT, Apache-2.0, ISC, BSD)."
-            }
-          }
-        }
-      }
-    }
-  },
   "$defs": {
     "webhookSetup": {
-      "type": "object",
-      "required": ["name", "path", "processor"],
       "additionalProperties": false,
       "description": "Webhook endpoint requirement (DD113). Declares an endpoint the plugin needs auto-wired at install time.",
       "properties": {
-        "name": {
-          "type": "string",
-          "description": "Webhook endpoint name (e.g. xero-invoice). Becomes WebhookConfig.name."
-        },
-        "path": {
-          "type": "string",
-          "pattern": "^/hooks/",
-          "description": "URL path suffix (e.g. /hooks/xero/invoice). Becomes WebhookConfig.path."
-        },
-        "processor": {
-          "type": "string",
-          "enum": ["dispatch", "xero", "oura", "home-assistant", "security-event", "energy", "podcast", "generic"],
-          "description": "Built-in processor type that handles inbound events."
-        },
         "auth_model": {
-          "type": "string",
-          "enum": ["hmac", "bearer", "none"],
           "default": "hmac",
-          "description": "Verification method for inbound webhook requests."
-        },
-        "fields": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "required": ["key", "label"],
-            "additionalProperties": false,
-            "properties": {
-              "key": {
-                "type": "string",
-                "description": "Credential key (e.g. WEBHOOK_SECRET)."
-              },
-              "label": {
-                "type": "string",
-                "description": "Human-readable field label for UI."
-              },
-              "secret": {
-                "type": "boolean",
-                "default": false,
-                "description": "true = SecureField in UI, stored encrypted."
-              },
-              "placeholder": {
-                "type": "string",
-                "description": "Placeholder text for the input field."
-              },
-              "required": {
-                "type": "boolean",
-                "default": true,
-                "description": "Whether this field is mandatory."
-              },
-              "help": {
-                "type": "string",
-                "description": "Per-field guidance shown below the input."
-              }
-            }
-          },
-          "description": "Credential fields for webhook auth (mirrors setup.fields shape)."
-        },
-        "options": {
-          "type": "object",
-          "additionalProperties": { "type": "string" },
-          "description": "Processor-specific options (e.g. skill, operator for dispatch processor)."
+          "description": "Verification method for inbound webhook requests.",
+          "enum": [
+            "hmac",
+            "bearer",
+            "none"
+          ],
+          "type": "string"
         },
         "external_setup": {
-          "type": "object",
           "additionalProperties": false,
           "description": "Human-readable instructions for configuring the external service to send webhooks.",
           "properties": {
             "help_text": {
-              "type": "string",
-              "description": "Step-by-step instructions shown in wizard/settings."
+              "description": "Step-by-step instructions shown in wizard/settings.",
+              "type": "string"
             },
             "help_url": {
-              "type": "string",
+              "description": "URL to external service's webhook configuration page.",
               "format": "uri",
-              "description": "URL to external service's webhook configuration page."
+              "type": "string"
             },
             "prerequisites": {
-              "type": "array",
-              "items": { "type": "string" },
-              "description": "Prerequisites before webhook setup."
+              "description": "Prerequisites before webhook setup.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
             }
+          },
+          "type": "object"
+        },
+        "fields": {
+          "description": "Credential fields for webhook auth (mirrors setup.fields shape).",
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "help": {
+                "description": "Per-field guidance shown below the input.",
+                "type": "string"
+              },
+              "key": {
+                "description": "Credential key (e.g. WEBHOOK_SECRET).",
+                "type": "string"
+              },
+              "label": {
+                "description": "Human-readable field label for UI.",
+                "type": "string"
+              },
+              "placeholder": {
+                "description": "Placeholder text for the input field.",
+                "type": "string"
+              },
+              "required": {
+                "default": true,
+                "description": "Whether this field is mandatory.",
+                "type": "boolean"
+              },
+              "secret": {
+                "default": false,
+                "description": "true = SecureField in UI, stored encrypted.",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "key",
+              "label"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "name": {
+          "description": "Webhook endpoint name (e.g. xero-invoice). Becomes WebhookConfig.name.",
+          "type": "string"
+        },
+        "options": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Processor-specific options (e.g. skill, operator for dispatch processor).",
+          "type": "object"
+        },
+        "path": {
+          "description": "URL path suffix (e.g. /hooks/xero/invoice). Becomes WebhookConfig.path.",
+          "pattern": "^/hooks/",
+          "type": "string"
+        },
+        "processor": {
+          "description": "Built-in processor type that handles inbound events.",
+          "enum": [
+            "dispatch",
+            "xero",
+            "oura",
+            "home-assistant",
+            "security-event",
+            "energy",
+            "podcast",
+            "generic"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "path",
+        "processor"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "https://stallari.app/schemas/stallari-plugin.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Schema for stallari-plugin.yaml — the manifest format for Stallari platform plugins. The legacy filename sidereal-plugin.yaml is also accepted during the Sidereal→Stallari rebrand transition; both resolve to this schema.",
+  "properties": {
+    "author": {
+      "description": "Plugin author identifier.",
+      "type": "string"
+    },
+    "author_type": {
+      "description": "Author provenance. first-party = published and maintained by Stallari.",
+      "enum": [
+        "first-party",
+        "community"
+      ],
+      "type": "string"
+    },
+    "certification": {
+      "additionalProperties": false,
+      "description": "Third-party validation and certification state. Tracks the process of promoting community plugins to verified tier.",
+      "properties": {
+        "checklist": {
+          "additionalProperties": false,
+          "description": "Validation checklist results.",
+          "properties": {
+            "auth_reviewed": {
+              "description": "Authentication model reviewed and documented.",
+              "type": "boolean"
+            },
+            "installs_cleanly": {
+              "description": "Plugin installs without errors via declared runtime.",
+              "type": "boolean"
+            },
+            "licence_compatible": {
+              "description": "Licence is compatible (MIT, Apache-2.0, ISC, BSD).",
+              "type": "boolean"
+            },
+            "no_data_exfil": {
+              "description": "No unexpected network calls or data exfiltration observed.",
+              "type": "boolean"
+            },
+            "tools_callable": {
+              "description": "At least one tool can be called with valid inputs.",
+              "type": "boolean"
+            },
+            "tools_enumerate": {
+              "description": "MCP tools/list returns valid tool schemas.",
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        },
+        "platform_tested": {
+          "description": "Platforms where validation was performed (e.g. macos-arm64, linux-x64).",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "security_notes": {
+          "description": "Free-form notes on security findings or caveats.",
+          "type": "string"
+        },
+        "security_review": {
+          "description": "Security review outcome. warn = acceptable with noted caveats.",
+          "enum": [
+            "pass",
+            "warn",
+            "fail"
+          ],
+          "type": "string"
+        },
+        "stability": {
+          "description": "Upstream project maturity assessment.",
+          "enum": [
+            "stable",
+            "beta",
+            "experimental"
+          ],
+          "type": "string"
+        },
+        "status": {
+          "description": "Certification workflow status. pending = queued for review, validated = passed checklist, certified = first-party full conformance, revoked = previously validated but withdrawn.",
+          "enum": [
+            "pending",
+            "validated",
+            "certified",
+            "revoked"
+          ],
+          "type": "string"
+        },
+        "validated_commit": {
+          "description": "Git commit SHA of the validated version.",
+          "pattern": "^[0-9a-f]{7,40}$",
+          "type": "string"
+        },
+        "validated_date": {
+          "description": "ISO date when validation was performed.",
+          "format": "date",
+          "type": "string"
+        },
+        "validated_version": {
+          "description": "Upstream version that was validated.",
+          "pattern": "^\\d+\\.\\d+\\.\\d+",
+          "type": "string"
+        },
+        "validator": {
+          "description": "Who performed the validation (e.g. system-architect, CI).",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "conformance": {
+      "additionalProperties": false,
+      "description": "Contract conformance test results.",
+      "properties": {
+        "gated": {
+          "description": "Gated (write) operations met.",
+          "pattern": "^(\\d+/\\d+|untested)$",
+          "type": "string"
+        },
+        "last_tested": {
+          "description": "ISO date of last conformance run, or null if untested.",
+          "format": "date",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "optional": {
+          "description": "Optional operations met (e.g. 1/1) or 'untested'.",
+          "pattern": "^(\\d+/\\d+|untested)$",
+          "type": "string"
+        },
+        "recommended": {
+          "description": "Recommended operations met (e.g. 2/2) or 'untested'.",
+          "pattern": "^(\\d+/\\d+|untested)$",
+          "type": "string"
+        },
+        "required": {
+          "description": "Required operations met (e.g. 3/3) or 'untested'.",
+          "pattern": "^(\\d+/\\d+|untested)$",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "contract": {
+      "description": "Domain contract identifier(s). Single string, array of strings for multi-service MCPs, or null for uncontracted tools.",
+      "oneOf": [
+        {
+          "pattern": "^[a-z]+-v\\d+$",
+          "type": "string"
+        },
+        {
+          "items": {
+            "pattern": "^[a-z]+-v\\d+$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "description": {
+      "description": "Human-readable summary of the plugin's capabilities.",
+      "maxLength": 200,
+      "type": "string"
+    },
+    "env": {
+      "description": "Required environment variables.",
+      "oneOf": [
+        {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "default": {
+                "description": "Default value if not set by the user.",
+                "type": "string"
+              },
+              "description": {
+                "description": "Human-readable description of the variable's purpose.",
+                "type": "string"
+              },
+              "name": {
+                "description": "Environment variable name.",
+                "pattern": "^[A-Z][A-Z0-9_]*$",
+                "type": "string"
+              },
+              "secret": {
+                "default": false,
+                "description": "Whether this value should be stored in the system keychain.",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "name",
+              "description"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        {
+          "maxItems": 0,
+          "type": "array"
+        }
+      ]
+    },
+    "homepage": {
+      "description": "Plugin homepage or repository URL.",
+      "format": "uri",
+      "type": "string"
+    },
+    "icon": {
+      "description": "Relative URL path to icon asset for marketplace display (e.g. '/icons/xero-blade-mcp.svg').",
+      "type": "string"
+    },
+    "inference": {
+      "additionalProperties": false,
+      "description": "Optional declaration of embedded LLM inference. Informational — platform does not enforce or route.",
+      "properties": {
+        "model": {
+          "description": "Model identifier (e.g. gemini-2.0-flash-lite).",
+          "type": "string"
+        },
+        "provider": {
+          "description": "Inference provider identifier (e.g. google-gemini, openai).",
+          "type": "string"
+        },
+        "purpose": {
+          "description": "What the inference is used for (e.g. classification, summarisation).",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "install": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "runtime": {
+                "const": "remote"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "runtime",
+              "url"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "runtime": {
+                "enum": [
+                  "uv",
+                  "npm",
+                  "npx"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "runtime",
+              "package"
+            ]
           }
         }
-      }
+      ],
+      "description": "Installation specification.",
+      "properties": {
+        "args": {
+          "description": "Additional arguments passed to the command.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "auth": {
+          "additionalProperties": false,
+          "description": "Authentication configuration for remote MCPs.",
+          "properties": {
+            "header": {
+              "description": "HTTP header name for token injection.",
+              "type": "string"
+            },
+            "prefix": {
+              "description": "Token prefix (e.g. 'Bearer').",
+              "type": "string"
+            },
+            "type": {
+              "description": "Authentication method.",
+              "enum": [
+                "bearer",
+                "header",
+                "oauth2"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "type": "object"
+        },
+        "command": {
+          "description": "Command to invoke the plugin.",
+          "type": "string"
+        },
+        "package": {
+          "description": "Package name for local runtimes (uv/npm).",
+          "type": "string"
+        },
+        "runtime": {
+          "description": "Runtime type for executing the plugin.",
+          "enum": [
+            "uv",
+            "npm",
+            "npx",
+            "node",
+            "docker",
+            "native",
+            "remote"
+          ],
+          "type": "string"
+        },
+        "url": {
+          "description": "Remote MCP endpoint URL (for runtime = remote).",
+          "format": "uri",
+          "type": "string"
+        }
+      },
+      "required": [
+        "runtime"
+      ],
+      "type": "object"
+    },
+    "licence": {
+      "description": "SPDX licence identifier (e.g. MIT, Apache-2.0).",
+      "type": "string"
+    },
+    "multi_instance": {
+      "default": false,
+      "description": "Whether this plugin supports multiple named instances (e.g. multi-site Home Assistant, multi-account email).",
+      "type": "boolean"
+    },
+    "name": {
+      "description": "Plugin identifier. Lowercase alphanumeric with hyphens.",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "type": "string"
+    },
+    "notes": {
+      "description": "Free-form notes about the plugin (curation status, caveats, context).",
+      "type": "string"
+    },
+    "readiness": {
+      "description": "Testing completeness. production = all certification checklist items pass. beta = partially tested. experimental = untested. stub = scaffolded but not functional.",
+      "enum": [
+        "production",
+        "beta",
+        "experimental",
+        "stub"
+      ],
+      "type": "string"
+    },
+    "repository": {
+      "description": "Source repository URL.",
+      "format": "uri",
+      "type": "string"
+    },
+    "requires": {
+      "additionalProperties": false,
+      "description": "Dependency requirements.",
+      "properties": {
+        "stallari": {
+          "description": "Minimum Stallari version (e.g. >=0.3.0).",
+          "pattern": "^[><=!~^]+\\d+\\.\\d+\\.\\d+",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "services": {
+      "additionalProperties": {
+        "additionalProperties": {
+          "description": "Concrete MCP tool name that implements this operation.",
+          "type": "string"
+        },
+        "type": "object"
+      },
+      "description": "Service operation mappings. Keys are service names, values map contract operation names to concrete MCP tool names.",
+      "minProperties": 1,
+      "type": "object"
+    },
+    "setup": {
+      "additionalProperties": false,
+      "description": "Setup metadata for credential UI generation, marketplace display, and preflight readiness checks.",
+      "properties": {
+        "auth_model": {
+          "description": "Primary authentication model. Drives harness setup flow selection.",
+          "enum": [
+            "api_key",
+            "oauth2",
+            "basic",
+            "file",
+            "none"
+          ],
+          "type": "string"
+        },
+        "blurb": {
+          "description": "Short marketing copy for the setup wizard (e.g. 'Connect to your Home Assistant instance for device monitoring'). Distinct from help_text which is step-by-step instructions.",
+          "maxLength": 200,
+          "type": "string"
+        },
+        "complexity": {
+          "description": "Setup effort signal for marketplace. trivial = paste one key, moderate = create app + configure, involved = multi-step OAuth or external setup.",
+          "enum": [
+            "trivial",
+            "moderate",
+            "involved"
+          ],
+          "type": "string"
+        },
+        "fields": {
+          "description": "Credential fields. Each maps to an environment variable injected at plugin launch.",
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "help": {
+                "description": "Per-field guidance shown below the input (e.g. 'Run make auth to obtain', 'Create at Profile → Security').",
+                "type": "string"
+              },
+              "key": {
+                "description": "Environment variable name. Should match an entry in the env array.",
+                "pattern": "^[A-Z][A-Z0-9_]*$",
+                "type": "string"
+              },
+              "label": {
+                "description": "Human-readable field label for UI (e.g. 'API Token', 'Store URL').",
+                "type": "string"
+              },
+              "placeholder": {
+                "description": "Placeholder text for the input field (e.g. 'ghp_...', 'https://store.myshopify.com'). Ignored when type is 'boolean'.",
+                "type": "string"
+              },
+              "required": {
+                "default": true,
+                "description": "Whether this field is mandatory for the plugin to function.",
+                "type": "boolean"
+              },
+              "secret": {
+                "default": false,
+                "description": "true = SecureField in UI, stored encrypted. false = plain TextField. Ignored when type is 'boolean'.",
+                "type": "boolean"
+              },
+              "type": {
+                "default": "string",
+                "description": "Field type. 'string' renders as text/secure input. 'boolean' renders as checkbox (e.g. write-enable gates).",
+                "enum": [
+                  "string",
+                  "boolean"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "key",
+              "label"
+            ],
+            "type": "object"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "help": {
+          "description": "Labelled documentation links shown in the setup wizard and settings card (guides, developer consoles, API docs).",
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "label": {
+                "description": "Human-readable link label.",
+                "type": "string"
+              },
+              "url": {
+                "description": "External URL.",
+                "format": "uri",
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "url"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "help_text": {
+          "description": "Human-readable setup instructions shown in credential wizard.",
+          "type": "string"
+        },
+        "help_url": {
+          "description": "Link to external setup docs or developer console.",
+          "format": "uri",
+          "type": "string"
+        },
+        "icon": {
+          "description": "SF Symbol name for credential card (e.g. 'cart.fill', 'envelope.fill').",
+          "type": "string"
+        },
+        "oauth2": {
+          "additionalProperties": false,
+          "description": "OAuth2 flow metadata. Present when auth_model is 'oauth2'.",
+          "properties": {
+            "grant_type": {
+              "description": "OAuth2 grant type.",
+              "enum": [
+                "authorization_code",
+                "client_credentials"
+              ],
+              "type": "string"
+            },
+            "scopes": {
+              "description": "Required OAuth2 scopes.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "setup_url": {
+              "description": "URL where user creates the OAuth2 app/client.",
+              "format": "uri",
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "prerequisites": {
+          "description": "Human-readable external prerequisites (e.g. 'Xero developer account', 'Google Cloud project with Gmail API enabled').",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "product": {
+          "description": "Service label for credential card subtitle (e.g. 'Admin API Token', 'OAuth2 Client').",
+          "type": "string"
+        },
+        "setup_guide": {
+          "description": "Relative path to a setup guide markdown file (e.g. 'guides/onedrive-setup.md'). When present, the setup UI shows a step-by-step walkthrough instead of the flat help_text.",
+          "type": "string"
+        },
+        "test": {
+          "additionalProperties": false,
+          "description": "Connection test configuration. Enables 'Test Connection' button in credential UI.",
+          "properties": {
+            "auth_header": {
+              "description": "Custom header name when auth_style is 'header' (e.g. 'X-Shopify-Access-Token').",
+              "type": "string"
+            },
+            "auth_style": {
+              "description": "How to attach credentials to the test request.",
+              "enum": [
+                "bearer",
+                "basic",
+                "header",
+                "none"
+              ],
+              "type": "string"
+            },
+            "endpoint": {
+              "description": "URL template for connection test. Use {FIELD_KEY} for variable substitution (e.g. '{SHOPIFY_STORE_URL}/admin/api/2024-01/shop.json').",
+              "type": "string"
+            },
+            "expected_status": {
+              "default": [
+                200
+              ],
+              "description": "HTTP status codes that indicate success.",
+              "items": {
+                "type": "integer"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "tier": {
+      "deprecated": true,
+      "description": "DEPRECATED — use author_type + readiness. Legacy quality tier. Certified = first-party, Verified = third-party validated, Community = interest signal. Either tier or both author_type + readiness should be present.",
+      "enum": [
+        "certified",
+        "verified",
+        "community"
+      ],
+      "type": "string"
+    },
+    "version": {
+      "description": "Semantic version (major.minor.patch).",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "type": "string"
+    },
+    "webhooks": {
+      "description": "Webhook endpoint requirements (v1.4, DD113). Declares endpoints the plugin needs wired at install time.",
+      "items": {
+        "$ref": "#/$defs/webhookSetup"
+      },
+      "type": "array"
     }
-  }
+  },
+  "required": [
+    "name",
+    "version",
+    "description",
+    "author",
+    "licence",
+    "install"
+  ],
+  "title": "Stallari Plugin Manifest",
+  "type": "object"
 }

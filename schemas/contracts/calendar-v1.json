@@ -1,69 +1,75 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://stallari.app/schemas/contracts/calendar-v1.json",
-  "title": "calendar-v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "Calendar service contract v1 — 11 operations across query, convenience views, and write.",
-  "type": "object",
-  "properties": {
-    "name": { "const": "calendar-v1" },
-    "service": { "const": "calendar" },
-    "version": { "const": 1 }
-  },
   "operations": [
     {
-      "name": "events",
+      "classification": "required",
       "description": "List events in a date range",
-      "classification": "required"
+      "name": "events"
     },
     {
-      "name": "event",
+      "classification": "required",
       "description": "Get single event detail",
-      "classification": "required"
+      "name": "event"
     },
     {
-      "name": "search",
+      "classification": "required",
       "description": "Search events by text",
-      "classification": "required"
+      "name": "search"
     },
     {
-      "name": "calendars",
+      "classification": "required",
       "description": "List available calendars",
-      "classification": "required"
+      "name": "calendars"
     },
     {
-      "name": "freebusy",
+      "classification": "recommended",
       "description": "Free/busy lookup",
-      "classification": "recommended"
+      "name": "freebusy"
     },
     {
-      "name": "today",
+      "classification": "recommended",
       "description": "Today's events",
-      "classification": "recommended"
+      "name": "today"
     },
     {
-      "name": "week",
+      "classification": "recommended",
       "description": "This week's events",
-      "classification": "recommended"
+      "name": "week"
     },
     {
-      "name": "batch",
+      "classification": "optional",
       "description": "Batch event retrieval",
-      "classification": "optional"
+      "name": "batch"
     },
     {
-      "name": "create",
+      "classification": "gated",
       "description": "Create an event",
-      "classification": "gated"
+      "name": "create"
     },
     {
-      "name": "update",
+      "classification": "gated",
       "description": "Update an event",
-      "classification": "gated"
+      "name": "update"
     },
     {
-      "name": "delete",
+      "classification": "gated",
       "description": "Delete an event",
-      "classification": "gated"
+      "name": "delete"
     }
-  ]
+  ],
+  "properties": {
+    "name": {
+      "const": "calendar-v1"
+    },
+    "service": {
+      "const": "calendar"
+    },
+    "version": {
+      "const": 1
+    }
+  },
+  "title": "calendar-v1",
+  "type": "object"
 }

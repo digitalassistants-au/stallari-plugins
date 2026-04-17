@@ -1,99 +1,105 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://stallari.app/schemas/contracts/gaming-v1.json",
-  "title": "gaming-v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "Gaming platform service contract v1 — 17 operations across profile, achievements, games, social, and messaging.",
-  "type": "object",
-  "properties": {
-    "name": { "const": "gaming-v1" },
-    "service": { "const": "gaming" },
-    "version": { "const": 1 }
-  },
   "operations": [
     {
-      "name": "profile",
+      "classification": "required",
       "description": "Get user profile (display name, avatar, level, platform stats)",
-      "classification": "required"
+      "name": "profile"
     },
     {
-      "name": "achievements",
+      "classification": "required",
       "description": "List achievements/trophies for a specific game with earned status",
-      "classification": "required"
+      "name": "achievements"
     },
     {
-      "name": "achievement_summary",
+      "classification": "required",
       "description": "Overall achievement/trophy completion stats (level, points, counts by tier)",
-      "classification": "required"
+      "name": "achievement_summary"
     },
     {
-      "name": "games_played",
+      "classification": "required",
       "description": "Game library with playtime, play count, and last played dates",
-      "classification": "required"
+      "name": "games_played"
     },
     {
-      "name": "games_recent",
+      "classification": "recommended",
       "description": "Recently played games ordered by last session",
-      "classification": "recommended"
+      "name": "games_recent"
     },
     {
-      "name": "friends",
+      "classification": "recommended",
       "description": "Friends list with online status",
-      "classification": "recommended"
+      "name": "friends"
     },
     {
-      "name": "presence",
+      "classification": "recommended",
       "description": "Online/offline/in-game presence for a user",
-      "classification": "recommended"
+      "name": "presence"
     },
     {
-      "name": "search_users",
+      "classification": "recommended",
       "description": "Search for users by display name or online ID",
-      "classification": "recommended"
+      "name": "search_users"
     },
     {
-      "name": "achievement_compare",
+      "classification": "optional",
       "description": "Compare achievement progress between two users for a game",
-      "classification": "optional"
+      "name": "achievement_compare"
     },
     {
-      "name": "achievement_groups",
+      "classification": "optional",
       "description": "Achievement groups (base game, DLC, expansions) with completion stats",
-      "classification": "optional"
+      "name": "achievement_groups"
     },
     {
-      "name": "games_purchased",
+      "classification": "optional",
       "description": "Game purchase/entitlement history",
-      "classification": "optional"
+      "name": "games_purchased"
     },
     {
-      "name": "devices",
+      "classification": "optional",
       "description": "Registered gaming hardware and consoles",
-      "classification": "optional"
+      "name": "devices"
     },
     {
-      "name": "game_details",
+      "classification": "optional",
       "description": "Title metadata (name, platform, icon, description)",
-      "classification": "optional"
+      "name": "game_details"
     },
     {
-      "name": "search_games",
+      "classification": "optional",
       "description": "Search game catalog by title",
-      "classification": "optional"
+      "name": "search_games"
     },
     {
-      "name": "send_message",
+      "classification": "gated",
       "description": "Send a text message to a user or group",
-      "classification": "gated"
+      "name": "send_message"
     },
     {
-      "name": "friend_add",
+      "classification": "gated",
       "description": "Accept a pending friend request",
-      "classification": "gated"
+      "name": "friend_add"
     },
     {
-      "name": "friend_remove",
+      "classification": "gated",
       "description": "Remove a friend connection",
-      "classification": "gated"
+      "name": "friend_remove"
     }
-  ]
+  ],
+  "properties": {
+    "name": {
+      "const": "gaming-v1"
+    },
+    "service": {
+      "const": "gaming"
+    },
+    "version": {
+      "const": 1
+    }
+  },
+  "title": "gaming-v1",
+  "type": "object"
 }

@@ -1,0 +1,17 @@
+# expected-error: description-too-long
+# Description must be <= 300 characters.
+pack: "1.0"
+name: wordy
+version: "1.0.0"
+description: "This description is deliberately long enough to exceed the three-hundred-character cap imposed by the pack schema. It goes on and on, repeating filler words to pad the length past the limit so that any conforming validator has to reject the manifest outright. Here are some more filler words to make absolutely certain we have broken the three hundred character ceiling."
+author:
+  name: Test
+data:
+  reads: []
+  writes: []
+  stores: nothing
+  phones_home: false
+skills:
+  - name: x
+    description: x
+    prompt: x

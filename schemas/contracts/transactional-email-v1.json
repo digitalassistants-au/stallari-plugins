@@ -1,109 +1,115 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://stallari.app/schemas/contracts/transactional-email-v1.json",
-  "title": "transactional-email-v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "Transactional email service contract v1 — 19 operations across sending, contacts, broadcasts, templates, domains, and webhooks.",
-  "type": "object",
-  "properties": {
-    "name": { "const": "transactional-email-v1" },
-    "service": { "const": "transactional-email" },
-    "version": { "const": 1 }
-  },
   "operations": [
     {
-      "name": "send",
+      "classification": "required",
       "description": "Send an email (HTML/text, attachments, scheduled, idempotent)",
-      "classification": "required"
+      "name": "send"
     },
     {
-      "name": "get_email",
+      "classification": "required",
       "description": "Retrieve a sent email by ID with delivery status",
-      "classification": "required"
+      "name": "get_email"
     },
     {
-      "name": "list_emails",
+      "classification": "required",
       "description": "List sent emails with status filters",
-      "classification": "required"
+      "name": "list_emails"
     },
     {
-      "name": "list_contacts",
+      "classification": "required",
       "description": "List contacts in an audience",
-      "classification": "required"
+      "name": "list_contacts"
     },
     {
-      "name": "list_domains",
+      "classification": "required",
       "description": "List sending domains with verification status",
-      "classification": "required"
+      "name": "list_domains"
     },
     {
-      "name": "get_domain",
+      "classification": "required",
       "description": "Get domain detail with DNS record requirements",
-      "classification": "required"
+      "name": "get_domain"
     },
     {
-      "name": "list_broadcasts",
+      "classification": "recommended",
       "description": "List broadcasts with delivery status",
-      "classification": "recommended"
+      "name": "list_broadcasts"
     },
     {
-      "name": "list_templates",
+      "classification": "recommended",
       "description": "List email templates",
-      "classification": "recommended"
+      "name": "list_templates"
     },
     {
-      "name": "get_template",
+      "classification": "recommended",
       "description": "Get template with HTML content and variables",
-      "classification": "recommended"
+      "name": "get_template"
     },
     {
-      "name": "list_segments",
+      "classification": "recommended",
       "description": "List audience segments",
-      "classification": "recommended"
+      "name": "list_segments"
     },
     {
-      "name": "list_logs",
+      "classification": "recommended",
       "description": "List recent API request logs",
-      "classification": "recommended"
+      "name": "list_logs"
     },
     {
-      "name": "send_batch",
+      "classification": "optional",
       "description": "Batch send up to 100 emails in a single request",
-      "classification": "optional"
+      "name": "send_batch"
     },
     {
-      "name": "list_webhooks",
+      "classification": "optional",
       "description": "List webhook endpoints for delivery events",
-      "classification": "optional"
+      "name": "list_webhooks"
     },
     {
-      "name": "cancel_scheduled",
+      "classification": "optional",
       "description": "Cancel a scheduled email before delivery",
-      "classification": "optional"
+      "name": "cancel_scheduled"
     },
     {
-      "name": "create_contact",
+      "classification": "gated",
       "description": "Create a contact with properties in an audience",
-      "classification": "gated"
+      "name": "create_contact"
     },
     {
-      "name": "create_broadcast",
+      "classification": "gated",
       "description": "Create a broadcast draft for an audience segment",
-      "classification": "gated"
+      "name": "create_broadcast"
     },
     {
-      "name": "send_broadcast",
+      "classification": "gated",
       "description": "Send or schedule a draft broadcast",
-      "classification": "gated"
+      "name": "send_broadcast"
     },
     {
-      "name": "create_template",
+      "classification": "gated",
       "description": "Create an email template with variables",
-      "classification": "gated"
+      "name": "create_template"
     },
     {
-      "name": "add_domain",
+      "classification": "gated",
       "description": "Register a sending domain (returns DNS records for verification)",
-      "classification": "gated"
+      "name": "add_domain"
     }
-  ]
+  ],
+  "properties": {
+    "name": {
+      "const": "transactional-email-v1"
+    },
+    "service": {
+      "const": "transactional-email"
+    },
+    "version": {
+      "const": 1
+    }
+  },
+  "title": "transactional-email-v1",
+  "type": "object"
 }

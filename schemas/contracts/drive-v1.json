@@ -1,54 +1,60 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://stallari.app/schemas/contracts/drive-v1.json",
-  "title": "drive-v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "Cloud drive service contract v1 — 8 operations across read, search, and write.",
-  "type": "object",
-  "properties": {
-    "name": { "const": "drive-v1" },
-    "service": { "const": "drive" },
-    "version": { "const": 1 }
-  },
   "operations": [
     {
-      "name": "list",
+      "classification": "required",
       "description": "List files and folders",
-      "classification": "required"
+      "name": "list"
     },
     {
-      "name": "read",
+      "classification": "required",
       "description": "Read file content or metadata",
-      "classification": "required"
+      "name": "read"
     },
     {
-      "name": "search",
+      "classification": "required",
       "description": "Search files by name or content",
-      "classification": "required"
+      "name": "search"
     },
     {
-      "name": "download",
+      "classification": "recommended",
       "description": "Download a file to local storage",
-      "classification": "recommended"
+      "name": "download"
     },
     {
-      "name": "upload",
+      "classification": "gated",
       "description": "Upload a file to the drive",
-      "classification": "gated"
+      "name": "upload"
     },
     {
-      "name": "move",
+      "classification": "gated",
       "description": "Move or rename a file",
-      "classification": "gated"
+      "name": "move"
     },
     {
-      "name": "delete",
+      "classification": "gated",
       "description": "Delete a file",
-      "classification": "gated"
+      "name": "delete"
     },
     {
-      "name": "share",
+      "classification": "gated",
       "description": "Share a file or folder with others",
-      "classification": "gated"
+      "name": "share"
     }
-  ]
+  ],
+  "properties": {
+    "name": {
+      "const": "drive-v1"
+    },
+    "service": {
+      "const": "drive"
+    },
+    "version": {
+      "const": 1
+    }
+  },
+  "title": "drive-v1",
+  "type": "object"
 }

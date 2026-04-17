@@ -1,114 +1,120 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://stallari.app/schemas/contracts/social-v1.json",
-  "title": "social-v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "Social platform contract v1 — 20 operations across timelines, statuses, accounts, and interactions.",
-  "type": "object",
-  "properties": {
-    "name": { "const": "social-v1" },
-    "service": { "const": "social" },
-    "version": { "const": 1 }
-  },
   "operations": [
     {
-      "name": "timeline",
+      "classification": "required",
       "description": "Read timeline (home, public, local, hashtag, list)",
-      "classification": "required"
+      "name": "timeline"
     },
     {
-      "name": "status",
+      "classification": "required",
       "description": "Get a specific status/post by ID",
-      "classification": "required"
+      "name": "status"
     },
     {
-      "name": "search",
+      "classification": "required",
       "description": "Search statuses, accounts, and hashtags",
-      "classification": "required"
+      "name": "search"
     },
     {
-      "name": "notifications",
+      "classification": "required",
       "description": "List notifications (mentions, favourites, boosts, follows)",
-      "classification": "required"
+      "name": "notifications"
     },
     {
-      "name": "context",
+      "classification": "recommended",
       "description": "Get thread context (ancestors and descendants) for a status",
-      "classification": "recommended"
+      "name": "context"
     },
     {
-      "name": "account",
+      "classification": "recommended",
       "description": "Get account profile and statuses",
-      "classification": "recommended"
+      "name": "account"
     },
     {
-      "name": "trending",
+      "classification": "recommended",
       "description": "Get trending hashtags, statuses, and links",
-      "classification": "recommended"
+      "name": "trending"
     },
     {
-      "name": "bookmarks",
+      "classification": "recommended",
       "description": "List bookmarked statuses",
-      "classification": "recommended"
+      "name": "bookmarks"
     },
     {
-      "name": "favourites",
+      "classification": "recommended",
       "description": "List favourited statuses",
-      "classification": "recommended"
+      "name": "favourites"
     },
     {
-      "name": "relationships",
+      "classification": "recommended",
       "description": "Check follow/block/mute relationships with accounts",
-      "classification": "recommended"
+      "name": "relationships"
     },
     {
-      "name": "lists",
+      "classification": "optional",
       "description": "Manage curated lists of accounts",
-      "classification": "optional"
+      "name": "lists"
     },
     {
-      "name": "filters",
+      "classification": "optional",
       "description": "Manage content filters and keyword blocks",
-      "classification": "optional"
+      "name": "filters"
     },
     {
-      "name": "conversations",
+      "classification": "optional",
       "description": "List direct message conversations",
-      "classification": "optional"
+      "name": "conversations"
     },
     {
-      "name": "instance",
+      "classification": "optional",
       "description": "Get instance information, rules, and configuration",
-      "classification": "optional"
+      "name": "instance"
     },
     {
-      "name": "post",
+      "classification": "gated",
       "description": "Create a new status (text, media, poll, scheduled)",
-      "classification": "gated"
+      "name": "post"
     },
     {
-      "name": "delete",
+      "classification": "gated",
       "description": "Delete a status",
-      "classification": "gated"
+      "name": "delete"
     },
     {
-      "name": "favourite",
+      "classification": "gated",
       "description": "Favourite or unfavourite a status",
-      "classification": "gated"
+      "name": "favourite"
     },
     {
-      "name": "boost",
+      "classification": "gated",
       "description": "Boost (reblog) or unboost a status",
-      "classification": "gated"
+      "name": "boost"
     },
     {
-      "name": "follow",
+      "classification": "gated",
       "description": "Follow or unfollow an account",
-      "classification": "gated"
+      "name": "follow"
     },
     {
-      "name": "block",
+      "classification": "gated",
       "description": "Block, unblock, mute, or unmute an account",
-      "classification": "gated"
+      "name": "block"
     }
-  ]
+  ],
+  "properties": {
+    "name": {
+      "const": "social-v1"
+    },
+    "service": {
+      "const": "social"
+    },
+    "version": {
+      "const": 1
+    }
+  },
+  "title": "social-v1",
+  "type": "object"
 }

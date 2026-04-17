@@ -1,0 +1,12 @@
+# expected-error: missing-data-block
+# Packs must declare the `data:` block so the sandbox can enforce it.
+pack: "1.0"
+name: no-data-block
+version: "1.0.0"
+description: Pack without a data block.
+author:
+  name: Test
+skills:
+  - name: x
+    description: x
+    prompt: x

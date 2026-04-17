@@ -1,0 +1,17 @@
+# expected-error: invalid-semver
+# Version field must match major.minor.patch.
+pack: "1.0"
+name: bad-version
+version: "1.0"
+description: Version is not full semver.
+author:
+  name: Test
+data:
+  reads: []
+  writes: []
+  stores: nothing
+  phones_home: false
+skills:
+  - name: x
+    description: x
+    prompt: x

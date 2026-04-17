@@ -1,24 +1,70 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://stallari.app/schemas/contracts/isp-v1.json",
-  "title": "isp-v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "ISP account service contract v1 — 10 operations across broadband monitoring, outage tracking, billing, and line diagnostics for residential and business ISP accounts.",
-  "type": "object",
-  "properties": {
-    "name": { "const": "isp-v1" },
-    "service": { "const": "isp" },
-    "version": { "const": 1 }
-  },
   "operations": [
-    { "name": "info", "description": "Account health check — connection status, customer details, service count", "classification": "required" },
-    { "name": "services", "description": "List broadband and telephony services with plan, speed tier, technology type", "classification": "required" },
-    { "name": "usage", "description": "Current billing period usage — download, upload, remaining, percentage used", "classification": "required" },
-    { "name": "outages", "description": "Active and scheduled outages — network events, provider outages, infrastructure maintenance", "classification": "required" },
-    { "name": "billing", "description": "Transaction history grouped by billing period with amounts and payment status", "classification": "recommended" },
-    { "name": "tickets", "description": "Support tickets — reference, status, subject, dates", "classification": "recommended" },
-    { "name": "orders", "description": "Pending and completed service orders", "classification": "optional" },
-    { "name": "addons", "description": "Service add-ons, data blocks, bolt-ons", "classification": "optional" },
-    { "name": "diagnostics_list", "description": "Available line diagnostic tests and recent test history", "classification": "optional" },
-    { "name": "diagnostics_run", "description": "Execute a line diagnostic test (loopback, line state, port reset)", "classification": "gated" }
-  ]
+    {
+      "classification": "required",
+      "description": "Account health check — connection status, customer details, service count",
+      "name": "info"
+    },
+    {
+      "classification": "required",
+      "description": "List broadband and telephony services with plan, speed tier, technology type",
+      "name": "services"
+    },
+    {
+      "classification": "required",
+      "description": "Current billing period usage — download, upload, remaining, percentage used",
+      "name": "usage"
+    },
+    {
+      "classification": "required",
+      "description": "Active and scheduled outages — network events, provider outages, infrastructure maintenance",
+      "name": "outages"
+    },
+    {
+      "classification": "recommended",
+      "description": "Transaction history grouped by billing period with amounts and payment status",
+      "name": "billing"
+    },
+    {
+      "classification": "recommended",
+      "description": "Support tickets — reference, status, subject, dates",
+      "name": "tickets"
+    },
+    {
+      "classification": "optional",
+      "description": "Pending and completed service orders",
+      "name": "orders"
+    },
+    {
+      "classification": "optional",
+      "description": "Service add-ons, data blocks, bolt-ons",
+      "name": "addons"
+    },
+    {
+      "classification": "optional",
+      "description": "Available line diagnostic tests and recent test history",
+      "name": "diagnostics_list"
+    },
+    {
+      "classification": "gated",
+      "description": "Execute a line diagnostic test (loopback, line state, port reset)",
+      "name": "diagnostics_run"
+    }
+  ],
+  "properties": {
+    "name": {
+      "const": "isp-v1"
+    },
+    "service": {
+      "const": "isp"
+    },
+    "version": {
+      "const": 1
+    }
+  },
+  "title": "isp-v1",
+  "type": "object"
 }

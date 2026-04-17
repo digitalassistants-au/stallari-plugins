@@ -1,0 +1,48 @@
+{
+  "groups": [
+    {
+      "description": "Health / identity / discovery. Cheap reads, safe for any client. Covers vault_info.",
+      "name": "meta"
+    },
+    {
+      "description": "Read file content and metadata. vault_read, vault_file_info, vault_files, vault_folders, vault_recents, vault_outline, vault_aliases.",
+      "name": "read"
+    },
+    {
+      "description": "Create, modify, delete, move, rename files. vault_create, vault_append, vault_prepend, vault_patch, vault_delete, vault_rename, vault_move.",
+      "name": "write"
+    },
+    {
+      "description": "Full-text and tag search. vault_search, vault_search_context, vault_tags, vault_tag.",
+      "name": "search"
+    },
+    {
+      "description": "Frontmatter property read/write. vault_property_read, vault_property_set, vault_property_remove, vault_properties, vault_query_properties.",
+      "name": "properties"
+    },
+    {
+      "description": "Heading-scoped body editing. vault_section_read, vault_section_replace.",
+      "name": "sections"
+    },
+    {
+      "description": "Markdown checkbox tasks. vault_tasks, vault_task_update.",
+      "name": "tasks"
+    },
+    {
+      "description": "Obsidian bookmarks. vault_bookmarks, vault_bookmark_add.",
+      "name": "bookmarks"
+    },
+    {
+      "description": "Lens-backed link/backlink graph. vault_links, vault_backlinks, vault_orphans, vault_deadends, vault_unresolved, vault_lens_status.",
+      "name": "graph"
+    },
+    {
+      "description": "Schema introspection. vault_schema, vault_resolve_link.",
+      "name": "schema"
+    },
+    {
+      "description": "Pack and skill authoring. forge_* tools. Reserved; ships with Forge phases.",
+      "name": "forge"
+    }
+  ]
+}

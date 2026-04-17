@@ -1,49 +1,55 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://stallari.app/schemas/contracts/filesystem-v1.json",
-  "title": "filesystem-v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "Filesystem service contract v1 — 7 operations across read, monitor, and write.",
-  "type": "object",
-  "properties": {
-    "name": { "const": "filesystem-v1" },
-    "service": { "const": "filesystem" },
-    "version": { "const": 1 }
-  },
   "operations": [
     {
-      "name": "scan",
+      "classification": "required",
       "description": "Recursively scan a directory tree",
-      "classification": "required"
+      "name": "scan"
     },
     {
-      "name": "read",
+      "classification": "required",
       "description": "Read file contents",
-      "classification": "required"
+      "name": "read"
     },
     {
-      "name": "stat",
+      "classification": "required",
       "description": "Get file metadata (size, dates, permissions)",
-      "classification": "required"
+      "name": "stat"
     },
     {
-      "name": "list",
+      "classification": "required",
       "description": "List directory entries",
-      "classification": "required"
+      "name": "list"
     },
     {
-      "name": "watch",
+      "classification": "gated",
       "description": "Watch a path for changes (triggers on create, modify, delete)",
-      "classification": "gated"
+      "name": "watch"
     },
     {
-      "name": "write",
+      "classification": "gated",
       "description": "Write file contents",
-      "classification": "gated"
+      "name": "write"
     },
     {
-      "name": "delete",
+      "classification": "gated",
       "description": "Delete a file or directory",
-      "classification": "gated"
+      "name": "delete"
     }
-  ]
+  ],
+  "properties": {
+    "name": {
+      "const": "filesystem-v1"
+    },
+    "service": {
+      "const": "filesystem"
+    },
+    "version": {
+      "const": 1
+    }
+  },
+  "title": "filesystem-v1",
+  "type": "object"
 }

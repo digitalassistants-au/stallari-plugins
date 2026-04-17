@@ -1,69 +1,75 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://stallari.app/schemas/contracts/tasks-v1.json",
-  "title": "tasks-v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "Tasks service contract v1 — 11 operations across list, search, manage, and write.",
-  "type": "object",
-  "properties": {
-    "name": { "const": "tasks-v1" },
-    "service": { "const": "tasks" },
-    "version": { "const": 1 }
-  },
   "operations": [
     {
-      "name": "list",
+      "classification": "required",
       "description": "List tasks with filters",
-      "classification": "required"
+      "name": "list"
     },
     {
-      "name": "search",
+      "classification": "required",
       "description": "Search tasks by text/tags",
-      "classification": "required"
+      "name": "search"
     },
     {
-      "name": "projects",
+      "classification": "required",
       "description": "List/manage projects",
-      "classification": "required"
+      "name": "projects"
     },
     {
-      "name": "today",
+      "classification": "recommended",
       "description": "Today view",
-      "classification": "recommended"
+      "name": "today"
     },
     {
-      "name": "inbox",
+      "classification": "recommended",
       "description": "Inbox/unsorted tasks",
-      "classification": "recommended"
+      "name": "inbox"
     },
     {
-      "name": "tags",
+      "classification": "recommended",
       "description": "List available tags/labels",
-      "classification": "recommended"
+      "name": "tags"
     },
     {
-      "name": "summary",
+      "classification": "recommended",
       "description": "Compact overview",
-      "classification": "recommended"
+      "name": "summary"
     },
     {
-      "name": "logbook",
+      "classification": "optional",
       "description": "Completed tasks history",
-      "classification": "optional"
+      "name": "logbook"
     },
     {
-      "name": "create",
+      "classification": "gated",
       "description": "Create a new task",
-      "classification": "gated"
+      "name": "create"
     },
     {
-      "name": "update",
+      "classification": "gated",
       "description": "Update task fields",
-      "classification": "gated"
+      "name": "update"
     },
     {
-      "name": "complete",
+      "classification": "gated",
       "description": "Mark task as complete",
-      "classification": "gated"
+      "name": "complete"
     }
-  ]
+  ],
+  "properties": {
+    "name": {
+      "const": "tasks-v1"
+    },
+    "service": {
+      "const": "tasks"
+    },
+    "version": {
+      "const": 1
+    }
+  },
+  "title": "tasks-v1",
+  "type": "object"
 }

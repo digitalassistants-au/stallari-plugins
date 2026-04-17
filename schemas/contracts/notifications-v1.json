@@ -1,79 +1,85 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://stallari.app/schemas/contracts/notifications-v1.json",
-  "title": "notifications-v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "Notifications service contract v1 — 13 operations across list, channel, delivery, and preferences.",
-  "type": "object",
-  "properties": {
-    "name": { "const": "notifications-v1" },
-    "service": { "const": "notifications" },
-    "version": { "const": 1 }
-  },
   "operations": [
     {
-      "name": "list",
+      "classification": "required",
       "description": "List recent notifications",
-      "classification": "required"
+      "name": "list"
     },
     {
-      "name": "channels",
+      "classification": "required",
       "description": "List available notification channels",
-      "classification": "required"
+      "name": "channels"
     },
     {
-      "name": "get",
+      "classification": "recommended",
       "description": "Get a specific notification by ID",
-      "classification": "recommended"
+      "name": "get"
     },
     {
-      "name": "history",
+      "classification": "recommended",
       "description": "Query notification delivery history with filters",
-      "classification": "recommended"
+      "name": "history"
     },
     {
-      "name": "channel_status",
+      "classification": "recommended",
       "description": "Get health and delivery stats for a specific channel",
-      "classification": "recommended"
+      "name": "channel_status"
     },
     {
-      "name": "preferences",
+      "classification": "recommended",
       "description": "Get user notification preferences (channels, quiet hours, categories)",
-      "classification": "recommended"
+      "name": "preferences"
     },
     {
-      "name": "templates",
+      "classification": "optional",
       "description": "List available notification templates",
-      "classification": "optional"
+      "name": "templates"
     },
     {
-      "name": "schedule",
+      "classification": "optional",
       "description": "Schedule a notification for future delivery",
-      "classification": "optional"
+      "name": "schedule"
     },
     {
-      "name": "delivery_report",
+      "classification": "optional",
       "description": "Get delivery statistics for a time period",
-      "classification": "optional"
+      "name": "delivery_report"
     },
     {
-      "name": "send",
+      "classification": "gated",
       "description": "Send a notification to a channel",
-      "classification": "gated"
+      "name": "send"
     },
     {
-      "name": "dismiss",
+      "classification": "gated",
       "description": "Dismiss or acknowledge a notification",
-      "classification": "gated"
+      "name": "dismiss"
     },
     {
-      "name": "bulk_send",
+      "classification": "gated",
       "description": "Send notifications to multiple channels simultaneously",
-      "classification": "gated"
+      "name": "bulk_send"
     },
     {
-      "name": "update_preferences",
+      "classification": "gated",
       "description": "Update user notification preferences",
-      "classification": "gated"
+      "name": "update_preferences"
     }
-  ]
+  ],
+  "properties": {
+    "name": {
+      "const": "notifications-v1"
+    },
+    "service": {
+      "const": "notifications"
+    },
+    "version": {
+      "const": 1
+    }
+  },
+  "title": "notifications-v1",
+  "type": "object"
 }

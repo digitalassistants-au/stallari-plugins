@@ -1,0 +1,17 @@
+# expected-error: unsupported-pack-version
+# Pack version outside the supported range.
+pack: "99.0"
+name: future-pack
+version: "1.0.0"
+description: Future pack version.
+author:
+  name: Test
+data:
+  reads: []
+  writes: []
+  stores: nothing
+  phones_home: false
+skills:
+  - name: x
+    description: x
+    prompt: x

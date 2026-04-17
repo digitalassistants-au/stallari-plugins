@@ -1,23 +1,65 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://stallari.app/schemas/contracts/leo-modem-v1.json",
-  "title": "leo-modem-v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "LEO satellite modem/terminal service contract v1 — 9 operations across telemetry, signal quality, and hardware control for Starlink, OneWeb, Kuiper, and similar LEO terminals.",
-  "type": "object",
-  "properties": {
-    "name": { "const": "leo-modem-v1" },
-    "service": { "const": "leo-modem" },
-    "version": { "const": 1 }
-  },
   "operations": [
-    { "name": "status", "description": "Terminal identity, connectivity state, throughput, signal quality, and uptime", "classification": "required" },
-    { "name": "alerts", "description": "Active hardware and environment alert flags with descriptions", "classification": "required" },
-    { "name": "obstruction", "description": "Signal obstruction data — directional map, fraction obstructed, timing", "classification": "required" },
-    { "name": "history", "description": "Recent throughput, latency, and power telemetry (raw or summarised)", "classification": "required" },
-    { "name": "diagnostics", "description": "Hardware version, firmware, self-test results, alignment stats", "classification": "required" },
-    { "name": "location", "description": "Terminal GPS coordinates (may require user opt-in)", "classification": "recommended" },
-    { "name": "reboot", "description": "Restart the terminal", "classification": "gated" },
-    { "name": "stow", "description": "Stow or unstow the terminal for storage or transport", "classification": "gated" },
-    { "name": "power_schedule", "description": "Read or configure power-save sleep schedule", "classification": "gated" }
-  ]
+    {
+      "classification": "required",
+      "description": "Terminal identity, connectivity state, throughput, signal quality, and uptime",
+      "name": "status"
+    },
+    {
+      "classification": "required",
+      "description": "Active hardware and environment alert flags with descriptions",
+      "name": "alerts"
+    },
+    {
+      "classification": "required",
+      "description": "Signal obstruction data — directional map, fraction obstructed, timing",
+      "name": "obstruction"
+    },
+    {
+      "classification": "required",
+      "description": "Recent throughput, latency, and power telemetry (raw or summarised)",
+      "name": "history"
+    },
+    {
+      "classification": "required",
+      "description": "Hardware version, firmware, self-test results, alignment stats",
+      "name": "diagnostics"
+    },
+    {
+      "classification": "recommended",
+      "description": "Terminal GPS coordinates (may require user opt-in)",
+      "name": "location"
+    },
+    {
+      "classification": "gated",
+      "description": "Restart the terminal",
+      "name": "reboot"
+    },
+    {
+      "classification": "gated",
+      "description": "Stow or unstow the terminal for storage or transport",
+      "name": "stow"
+    },
+    {
+      "classification": "gated",
+      "description": "Read or configure power-save sleep schedule",
+      "name": "power_schedule"
+    }
+  ],
+  "properties": {
+    "name": {
+      "const": "leo-modem-v1"
+    },
+    "service": {
+      "const": "leo-modem"
+    },
+    "version": {
+      "const": 1
+    }
+  },
+  "title": "leo-modem-v1",
+  "type": "object"
 }

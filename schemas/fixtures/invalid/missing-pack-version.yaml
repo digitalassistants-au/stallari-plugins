@@ -1,0 +1,16 @@
+# expected-error: missing-pack-version
+# No `pack:` field → validators must reject at structural level.
+name: bad-pack
+version: "1.0.0"
+description: Missing pack version.
+author:
+  name: Test
+data:
+  reads: []
+  writes: []
+  stores: nothing
+  phones_home: false
+skills:
+  - name: x
+    description: x
+    prompt: x

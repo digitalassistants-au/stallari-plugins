@@ -1,0 +1,13 @@
+# expected-error: missing-skills
+# A pack without any skills has nothing to execute.
+pack: "1.0"
+name: no-skills
+version: "1.0.0"
+description: Pack with empty skills list.
+author:
+  name: Test
+data:
+  reads: []
+  writes: []
+  stores: nothing
+  phones_home: false

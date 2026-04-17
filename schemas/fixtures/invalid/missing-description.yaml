@@ -1,0 +1,16 @@
+# expected-error: missing-description
+# Description field absent — required since v1.0.
+pack: "1.0"
+name: undescribed
+version: "1.0.0"
+author:
+  name: Test
+data:
+  reads: []
+  writes: []
+  stores: nothing
+  phones_home: false
+skills:
+  - name: x
+    description: x
+    prompt: x

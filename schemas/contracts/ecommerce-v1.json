@@ -1,100 +1,220 @@
 {
+  "$id": "https://stallari.app/schemas/contracts/ecommerce-v1.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://registry.stallari.app/schemas/contracts/ecommerce-v1.json",
-  "title": "E-Commerce Service Contract v1",
-  "description": "Defines required, recommended, optional, and gated operations for e-commerce platform integrations (Shopify, WooCommerce, BigCommerce, etc.)",
-  "type": "object",
+  "description": "E-commerce service contract v1 — 40 operations across catalog, orders, customers, inventory, and write-gated mutations. Targets platforms like Shopify, WooCommerce, and BigCommerce.",
+  "operations": [
+    {
+      "classification": "required",
+      "description": "Shop identity, currency, locale, and account metadata",
+      "name": "shop_info"
+    },
+    {
+      "classification": "required",
+      "description": "List catalog products with pagination",
+      "name": "products"
+    },
+    {
+      "classification": "required",
+      "description": "Fetch a single product by ID or handle",
+      "name": "product"
+    },
+    {
+      "classification": "required",
+      "description": "List orders with filters (status, date range)",
+      "name": "orders"
+    },
+    {
+      "classification": "required",
+      "description": "Fetch a single order by ID",
+      "name": "order"
+    },
+    {
+      "classification": "required",
+      "description": "List customers with pagination",
+      "name": "customers"
+    },
+    {
+      "classification": "required",
+      "description": "Fetch a single customer by ID or email",
+      "name": "customer"
+    },
+    {
+      "classification": "required",
+      "description": "Read inventory levels by SKU or location",
+      "name": "inventory"
+    },
+    {
+      "classification": "recommended",
+      "description": "Search products by query, tag, vendor, or collection",
+      "name": "search_products"
+    },
+    {
+      "classification": "recommended",
+      "description": "Search orders by customer, product, status, or tag",
+      "name": "search_orders"
+    },
+    {
+      "classification": "recommended",
+      "description": "Search customers by name, email, or tag",
+      "name": "search_customers"
+    },
+    {
+      "classification": "recommended",
+      "description": "List inventory locations (warehouses, stores)",
+      "name": "locations"
+    },
+    {
+      "classification": "recommended",
+      "description": "List product collections or categories",
+      "name": "collections"
+    },
+    {
+      "classification": "recommended",
+      "description": "Fetch a single collection by ID or handle",
+      "name": "collection"
+    },
+    {
+      "classification": "recommended",
+      "description": "List fulfillment records for an order",
+      "name": "fulfillments"
+    },
+    {
+      "classification": "recommended",
+      "description": "List active discount codes and rules",
+      "name": "discounts"
+    },
+    {
+      "classification": "recommended",
+      "description": "Read custom metadata attached to resources",
+      "name": "metafields"
+    },
+    {
+      "classification": "recommended",
+      "description": "List registered webhook subscriptions",
+      "name": "webhooks"
+    },
+    {
+      "classification": "recommended",
+      "description": "Read aggregate sales, traffic, or conversion metrics",
+      "name": "analytics"
+    },
+    {
+      "classification": "optional",
+      "description": "Create a new product collection",
+      "name": "create_collection"
+    },
+    {
+      "classification": "optional",
+      "description": "List products within a collection",
+      "name": "collection_products"
+    },
+    {
+      "classification": "optional",
+      "description": "Mark an order line as fulfilled",
+      "name": "create_fulfillment"
+    },
+    {
+      "classification": "optional",
+      "description": "Attach or update a tracking number on a fulfillment",
+      "name": "update_tracking"
+    },
+    {
+      "classification": "optional",
+      "description": "Create a new discount code or rule",
+      "name": "create_discount"
+    },
+    {
+      "classification": "optional",
+      "description": "Write a metafield value on a resource",
+      "name": "set_metafield"
+    },
+    {
+      "classification": "optional",
+      "description": "Verify a received webhook signature against the shop secret",
+      "name": "verify_webhook"
+    },
+    {
+      "classification": "gated",
+      "description": "Create a new product",
+      "name": "create_product"
+    },
+    {
+      "classification": "gated",
+      "description": "Update an existing product",
+      "name": "update_product"
+    },
+    {
+      "classification": "gated",
+      "description": "Delete a product",
+      "name": "delete_product"
+    },
+    {
+      "classification": "gated",
+      "description": "Update order fields (notes, tags, shipping)",
+      "name": "update_order"
+    },
+    {
+      "classification": "gated",
+      "description": "Cancel an order",
+      "name": "cancel_order"
+    },
+    {
+      "classification": "gated",
+      "description": "Close an order (archive)",
+      "name": "close_order"
+    },
+    {
+      "classification": "gated",
+      "description": "Create a new customer record",
+      "name": "create_customer"
+    },
+    {
+      "classification": "gated",
+      "description": "Update an existing customer",
+      "name": "update_customer"
+    },
+    {
+      "classification": "gated",
+      "description": "Apply a delta to inventory at a location",
+      "name": "adjust_inventory"
+    },
+    {
+      "classification": "gated",
+      "description": "Set absolute inventory at a location",
+      "name": "set_inventory"
+    },
+    {
+      "classification": "gated",
+      "description": "Delete a discount code or rule",
+      "name": "delete_discount"
+    },
+    {
+      "classification": "gated",
+      "description": "Delete a metafield from a resource",
+      "name": "delete_metafield"
+    },
+    {
+      "classification": "gated",
+      "description": "Register a new webhook subscription",
+      "name": "create_webhook"
+    },
+    {
+      "classification": "gated",
+      "description": "Remove a webhook subscription",
+      "name": "delete_webhook"
+    }
+  ],
   "properties": {
-    "contract": {
+    "name": {
       "const": "ecommerce-v1"
     },
-    "operations": {
-      "type": "object",
-      "properties": {
-        "required": {
-          "type": "array",
-          "description": "Core operations — must be implemented for conformance",
-          "items": {
-            "type": "string",
-            "enum": [
-              "shop_info",
-              "products",
-              "product",
-              "orders",
-              "order",
-              "customers",
-              "customer",
-              "inventory"
-            ]
-          },
-          "minItems": 8,
-          "uniqueItems": true
-        },
-        "recommended": {
-          "type": "array",
-          "description": "Strongly recommended for full integration",
-          "items": {
-            "type": "string",
-            "enum": [
-              "search_products",
-              "search_orders",
-              "search_customers",
-              "locations",
-              "collections",
-              "collection",
-              "fulfillments",
-              "discounts",
-              "metafields",
-              "webhooks",
-              "analytics"
-            ]
-          },
-          "uniqueItems": true
-        },
-        "optional": {
-          "type": "array",
-          "description": "Nice-to-have operations",
-          "items": {
-            "type": "string",
-            "enum": [
-              "create_collection",
-              "collection_products",
-              "create_fulfillment",
-              "update_tracking",
-              "create_discount",
-              "set_metafield",
-              "verify_webhook"
-            ]
-          },
-          "uniqueItems": true
-        },
-        "gated": {
-          "type": "array",
-          "description": "Write/destructive operations requiring env var or confirmation gate",
-          "items": {
-            "type": "string",
-            "enum": [
-              "create_product",
-              "update_product",
-              "delete_product",
-              "update_order",
-              "cancel_order",
-              "close_order",
-              "create_customer",
-              "update_customer",
-              "adjust_inventory",
-              "set_inventory",
-              "delete_discount",
-              "delete_metafield",
-              "create_webhook",
-              "delete_webhook"
-            ]
-          },
-          "uniqueItems": true
-        }
-      },
-      "required": ["required"]
+    "service": {
+      "const": "ecommerce"
+    },
+    "version": {
+      "const": 1
     }
   },
-  "required": ["contract", "operations"]
+  "title": "ecommerce-v1",
+  "type": "object"
 }

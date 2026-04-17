@@ -1,0 +1,40 @@
+# Representative pack using cron trigger + multiple services.
+# Exercises requires, data policy, and skill dependencies.
+pack: "1.6"
+name: cron-triage
+version: "0.2.0"
+description: Triages inbox on a schedule; writes a daily briefing to the vault.
+
+author:
+  name: Stallari Test Corpus
+
+data:
+  reads: [email, calendar]
+  writes: [vault]
+  stores: nothing
+  phones_home: false
+
+requires:
+  services:
+    - service: email
+      operations: [search, read, flag]
+    - service: calendar
+      operations: [events, today]
+    - service: vault
+      operations: [create, append]
+
+skills:
+  - name: triage-inbox
+    description: Classify unread mail as urgent / review / low priority.
+    trigger:
+      schedule: "0 7 * * *"
+    prompt: |
+      Read unread messages from the last 24 hours.
+      Flag urgent. Move low-priority to Filtered.
+
+  - name: daily-briefing
+    description: Combine triage output with today's calendar.
+    depends_on: [triage-inbox]
+    prompt: |
+      Write a briefing note to the vault with highlights from triage and
+      today's schedule.

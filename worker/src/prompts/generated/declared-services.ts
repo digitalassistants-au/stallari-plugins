@@ -9,6 +9,7 @@ export const DECLARED_SERVICES: string[] = [
   "calendar",
   "dns",
   "drive",
+  "ecommerce",
   "edge-platform",
   "email",
   "filesystem",

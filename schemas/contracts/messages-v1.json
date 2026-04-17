@@ -1,104 +1,110 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://stallari.app/schemas/contracts/messages-v1.json",
-  "title": "messages-v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "Messaging platform contract v1 — 18 operations across conversations, messages, contacts, threads, reactions, and delivery.",
-  "type": "object",
-  "properties": {
-    "name": { "const": "messages-v1" },
-    "service": { "const": "messages" },
-    "version": { "const": 1 }
-  },
   "operations": [
     {
-      "name": "chats",
+      "classification": "required",
       "description": "List conversations (1:1 and group)",
-      "classification": "required"
+      "name": "chats"
     },
     {
-      "name": "messages",
+      "classification": "required",
       "description": "Get messages from a conversation with pagination",
-      "classification": "required"
+      "name": "messages"
     },
     {
-      "name": "search",
+      "classification": "required",
       "description": "Full-text search across all messages",
-      "classification": "required"
+      "name": "search"
     },
     {
-      "name": "chat",
+      "classification": "recommended",
       "description": "Get a specific conversation by ID or contact identifier",
-      "classification": "recommended"
+      "name": "chat"
     },
     {
-      "name": "contacts",
+      "classification": "recommended",
       "description": "List known contacts and handles",
-      "classification": "recommended"
+      "name": "contacts"
     },
     {
-      "name": "attachments",
+      "classification": "recommended",
       "description": "List and inspect message attachments",
-      "classification": "recommended"
+      "name": "attachments"
     },
     {
-      "name": "stats",
+      "classification": "optional",
       "description": "Aggregate statistics (message counts, date ranges, top contacts)",
-      "classification": "optional"
+      "name": "stats"
     },
     {
-      "name": "unread",
+      "classification": "optional",
       "description": "Unread message counts per conversation",
-      "classification": "optional"
+      "name": "unread"
     },
     {
-      "name": "threads",
+      "classification": "optional",
       "description": "Get thread replies for a message",
-      "classification": "optional"
+      "name": "threads"
     },
     {
-      "name": "reactions",
+      "classification": "optional",
       "description": "List reactions on a message",
-      "classification": "optional"
+      "name": "reactions"
     },
     {
-      "name": "members",
+      "classification": "optional",
       "description": "List participants or members of a conversation",
-      "classification": "optional"
+      "name": "members"
     },
     {
-      "name": "pins",
+      "classification": "optional",
       "description": "List pinned or starred messages in a conversation",
-      "classification": "optional"
+      "name": "pins"
     },
     {
-      "name": "channels",
+      "classification": "optional",
       "description": "Discover available channels or rooms to join",
-      "classification": "optional"
+      "name": "channels"
     },
     {
-      "name": "presence",
+      "classification": "optional",
       "description": "User online, offline, or away status",
-      "classification": "optional"
+      "name": "presence"
     },
     {
-      "name": "send",
+      "classification": "gated",
       "description": "Send a text message to a contact or conversation",
-      "classification": "gated"
+      "name": "send"
     },
     {
-      "name": "send_file",
+      "classification": "gated",
       "description": "Send a file attachment to a contact or conversation",
-      "classification": "gated"
+      "name": "send_file"
     },
     {
-      "name": "reply_thread",
+      "classification": "gated",
       "description": "Reply within a specific thread",
-      "classification": "gated"
+      "name": "reply_thread"
     },
     {
-      "name": "react",
+      "classification": "gated",
       "description": "Add or remove a reaction to a message",
-      "classification": "gated"
+      "name": "react"
     }
-  ]
+  ],
+  "properties": {
+    "name": {
+      "const": "messages-v1"
+    },
+    "service": {
+      "const": "messages"
+    },
+    "version": {
+      "const": 1
+    }
+  },
+  "title": "messages-v1",
+  "type": "object"
 }

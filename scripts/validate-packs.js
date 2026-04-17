@@ -8,24 +8,32 @@
  */
 
 import { readdir, readFile, stat } from "node:fs/promises";
+import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parse as parseYaml } from "yaml";
 import { DECLARED_SERVICES } from "./generated/declared-services.js";
 
 const ROOT = resolve(import.meta.dirname, "..");
 const PACKS_DIR = join(ROOT, "plugins", "packs");
+const SCHEMAS_DIR = join(ROOT, "schemas");
 const PRIVATE_PACKS_DIR = process.env.PRIVATE_PACKS_DIR || null;
 
-const VALID_PACK_VERSIONS = ["1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.6"];
-const VALID_VISIBILITIES = ["open", "sealed"];
+// Load controlled vocabularies synced from pack-spec (make sync-pack-spec).
+const ENUMS = JSON.parse(readFileSync(join(SCHEMAS_DIR, "schema-enums.json"), "utf-8"));
+const SKILL_CATS = JSON.parse(readFileSync(join(SCHEMAS_DIR, "skill-categories.json"), "utf-8"));
+
+const VALID_PACK_VERSIONS = ENUMS.PACK_VERSIONS;
+const VALID_VISIBILITIES = ENUMS.VISIBILITIES;
+const VALID_DATA_STORES = ENUMS.DATA_STORES;
+const VALID_TIERS = ENUMS.TIERS;
+const VALID_PRICING_MODELS = ENUMS.PRICING_MODELS;
+const VALID_SKILL_CATEGORIES = SKILL_CATS.categories.map((c) => c.name);
+
+// Registry-local business rules (not part of pack-spec).
 const VALID_ACCESS = ["public", "private"];
-const VALID_DATA_STORES = ["nothing", "local", "remote"];
-const VALID_TIERS = ["certified", "verified", "community"];
-const VALID_PRICING_MODELS = ["free", "tip", "one-time", "subscription"];
 const VALID_KEY_DELIVERY = ["paddle", "registry-escrow", "direct"];
 const SEALED_ALLOWED_TIERS = ["certified", "verified"];
 const FIRST_PARTY_AUTHOR_URLS = ["https://stallari.ai", "https://sidereal.cc"];
-const VALID_SKILL_CATEGORIES = ["ingest", "triage", "digest", "transform", "notify", "review", "sync", "report"];
 
 function validatePack(parsed) {
   const errors = [];
