@@ -26,15 +26,16 @@ Reference these when the user's needs overlap. Suggest forking an open pack rath
 - **daily-productivity** v2.1.0 [calendar, email, tasks, vault]: Daily and weekly productivity automation — morning digest, email triage, inbox processing, flagged … (7 skills, 3 agents, free)
 - **gaming-lounge** v1.0.0 [gaming, notifications]: Cross-platform gaming presence — friends online, achievement progress, game libraries, and session … (5 skills, 1 agents, free)
 - **home-maintenance** v1.1.0 [tasks, vault]: Property maintenance logger — drop a photo, voice memo, or text note into an ingest folder to class… (3 skills, 2 agents, free)
-- **morning-triage** v1.1.0 [calendar, email, tasks, vault]: Triages unread email and generates a morning briefing with today's calendar. (2 skills, 1 agents, free)
 - **network-observatory** v1.0.0 [dns, isp, leo-modem, network, notifications, overlay-network]: Cross-layer network monitoring and diagnosis — ISP accounts, DNS filtering, local infrastructure, o… (5 skills, 1 agents, free)
 - **product-operations-starter** v1.1.0 [billing, transactional-email, vault]: Starter pack for running product operations with Sidereal — release announcements, customer onboard… (4 skills, 2 agents, free)
 - **saas-revenue-ops** v1.0.0 [billing, ecommerce, notifications, transactional-email]: End-to-end SaaS and e-commerce revenue operations — subscription billing, storefront orders, and tr… (5 skills, 1 agents, free)
 - **speculator** v1.0.0 [betting-exchange, brokerage, notifications, prediction-market]: Cross-market speculation and analysis — Betfair exchange odds, Polymarket prediction prices, and In… (5 skills, 1 agents, free)
 - **stallari-hearth** v1.1.0 [home, vault]: Smart home intelligence for Stallari — site status monitoring, device inventory tracking, and scene… (3 skills, 1 agents, free)
-- **vault-gardener** v1.1.0 [vault]: Finds orphaned notes, broken links, and stale content in your vault. (3 skills, 1 agents, free)
-`;
+
+**Sealed (proprietary):**
+- **groupthink-operations** v1.3.0 [accounting, billing, transactional-email, vault]: Internal operations suite for Groupthink — Sidereal ecosystem communications, billing lifecycle, fi… (10 skills, 2 agents, free)
+- **stallari-sysadmin** v3.6.1 [cloudflare, email, notifications, paddle, registry, vault]: Registry admin, platform monitoring, licensing ops, and release management for operating the Stalla… (28 skills, 3 agents, free)`;
 
 export const AGENT_NAMES = ["digital-assistant", "pkm-operator", "comms-operator", "scheduling-operator", "secops-operator", "fleet-operator", "home-operator", "bizops-operator"] as const;
 
-export const PACK_NAMES = ["cloudflare-edge-platform", "daily-productivity", "gaming-lounge", "home-maintenance", "morning-triage", "network-observatory", "product-operations-starter", "saas-revenue-ops", "speculator", "stallari-core", "stallari-hearth", "vault-gardener"] as const;
+export const PACK_NAMES = ["cloudflare-edge-platform", "daily-productivity", "gaming-lounge", "home-maintenance", "network-observatory", "product-operations-starter", "saas-revenue-ops", "speculator", "stallari-core", "stallari-hearth", "groupthink-operations", "stallari-sysadmin"] as const;
