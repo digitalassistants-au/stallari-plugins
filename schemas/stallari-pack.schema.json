@@ -15,7 +15,13 @@
           "type": "string"
         },
         "role": {
-          "description": "Agent role (e.g. operator, specialist, reviewer).",
+          "description": "Agent role — determines dispatch behaviour.",
+          "enum": [
+            "operator",
+            "specialist",
+            "classifier",
+            "reviewer"
+          ],
           "type": "string"
         }
       },
@@ -349,7 +355,7 @@
   "$id": "https://stallari.app/schemas/stallari-pack.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": true,
-  "description": "Schema for pack manifests (stallari-plugin.yaml with pack: field). Public Pack Spec v1.0/v1.1/v1.2/v1.3/v1.4/v1.5/v1.6 (DD92, DD99, DD104, DD113, DD119, DD126).",
+  "description": "Schema for pack manifests (stallari-plugin.yaml with pack: field). Public Pack Spec v1.0/v1.1/v1.2/v1.3/v1.4/v1.5/v1.6/v1.7 (DD92, DD99, DD104, DD113, DD119, DD126, DD145/DD146).",
   "properties": {
     "access": {
       "default": "public",
@@ -489,6 +495,119 @@
       ],
       "type": "object"
     },
+    "guardrails": {
+      "additionalProperties": false,
+      "description": "Platform guardrail rules — sealed text, metadata in clear (v1.7, DD145).",
+      "properties": {
+        "min_harness": {
+          "type": "string"
+        },
+        "reviewed": {
+          "format": "date",
+          "type": "string"
+        },
+        "rules": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "added": {
+                "format": "date",
+                "type": "string"
+              },
+              "category": {
+                "type": "string"
+              },
+              "id": {
+                "pattern": "^[a-z]+-\\d{3}$",
+                "type": "string"
+              },
+              "scope": {
+                "items": {
+                  "enum": [
+                    "community",
+                    "verified",
+                    "certified"
+                  ],
+                  "type": "string"
+                },
+                "minItems": 1,
+                "type": "array"
+              },
+              "severity": {
+                "enum": [
+                  "critical",
+                  "high",
+                  "medium"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "category",
+              "severity",
+              "scope",
+              "added"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "version": {
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "version",
+        "reviewed",
+        "rules"
+      ],
+      "type": "object"
+    },
+    "herald": {
+      "additionalProperties": false,
+      "description": "Capability announcements for onboarding and feature discovery (v1.7, DD146).",
+      "properties": {
+        "announcements": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "since_harness": {
+                "type": "string"
+              },
+              "skill_examples": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "summary": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "since_harness",
+              "summary"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "announcements"
+      ],
+      "type": "object"
+    },
     "icon": {
       "description": "Relative URL path to icon asset for marketplace display (e.g. '/icons/stallari-core.svg').",
       "type": "string"
@@ -520,7 +639,8 @@
         "1.3",
         "1.4",
         "1.5",
-        "1.6"
+        "1.6",
+        "1.7"
       ],
       "type": "string"
     },

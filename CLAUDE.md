@@ -57,7 +57,7 @@ Output in `dist/` is deployed to R2 by `stallari-registry-infra`.
 Schema in `schemas/`. Format defined by `stallari-pack-spec`. Each pack YAML
 declares skills, graph methodology, services, and sealed status.
 
-Current state: 53 skills across 8 open packs (Pack Spec v1.6). Sealed packs
+Current state: 53 skills across 8 open packs (Pack Spec v1.7). Sealed packs
 are in a separate private repo (`stallari-packs-private`).
 
 ## Conventions

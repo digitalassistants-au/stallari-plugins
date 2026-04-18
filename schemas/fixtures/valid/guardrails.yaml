@@ -1,0 +1,45 @@
+# Pack with guardrails and herald sections (v1.7, DD145/DD146).
+# Exercises guardrail rules, herald announcements, and constrained agent role.
+pack: "1.7"
+name: test-guardrails
+version: "1.0.0"
+description: Test pack with guardrails and herald sections.
+
+data:
+  reads: [notes]
+  writes: [notes]
+  stores: nothing
+  phones_home: false
+
+guardrails:
+  version: "1.0.0"
+  reviewed: "2026-04-18"
+  rules:
+    - id: vault-001
+      category: vault
+      severity: critical
+      scope: [community, verified]
+      added: "2026-04-18"
+    - id: exfil-001
+      category: exfiltration
+      severity: high
+      scope: [community]
+      added: "2026-04-18"
+
+herald:
+  announcements:
+    - id: privacy-tiers
+      title: Privacy Tiers
+      since_harness: "0.66.0.0"
+      summary: Agents now declare privacy sensitivity per-tool.
+      skill_examples: [classify-and-file]
+
+agents:
+  test-agent:
+    role: operator
+    prompt: You are a test agent.
+
+skills:
+  - name: test-skill
+    description: A test skill.
+    prompt: Do the thing.
