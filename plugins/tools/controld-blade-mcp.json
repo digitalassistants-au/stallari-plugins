@@ -148,8 +148,6 @@
     "required": "6/6",
     "recommended": "6/6",
     "gated": "11/11",
-    "details": {
-      "note": "Full dns-v1 conformance via 22-tool Control-D API coverage. Write operations gated by CONTROLD_WRITE_ENABLED env var."
-    }
+    "last_tested": "2026-04-18"
   }
 }

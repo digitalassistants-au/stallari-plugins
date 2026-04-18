@@ -160,9 +160,9 @@
     }
   ],
   "conformance": {
-    "required": "6/6",
+    "required": "5/5",
     "recommended": "1/1",
-    "gated": "3/3",
-    "last_tested": "2026-04-11"
+    "gated": "2/3",
+    "last_tested": "2026-04-18"
   }
 }

@@ -166,9 +166,10 @@
     }
   ],
   "conformance": {
-    "required": "0/0",
-    "recommended": "0/0",
-    "optional": "0/0",
-    "last_tested": "2026-04-11"
+    "required": "4/4",
+    "recommended": "2/2",
+    "optional": "3/3",
+    "gated": "1/1",
+    "last_tested": "2026-04-18"
   }
 }
