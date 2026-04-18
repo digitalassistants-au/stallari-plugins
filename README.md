@@ -8,6 +8,7 @@
 
 <p align="center">
   <a href="https://marketplace.stallari.app"><img src="https://img.shields.io/badge/marketplace-stallari.app-0066CC" alt="marketplace.stallari.app"></a>
+  <a href="https://github.com/Groupthink-dev/stallari-plugins/discussions"><img src="https://img.shields.io/github/discussions/Groupthink-dev/stallari-plugins?label=discussions" alt="Discussions"></a>
   <img src="https://img.shields.io/badge/status-developer%20preview-orange" alt="Developer Preview">
   <img src="https://img.shields.io/badge/licence-Apache%202.0-green" alt="Apache 2.0">
 </p>
@@ -51,10 +52,10 @@ Every plugin is classified into a trust tier:
 
 ## Pack Spec
 
-Packs follow the [Pack Spec](schemas/stallari-pack.schema.json) (v1.0–v1.4). A pack declares agents, skills, workflows, service dependencies, data access, and user-configurable inputs.
+Packs follow the [Pack Spec](schemas/stallari-pack.schema.json) (v1.0–v1.7). A pack declares agents, skills, workflows, service dependencies, data access, guardrails, and user-configurable inputs.
 
 ```yaml
-pack: "1.1"
+pack: "1.7"
 name: daily-operations
 version: "1.0.0"
 description: Daily vault operations — digest, inbox processing, and email triage.
@@ -72,12 +73,34 @@ data:
   stores: nothing
   phones_home: false
 
+agents:
+  - name: pkm-operator
+    role: operator
+
 skills:
   - name: daily-digest
     agent: pkm-operator
     description: Generate a morning digest
     # ...
+
+guardrails:
+  version: "1.0.0"
+  reviewed: "2026-04-18"
+  rules:
+    - id: vault-001
+      category: vault
+      severity: critical
+      scope: [community, verified]
+      added: "2026-04-18"
 ```
+
+### Key schema additions (v1.5–v1.7)
+
+| Version | Additions |
+|---------|-----------|
+| v1.5 | Capability declarations, deployment class, model requirements |
+| v1.6 | Tool groups, discovery profiles, client profile enforcement |
+| v1.7 | Guardrails (sealed rule delivery), herald (announcements), agent `role` enum constraint |
 
 Packs can be **open** (source visible, forkable) or **sealed** (encrypted payload, licence-activated).
 
@@ -185,6 +208,10 @@ make build-api            # Build catalog (plugins/ → dist/)
 make test                 # Run build-script tests
 make contracts            # List contracts with operation counts
 ```
+
+## Community
+
+Questions, ideas, and show-and-tell — [join the conversation on Discussions](https://github.com/Groupthink-dev/stallari-plugins/discussions).
 
 ## Licence
 

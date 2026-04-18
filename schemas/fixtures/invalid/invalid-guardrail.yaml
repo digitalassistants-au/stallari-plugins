@@ -1,0 +1,26 @@
+# expected-error: missing-required-field
+# Guardrail rule missing required `id` field.
+pack: "1.7"
+name: bad-guardrails
+version: "1.0.0"
+description: Pack with invalid guardrail rule.
+
+data:
+  reads: []
+  writes: []
+  stores: nothing
+  phones_home: false
+
+guardrails:
+  version: "1.0.0"
+  reviewed: "2026-04-18"
+  rules:
+    - category: vault
+      severity: critical
+      scope: [community]
+      added: "2026-04-18"
+
+skills:
+  - name: test
+    description: Test.
+    prompt: Test.

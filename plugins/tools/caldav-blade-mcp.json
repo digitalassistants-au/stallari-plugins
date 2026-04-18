@@ -153,6 +153,7 @@
     "required": "4/4",
     "recommended": "3/3",
     "optional": "1/1",
-    "last_tested": "2026-03-25"
+    "gated": "3/3",
+    "last_tested": "2026-04-18"
   }
 }
