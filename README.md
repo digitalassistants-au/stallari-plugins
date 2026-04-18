@@ -8,6 +8,7 @@
 
 <p align="center">
   <a href="https://marketplace.stallari.app"><img src="https://img.shields.io/badge/marketplace-stallari.app-0066CC" alt="marketplace.stallari.app"></a>
+  <a href="https://github.com/Groupthink-dev/stallari-plugins/discussions"><img src="https://img.shields.io/github/discussions/Groupthink-dev/stallari-plugins?label=discussions" alt="Discussions"></a>
   <img src="https://img.shields.io/badge/status-developer%20preview-orange" alt="Developer Preview">
   <img src="https://img.shields.io/badge/licence-Apache%202.0-green" alt="Apache 2.0">
 </p>
@@ -185,6 +186,10 @@ make build-api            # Build catalog (plugins/ → dist/)
 make test                 # Run build-script tests
 make contracts            # List contracts with operation counts
 ```
+
+## Community
+
+Questions, ideas, and show-and-tell — [join the conversation on Discussions](https://github.com/Groupthink-dev/stallari-plugins/discussions).
 
 ## Licence
 
