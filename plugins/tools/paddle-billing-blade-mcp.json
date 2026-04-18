@@ -148,6 +148,7 @@
     "required": "6/6",
     "recommended": "8/8",
     "optional": "6/6",
-    "last_tested": "2026-04-01"
+    "gated": "8/8",
+    "last_tested": "2026-04-18"
   }
 }
