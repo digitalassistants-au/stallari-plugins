@@ -6,8 +6,8 @@ version: "1.0.0"
 description: Test pack with guardrails and herald sections.
 
 data:
-  reads: [notes]
-  writes: [notes]
+  reads: [vault]
+  writes: [vault]
   stores: nothing
   phones_home: false
 

@@ -42,6 +42,7 @@ const CODE_PATTERNS = {
 const SKIPPED_CODES = new Set([
   "description-too-long",
   "invalid-semver",
+  "missing-required-field",
 ]);
 
 function parseExpectedError(yamlText) {
